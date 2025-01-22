@@ -1,16 +1,17 @@
-import logo from './logo.svg';
-import './App.css';
-import Header from './components/header';
-import LatestComic from './components/comics';
-import Footer from './components/footer';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Home from './home'; // Replace with your actual components
+import NotFound from './404';
 
 function App() {
   return (
-    <div className="App container">
-      <Header />
-      <LatestComic />
-      <Footer />
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        {/* Add your other routes here */}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </Router>
   );
 }
 
