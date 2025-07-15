@@ -7,9 +7,9 @@ export default {
     contact: 'Contact'
   },
   hero: {
-    title: 'Welcome to My Personal Website',
-    subtitle: 'Developer | Designer | Creator',
-    description: 'Passionate about technology, innovation, and creating valuable digital experiences.'
+    title: 'Welcome! Thank you for coming',
+    subtitle: 'Developer | Creator',
+    description: 'Believe in your core, create and explore!'
   },
   about: {
     title: 'About Me',

@@ -1,5 +1,4 @@
 import React from 'react';
-import './Skills.css';
 
 const Skills = ({ t }) => {
   const skillCategories = [
@@ -54,31 +53,35 @@ const Skills = ({ t }) => {
   ];
 
   return (
-    <section className="skills">
-      <div className="skills-container">
-        <div className="skills-header">
-          <h1 className="skills-title">{t.skills.title}</h1>
-          <p className="skills-subtitle">{t.skills.subtitle}</p>
+    <section className="py-24 bg-white min-h-screen">
+      <div className="max-w-7xl mx-auto px-4">
+        <div className="text-center mb-16">
+          <h1 className="text-5xl lg:text-6xl font-extrabold mb-4 gradient-text">
+            {t.skills.title}
+          </h1>
+          <p className="text-xl text-gray-600 leading-relaxed max-w-3xl mx-auto">
+            {t.skills.subtitle}
+          </p>
         </div>
         
-        <div className="skills-content">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-12 mb-16">
           {skillCategories.map((category, index) => (
-            <div key={index} className="skill-category">
-              <div className="category-header">
-                <div className="category-icon">{category.icon}</div>
-                <h3 className="category-title">{category.title}</h3>
+            <div key={index} className="bg-gray-50 rounded-2xl p-8 border border-gray-200">
+              <div className="flex items-center gap-4 mb-8">
+                <div className="text-4xl">{category.icon}</div>
+                <h3 className="text-2xl font-bold text-gray-900">{category.title}</h3>
               </div>
               
-              <div className="skills-grid">
+              <div className="space-y-6">
                 {category.skills.map((skill, skillIndex) => (
-                  <div key={skillIndex} className="skill-item">
-                    <div className="skill-info">
-                      <span className="skill-name">{skill.name}</span>
-                      <span className="skill-level">{skill.level}%</span>
+                  <div key={skillIndex} className="space-y-2">
+                    <div className="flex justify-between items-center">
+                      <span className="font-semibold text-gray-700">{skill.name}</span>
+                      <span className="font-semibold text-primary-600 text-sm">{skill.level}%</span>
                     </div>
-                    <div className="skill-bar">
+                    <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
                       <div 
-                        className="skill-progress" 
+                        className="skill-progress"
                         style={{ width: `${skill.level}%` }}
                       ></div>
                     </div>
@@ -89,10 +92,12 @@ const Skills = ({ t }) => {
           ))}
         </div>
         
-        <div className="skills-summary">
-          <div className="summary-card">
-            <h3>技术栈概览</h3>
-            <p>我专注于现代Web开发技术，具备全栈开发能力。擅长使用React生态系统构建高性能的用户界面，同时也具备后端开发和数据库设计经验。</p>
+        <div className="text-center">
+          <div className="gradient-bg text-white rounded-2xl p-12 max-w-4xl mx-auto">
+            <h3 className="text-3xl font-bold mb-4">技术栈概览</h3>
+            <p className="text-lg leading-relaxed opacity-90">
+              我专注于现代Web开发技术，具备全栈开发能力。擅长使用React生态系统构建高性能的用户界面，同时也具备后端开发和数据库设计经验。
+            </p>
           </div>
         </div>
       </div>

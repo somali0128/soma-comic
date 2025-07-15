@@ -1,45 +1,46 @@
 import React from 'react';
-import './Footer.css';
 
 const Footer = ({ t }) => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="footer">
-      <div className="footer-container">
-        <div className="footer-content">
-          <div className="footer-section">
-            <h3 className="footer-title">Soma Comic</h3>
-            <p className="footer-description">
+    <footer className="gradient-bg text-white py-12 mt-auto">
+      <div className="max-w-7xl mx-auto px-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+          <div className="flex flex-col gap-4">
+            <h3 className="text-2xl font-bold bg-gradient-to-r from-white to-gray-100 bg-clip-text text-transparent">
+              Soma Comic
+            </h3>
+            <p className="text-gray-300 leading-relaxed">
               个人主页项目，展示我的技能、兴趣和联系方式。
             </p>
           </div>
           
-          <div className="footer-section">
-            <h4 className="footer-subtitle">快速链接</h4>
-            <ul className="footer-links">
-              <li><a href="/" className="footer-link">首页</a></li>
-              <li><a href="/about" className="footer-link">关于我</a></li>
-              <li><a href="/skills" className="footer-link">技能</a></li>
-              <li><a href="/contact" className="footer-link">联系</a></li>
+          <div className="flex flex-col gap-4">
+            <h4 className="text-lg font-semibold text-gray-200">快速链接</h4>
+            <ul className="flex flex-col gap-2">
+              <li><a href="/" className="text-gray-300 font-medium transition-colors duration-200 hover:text-white">首页</a></li>
+              <li><a href="/about" className="text-gray-300 font-medium transition-colors duration-200 hover:text-white">关于我</a></li>
+              <li><a href="/skills" className="text-gray-300 font-medium transition-colors duration-200 hover:text-white">技能</a></li>
+              <li><a href="/contact" className="text-gray-300 font-medium transition-colors duration-200 hover:text-white">联系</a></li>
             </ul>
           </div>
           
-          <div className="footer-section">
-            <h4 className="footer-subtitle">联系方式</h4>
-            <ul className="footer-links">
-              <li><a href="mailto:contact@example.com" className="footer-link">邮箱</a></li>
-              <li><a href="https://github.com" target="_blank" rel="noopener noreferrer" className="footer-link">GitHub</a></li>
-              <li><a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="footer-link">LinkedIn</a></li>
+          <div className="flex flex-col gap-4">
+            <h4 className="text-lg font-semibold text-gray-200">联系方式</h4>
+            <ul className="flex flex-col gap-2">
+              <li><a href="mailto:contact@example.com" className="text-gray-300 font-medium transition-colors duration-200 hover:text-white">邮箱</a></li>
+              <li><a href="https://github.com" target="_blank" rel="noopener noreferrer" className="text-gray-300 font-medium transition-colors duration-200 hover:text-white">GitHub</a></li>
+              <li><a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-gray-300 font-medium transition-colors duration-200 hover:text-white">LinkedIn</a></li>
             </ul>
           </div>
         </div>
         
-        <div className="footer-bottom">
-          <p className="footer-copyright">
+        <div className="border-t border-white/20 pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-gray-300 text-sm">
             © {currentYear} Soma Comic. {t.footer.copyright}
           </p>
-          <p className="footer-made-with">
+          <p className="text-gray-300 text-sm">
             {t.footer.madeWith}
           </p>
         </div>

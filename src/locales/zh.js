@@ -7,9 +7,9 @@ export default {
     contact: '联系'
   },
   hero: {
-    title: '欢迎来到我的个人主页',
-    subtitle: '开发者 | 设计师 | 创作者',
-    description: '热爱技术，追求创新，专注于创造有价值的数字体验。'
+    title: '欢迎欢迎，来者是客',
+    subtitle: '开发者 | 创作者',
+    description: '相信自己，创造奇迹！'
   },
   about: {
     title: '关于我',
