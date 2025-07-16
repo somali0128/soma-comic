@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import LanguageSwitch from '../LanguageSwitch/LanguageSwitch';
+import SomaLogo from '../../soma_logo.svg';
 
 const Navbar = ({ currentLanguage, onLanguageChange, t }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -17,8 +18,9 @@ const Navbar = ({ currentLanguage, onLanguageChange, t }) => {
     <nav className="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-md border-b border-gray-200 z-50 transition-all duration-300">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-center justify-between h-16">
-          <Link to="/" className="text-2xl font-bold gradient-text transition-colors duration-200 hover:text-primary-600" onClick={closeMenu}>
-            Soma Comic
+          <Link to="/" className="flex items-center gap-3 transition-colors duration-200 hover:opacity-80" onClick={closeMenu}>
+            <img src={SomaLogo} alt="Soma Comic Logo" className="w-10 h-10" />
+            <span className="text-2xl font-bold gradient-text">Soma Comic</span>
           </Link>
 
           <div className={`md:flex items-center gap-8 ${isMenuOpen ? 'fixed top-16 left-0 right-0 bg-white/98 backdrop-blur-md flex-col py-8 gap-6 border-b border-gray-200 transform translate-y-0 opacity-100 visible' : 'hidden md:flex'}`}>

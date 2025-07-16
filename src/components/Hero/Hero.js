@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import SomaLogo from '../../soma_logo.svg';
 
 const Hero = ({ t }) => {
   return (
@@ -27,8 +28,8 @@ const Hero = ({ t }) => {
           </div>
           <div className="relative flex justify-center items-center z-10">
             <div className="relative z-30">
-              <div className="w-48 h-48 lg:w-56 lg:h-56 rounded-full bg-gradient-to-br from-white to-gray-100 flex items-center justify-center shadow-2xl border-4 border-white">
-                <span className="text-4xl lg:text-5xl font-extrabold text-primary-500">SC</span>
+              <div className="w-48 h-48 lg:w-56 lg:h-56 rounded-full bg-gradient-to-br from-white to-gray-100 flex items-center justify-center shadow-2xl border-4 border-white p-8">
+                <img src={SomaLogo} alt="Soma Comic Logo" className="w-full h-full" />
               </div>
             </div>
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10">
@@ -38,7 +39,6 @@ const Hero = ({ t }) => {
             </div>
           </div>
         </div>
-
       </div>
     </section>
   );

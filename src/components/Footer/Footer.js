@@ -1,4 +1,5 @@
 import React from 'react';
+import SomaLogo from '../../soma_logo.svg';
 
 const Footer = ({ t }) => {
   const currentYear = new Date().getFullYear();
@@ -8,9 +9,12 @@ const Footer = ({ t }) => {
       <div className="max-w-7xl mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
           <div className="flex flex-col gap-4">
-            <h3 className="text-2xl font-bold bg-gradient-to-r from-white to-gray-100 bg-clip-text text-transparent">
-              Soma Comic
-            </h3>
+            <div className="flex items-center gap-3">
+              <img src={SomaLogo} alt="Soma Comic Logo" className="w-8 h-8" />
+              <h3 className="text-2xl font-bold bg-gradient-to-r from-white to-gray-100 bg-clip-text text-transparent">
+                Soma Comic
+              </h3>
+            </div>
             <p className="text-gray-300 leading-relaxed">
               个人主页项目，展示我的技能、兴趣和联系方式。
             </p>
