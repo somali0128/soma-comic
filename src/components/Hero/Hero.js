@@ -18,8 +18,8 @@ const Hero = ({ t }) => {
               {t.hero.description}
             </p>
             <div className="flex gap-4 flex-wrap">
-              <Link to="/about" className="btn-primary">
-                {t.nav.about}
+              <Link to="/developer" className="btn-primary">
+                {t.nav.developer}
               </Link>
               <Link to="/contact" className="btn-secondary">
                 {t.nav.contact}
@@ -29,7 +29,7 @@ const Hero = ({ t }) => {
           <div className="relative flex justify-center items-center z-10">
             <div className="relative z-30">
               <div className="w-48 h-48 lg:w-56 lg:h-56 rounded-full bg-gradient-to-br from-white to-gray-100 flex items-center justify-center shadow-2xl border-4 border-white p-8">
-                <img src={SomaLogo} alt="Soma Comic Logo" className="w-full h-full" />
+                <img src={SomaLogo} alt="Stick Soma Logo" className="w-full h-full" />
               </div>
             </div>
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10">

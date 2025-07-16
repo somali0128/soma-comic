@@ -1,104 +1,113 @@
-# Soma Comic - 个人主页
+# Stick Soma - 个人主页
 
-这是我的个人主页项目，展示我的个人信息、技能、兴趣和联系方式。
+一个使用 React 和 Tailwind CSS 构建的现代化个人主页项目。
 
-## 项目特性
+## 项目特色
 
-- 🌐 **多语言支持** - 中文和英文切换
-- 📱 **响应式设计** - 适配各种设备
-- 🎨 **现代UI设计** - 使用Tailwind CSS构建
-- ⚡ **快速加载** - 优化的性能和用户体验
-- 🔧 **模块化组件** - 易于维护和扩展
+- 🎨 **现代化设计**: 使用 Tailwind CSS 构建的响应式设计
+- 🌐 **双语支持**: 支持中文和英文语言切换
+- 📱 **移动端友好**: 完全响应式设计，适配各种设备
+- ⚡ **高性能**: 基于 React 构建，快速加载
+- 🎯 **SEO 友好**: 优化的元数据和结构
 
 ## 主要功能
 
-### 页面内容
-- **自我介绍** - 个人背景和经历
-- **技能展示** - 技术栈和能力展示
-- **兴趣展示** - 个人爱好和兴趣
-- **联系方式** - 社交媒体和联系方式
-- **项目展示** - 个人作品和项目
+### 导航栏
+- 品牌 Logo 和名称
+- 响应式导航菜单
+- 语言切换功能
+- 移动端汉堡菜单
 
-### 技术特性
-- **导航栏** - 固定顶部导航
-- **页脚** - 底部信息和链接
-- **语言切换** - 中英文双语支持
-- **响应式布局** - 移动端友好
+### 页面内容
+- **首页**: 欢迎页面和简介
+- **开发者**: 技术栈和开发技能展示
+- **创作者**: 创作领域和项目介绍
+- **画廊**: 作品展示和作品集
+- **联系**: 联系方式和联系表单
+
+### 页脚
+- 品牌信息
+- 版权信息
+- 社交媒体链接
 
 ## 技术栈
 
-- **前端框架**: React 19
+- **前端框架**: React 18
 - **样式框架**: Tailwind CSS
-- **路由**: React Router DOM
-- **图标**: Font Awesome
-- **UI组件**: MDB React UI Kit
-
-## 快速开始
-
-### 安装依赖
-```bash
-npm install
-# 或
-yarn install
-```
-
-### 开发模式
-```bash
-npm start
-# 或
-yarn start
-```
-
-打开 [http://localhost:3000](http://localhost:3000) 查看应用。
-
-### 构建生产版本
-```bash
-npm run build
-# 或
-yarn build
-```
-
-### 部署到GitHub Pages
-```bash
-npm run deploy
-# 或
-yarn deploy
-```
+- **路由**: React Router
+- **图标**: SVG 图标
+- **构建工具**: Create React App
 
 ## 项目结构
 
 ```
 src/
-├── components/          # React组件
+├── components/          # React 组件
 │   ├── Navbar/         # 导航栏组件
+│   ├── Hero/           # 首页英雄区域
+│   ├── Developer/      # 开发者页面
+│   ├── Creator/        # 创作者页面
+│   ├── Gallery/        # 画廊页面
+│   ├── Contact/        # 联系页面
 │   ├── Footer/         # 页脚组件
-│   ├── Hero/           # 首页横幅
-│   ├── About/          # 关于我
-│   ├── Skills/         # 技能展示
-│   ├── Interests/      # 兴趣展示
-│   ├── Contact/        # 联系方式
-│   └── LanguageSwitch/ # 语言切换
-├── static/             # 静态资源
+│   └── LanguageSwitch/ # 语言切换组件
 ├── locales/            # 国际化文件
-└── utils/              # 工具函数
+│   ├── zh.js          # 中文翻译
+│   └── en.js          # 英文翻译
+├── App.js             # 主应用组件
+└── App.css            # 全局样式
 ```
 
-## 开发计划
+## 安装和运行
 
-- [x] 项目基础架构
-- [ ] 导航栏和页脚
-- [ ] 首页横幅设计
-- [ ] 自我介绍页面
-- [ ] 技能展示页面
-- [ ] 兴趣展示页面
-- [ ] 联系方式页面
-- [ ] 语言切换功能
-- [ ] 响应式优化
-- [ ] 性能优化
+1. 克隆项目
+```bash
+git clone <repository-url>
+cd soma-comic
+```
+
+2. 安装依赖
+```bash
+npm install
+```
+
+3. 启动开发服务器
+```bash
+npm start
+```
+
+4. 构建生产版本
+```bash
+npm run build
+```
+
+## 自定义配置
+
+### 修改品牌信息
+- 更新 `src/components/Navbar/Navbar.js` 中的品牌名称
+- 更新 `src/components/Footer/Footer.js` 中的版权信息
+- 更新 `public/index.html` 中的页面标题
+
+### 修改内容
+- 更新 `src/locales/zh.js` 和 `src/locales/en.js` 中的文本内容
+- 修改各个页面组件中的具体内容
+
+### 修改样式
+- 更新 `tailwind.config.js` 中的主题配置
+- 修改 `src/App.css` 中的全局样式
+
+## 部署
+
+项目可以部署到任何支持静态网站的托管服务：
+
+- **Vercel**: 推荐，支持自动部署
+- **Netlify**: 支持自动部署和表单处理
+- **GitHub Pages**: 免费托管
+- **AWS S3**: 企业级解决方案
 
 ## 贡献
 
-欢迎提出建议和改进意见！
+欢迎提交 Issue 和 Pull Request 来改进这个项目。
 
 ## 许可证
 

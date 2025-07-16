@@ -3,9 +3,9 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar/Navbar';
 import Footer from './components/Footer/Footer';
 import Hero from './components/Hero/Hero';
-import About from './components/About/About';
-import Skills from './components/Skills/Skills';
-import Interests from './components/Interests/Interests';
+import Developer from './components/Developer/Developer';
+import Creator from './components/Creator/Creator';
+import Gallery from './components/Gallery/Gallery';
 import Contact from './components/Contact/Contact';
 import zh from './locales/zh';
 import en from './locales/en';
@@ -42,9 +42,9 @@ function App() {
         <main className="main-content">
           <Routes>
             <Route path="/" element={<Hero t={translations} />} />
-            <Route path="/about" element={<About t={translations} />} />
-            <Route path="/skills" element={<Skills t={translations} />} />
-            <Route path="/interests" element={<Interests t={translations} />} />
+            <Route path="/developer" element={<Developer t={translations} />} />
+            <Route path="/creator" element={<Creator t={translations} />} />
+            <Route path="/gallery" element={<Gallery t={translations} />} />
             <Route path="/contact" element={<Contact t={translations} />} />
           </Routes>
         </main>

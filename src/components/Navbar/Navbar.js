@@ -19,8 +19,8 @@ const Navbar = ({ currentLanguage, onLanguageChange, t }) => {
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           <Link to="/" className="flex items-center gap-3 transition-colors duration-200 hover:opacity-80" onClick={closeMenu}>
-            <img src={SomaLogo} alt="Soma Comic Logo" className="w-10 h-10" />
-            <span className="text-2xl font-bold gradient-text">Soma Comic</span>
+            <img src={SomaLogo} alt="Stick Soma Logo" className="w-10 h-10" />
+            <span className="text-2xl font-bold gradient-text">Stick Soma</span>
           </Link>
 
           <div className={`md:flex items-center gap-8 ${isMenuOpen ? 'fixed top-16 left-0 right-0 bg-white/98 backdrop-blur-md flex-col py-8 gap-6 border-b border-gray-200 transform translate-y-0 opacity-100 visible' : 'hidden md:flex'}`}>
@@ -28,16 +28,16 @@ const Navbar = ({ currentLanguage, onLanguageChange, t }) => {
               {t.nav.home}
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary-500 transition-all duration-200 group-hover:w-full"></span>
             </Link>
-            <Link to="/about" className="text-gray-600 font-medium transition-colors duration-200 hover:text-primary-500 relative group" onClick={closeMenu}>
-              {t.nav.about}
+            <Link to="/developer" className="text-gray-600 font-medium transition-colors duration-200 hover:text-primary-500 relative group" onClick={closeMenu}>
+              {t.nav.developer}
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary-500 transition-all duration-200 group-hover:w-full"></span>
             </Link>
-            <Link to="/skills" className="text-gray-600 font-medium transition-colors duration-200 hover:text-primary-500 relative group" onClick={closeMenu}>
-              {t.nav.skills}
+            <Link to="/creator" className="text-gray-600 font-medium transition-colors duration-200 hover:text-primary-500 relative group" onClick={closeMenu}>
+              {t.nav.creator}
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary-500 transition-all duration-200 group-hover:w-full"></span>
             </Link>
-            <Link to="/interests" className="text-gray-600 font-medium transition-colors duration-200 hover:text-primary-500 relative group" onClick={closeMenu}>
-              {t.nav.interests}
+            <Link to="/gallery" className="text-gray-600 font-medium transition-colors duration-200 hover:text-primary-500 relative group" onClick={closeMenu}>
+              {t.nav.gallery}
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary-500 transition-all duration-200 group-hover:w-full"></span>
             </Link>
             <Link to="/contact" className="text-gray-600 font-medium transition-colors duration-200 hover:text-primary-500 relative group" onClick={closeMenu}>

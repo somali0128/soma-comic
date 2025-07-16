@@ -10,10 +10,10 @@ const Footer = ({ t }) => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
           <div className="flex flex-col gap-4">
             <div className="flex items-center gap-3">
-              <img src={SomaLogo} alt="Soma Comic Logo" className="w-8 h-8" />
-              <h3 className="text-2xl font-bold bg-gradient-to-r from-white to-gray-100 bg-clip-text text-transparent">
-                Soma Comic
-              </h3>
+              <img src={SomaLogo} alt="Stick Soma Logo" className="w-8 h-8" />
+              <span className="text-xl font-bold gradient-text">
+                Stick Soma
+              </span>
             </div>
             <p className="text-gray-300 leading-relaxed">
               个人主页项目，展示我的技能、兴趣和联系方式。
@@ -42,7 +42,7 @@ const Footer = ({ t }) => {
         
         <div className="border-t border-white/20 pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-gray-300 text-sm">
-            © {currentYear} Soma Comic. {t.footer.copyright}
+            © {currentYear} Stick Soma. {t.footer.copyright}
           </p>
           <p className="text-gray-300 text-sm">
             {t.footer.madeWith}

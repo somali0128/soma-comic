@@ -20,7 +20,7 @@ const Contact = ({ t }) => {
     e.preventDefault();
     // 这里可以添加表单提交逻辑
     console.log('Form submitted:', formData);
-    alert('消息已发送！我会尽快回复您。');
+    alert(t.contact.messageSent);
     setFormData({
       name: '',
       email: '',
@@ -33,47 +33,35 @@ const Contact = ({ t }) => {
     {
       icon: '📧',
       title: t.contact.email,
-      value: 'contact@example.com',
-      link: 'mailto:contact@example.com'
+      value: 'ldydq970128@gmail.com',
+      link: 'mailto:ldydq970128@gmail.com'
     },
     {
       icon: '📱',
       title: t.contact.phone,
-      value: '+86 138-0000-0000',
-      link: 'tel:+8613800000000'
+      value: '+1 9024108653',
+      link: 'tel:+19024108653'
     },
     {
       icon: '📍',
       title: t.contact.location,
-      value: '中国，北京',
+      value: 'Halifax, NS, CA',
       link: null
     }
   ];
 
   const socialLinks = [
     {
-      name: 'GitHub',
+      name: t.contact.github,
       icon: '🐙',
-      url: 'https://github.com',
+      url: 'https://github.com/somali0128',
       color: '#333'
     },
     {
-      name: 'LinkedIn',
-      icon: '💼',
-      url: 'https://linkedin.com',
-      color: '#0077b5'
-    },
-    {
-      name: 'Twitter',
-      icon: '🐦',
-      url: 'https://twitter.com',
-      color: '#1da1f2'
-    },
-    {
-      name: '微信',
-      icon: '💬',
-      url: '#',
-      color: '#07c160'
+      name: t.contact.bilibili,
+      icon: '📺',
+      url: 'https://space.bilibili.com/290997685',
+      color: '#00a1d6'
     }
   ];
 
@@ -84,14 +72,17 @@ const Contact = ({ t }) => {
           <h1 className="text-5xl lg:text-6xl font-extrabold mb-4 gradient-text">
             {t.contact.title}
           </h1>
-          <p className="text-xl text-gray-600 leading-relaxed max-w-3xl mx-auto">
+          <p className="text-xl text-gray-600 leading-relaxed max-w-3xl mx-auto mb-8">
             {t.contact.subtitle}
+          </p>
+          <p className="text-lg text-gray-700 leading-relaxed max-w-4xl mx-auto">
+            {t.contact.description}
           </p>
         </div>
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
           <div className="bg-gray-50 rounded-2xl p-8 border border-gray-200">
-            <h3 className="text-2xl font-bold text-gray-900 mb-8">联系信息</h3>
+            <h3 className="text-2xl font-bold text-gray-900 mb-8">{t.contact.contactInfo}</h3>
             <div className="space-y-6 mb-8">
               {contactInfo.map((info, index) => (
                 <div key={index} className="flex items-center gap-4">
@@ -133,10 +124,10 @@ const Contact = ({ t }) => {
           </div>
           
           <div className="bg-white rounded-2xl p-8 border border-gray-200 shadow-sm">
-            <h3 className="text-2xl font-bold text-gray-900 mb-8">发送消息</h3>
+            <h3 className="text-2xl font-bold text-gray-900 mb-8">{t.contact.sendMessage}</h3>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-2">
-                <label htmlFor="name" className="font-semibold text-gray-700 text-sm">姓名</label>
+                <label htmlFor="name" className="font-semibold text-gray-700 text-sm">{t.contact.name}</label>
                 <input
                   type="text"
                   id="name"
@@ -149,7 +140,7 @@ const Contact = ({ t }) => {
               </div>
               
               <div className="space-y-2">
-                <label htmlFor="email" className="font-semibold text-gray-700 text-sm">邮箱</label>
+                <label htmlFor="email" className="font-semibold text-gray-700 text-sm">{t.contact.emailLabel}</label>
                 <input
                   type="email"
                   id="email"
@@ -162,7 +153,7 @@ const Contact = ({ t }) => {
               </div>
               
               <div className="space-y-2">
-                <label htmlFor="subject" className="font-semibold text-gray-700 text-sm">主题</label>
+                <label htmlFor="subject" className="font-semibold text-gray-700 text-sm">{t.contact.subject}</label>
                 <input
                   type="text"
                   id="subject"
@@ -175,7 +166,7 @@ const Contact = ({ t }) => {
               </div>
               
               <div className="space-y-2">
-                <label htmlFor="message" className="font-semibold text-gray-700 text-sm">消息</label>
+                <label htmlFor="message" className="font-semibold text-gray-700 text-sm">{t.contact.message}</label>
                 <textarea
                   id="message"
                   name="message"
@@ -188,7 +179,7 @@ const Contact = ({ t }) => {
               </div>
               
               <button type="submit" className="btn-primary w-full">
-                发送消息
+                {t.contact.sendMessage}
               </button>
             </form>
           </div>
