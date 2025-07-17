@@ -17,6 +17,9 @@
     -moz-osx-font-smoothing: grayscale;
     line-height: 1.6;
     color: #1f2937;
+    /* 防止移动端缩放 */
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
   }
 
   /* 滚动条样式 */
@@ -46,17 +49,40 @@
   /* 全局按钮样式 */
   button {
     font-family: inherit;
+    /* 移动端触摸优化 */
+    min-height: 44px;
+    min-width: 44px;
   }
 
   /* 全局输入框样式 */
   input, textarea {
     font-family: inherit;
+    /* 移动端输入优化 */
+    font-size: 16px; /* 防止iOS缩放 */
   }
 
   /* 响应式图片 */
   img {
     max-width: 100%;
     height: auto;
+  }
+
+  /* 移动端优化 */
+  @media (max-width: 640px) {
+    /* 确保触摸目标足够大 */
+    button, a, input, textarea, select {
+      min-height: 44px;
+    }
+    
+    /* 优化移动端滚动 */
+    html {
+      scroll-behavior: smooth;
+    }
+    
+    /* 防止移动端双击缩放 */
+    * {
+      touch-action: manipulation;
+    }
   }
 }
 
@@ -74,15 +100,28 @@
   }
 
   .btn-primary {
-    @apply bg-gradient-to-r from-primary-500 to-secondary-600 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0;
+    @apply bg-gradient-to-r from-primary-500 to-secondary-600 text-white px-4 sm:px-6 py-3 rounded-lg font-semibold transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0;
+    /* 移动端触摸优化 */
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .btn-secondary {
-    @apply border-2 border-white text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 hover:bg-white hover:text-primary-500 hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0;
+    @apply border-2 border-white text-white px-4 sm:px-6 py-3 rounded-lg font-semibold transition-all duration-300 hover:bg-white hover:text-primary-500 hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0;
+    /* 移动端触摸优化 */
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .form-input {
-    @apply w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors duration-200;
+    @apply w-full px-3 sm:px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors duration-200;
+    /* 移动端输入优化 */
+    font-size: 16px;
+    min-height: 44px;
   }
 
   .skill-progress {
@@ -93,10 +132,78 @@
     content: '';
     @apply absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer;
   }
+
+  /* 移动端导航菜单优化 */
+  .mobile-menu {
+    @apply fixed top-16 left-0 right-0 bg-white/98 backdrop-blur-md border-b border-gray-200 z-40;
+    max-height: calc(100vh - 4rem);
+    overflow-y: auto;
+  }
+
+  /* 移动端卡片优化 */
+  .mobile-card {
+    @apply bg-white rounded-xl p-4 sm:p-6 border border-gray-200 shadow-sm;
+  }
+
+  /* 移动端按钮组优化 */
+  .mobile-button-group {
+    @apply flex flex-col sm:flex-row gap-3 sm:gap-4;
+  }
+
+  /* 移动端网格优化 */
+  .mobile-grid {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6;
+  }
+
+  /* 移动端文本优化 */
+  .mobile-text {
+    @apply text-sm sm:text-base leading-relaxed;
+  }
+
+  .mobile-heading {
+    @apply text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold;
+  }
+
+  /* 移动端间距优化 */
+  .mobile-section {
+    @apply py-8 sm:py-12 lg:py-16;
+  }
+
+  .mobile-container {
+    @apply px-4 sm:px-6 max-w-7xl mx-auto;
+  }
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+
+  /* 移动端专用工具类 */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  .mobile-padding {
+    @apply px-4 sm:px-6;
+  }
+
+  .mobile-margin {
+    @apply my-4 sm:my-6;
+  }
+
+  /* 防止移动端文本选择 */
+  .no-select {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+
+  /* 移动端滚动优化 */
+  .smooth-scroll {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
   }
 }
