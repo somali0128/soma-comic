@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import emailjs from '@emailjs/browser';
 
 const Contact = ({ t }) => {
   const [formData, setFormData] = useState({
@@ -7,6 +8,17 @@ const Contact = ({ t }) => {
     subject: '',
     message: ''
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState(null);
+
+  useEffect(() => {
+    const publicKey = process.env.REACT_APP_EMAILJS_PUBLIC_KEY;
+    if (publicKey) {
+      emailjs.init(publicKey);
+    } else {
+      console.error('EmailJS public key not found in environment variables');
+    }
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -16,17 +28,51 @@ const Contact = ({ t }) => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // 这里可以添加表单提交逻辑
-    console.log('Form submitted:', formData);
-    alert(t.contact.messageSent);
-    setFormData({
-      name: '',
-      email: '',
-      subject: '',
-      message: ''
-    });
+    setIsSubmitting(true);
+    setSubmitStatus(null);
+
+    const serviceId = process.env.REACT_APP_EMAILJS_SERVICE_ID;
+    const templateId = process.env.REACT_APP_EMAILJS_TEMPLATE_ID;
+    const publicKey = process.env.REACT_APP_EMAILJS_PUBLIC_KEY;
+
+    if (!serviceId || !templateId || !publicKey) {
+      console.error('EmailJS configuration missing:', { serviceId, templateId, publicKey });
+      setSubmitStatus('error');
+      setIsSubmitting(false);
+      return;
+    }
+
+    try {
+      const result = await emailjs.send(
+        serviceId,
+        templateId,
+        {
+          from_name: formData.name,
+          from_email: formData.email,
+          subject: formData.subject,
+          message: formData.message,
+          to_email: 'ldydq970128@gmail.com'
+        },
+        publicKey
+      );
+
+      if (result.status === 200) {
+        setSubmitStatus('success');
+        setFormData({
+          name: '',
+          email: '',
+          subject: '',
+          message: ''
+        });
+      }
+    } catch (error) {
+      console.error('Email send failed:', error);
+      setSubmitStatus('error');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const contactInfo = [
@@ -124,7 +170,20 @@ const Contact = ({ t }) => {
           </div>
           
           <div className="bg-white rounded-2xl p-8 border border-gray-200 shadow-sm">
-            <h3 className="text-2xl font-bold text-gray-900 mb-8">{t.contact.sendMessage}</h3>
+            <h3 className="text-2xl font-bold text-gray-900">{t.contact.sendMessage}</h3>
+            
+            {submitStatus === 'success' && (
+              <div className="p-4 m-2 bg-green-50 border border-green-200 rounded-lg">
+                <p className="text-green-800">{t.contact.messageSent}</p>
+              </div>
+            )}
+            
+            {submitStatus === 'error' && (
+              <div className="p-4 m-2 bg-red-50 border border-red-200 rounded-lg">
+                <p className="text-red-800">{t.contact.messageError}</p>
+              </div>
+            )}
+            
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-2">
                 <label htmlFor="name" className="font-semibold text-gray-700 text-sm">{t.contact.name}</label>
@@ -178,8 +237,12 @@ const Contact = ({ t }) => {
                 ></textarea>
               </div>
               
-              <button type="submit" className="btn-primary w-full">
-                {t.contact.sendMessage}
+              <button 
+                type="submit" 
+                className="btn-primary w-full"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? t.contact.sending : t.contact.sendMessage}
               </button>
             </form>
           </div>

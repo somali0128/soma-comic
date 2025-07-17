@@ -10,32 +10,29 @@ const Footer = ({ t }) => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
           <div className="flex flex-col gap-4">
             <div className="flex items-center gap-3">
-              <img src={SomaLogo} alt="Stick Soma Logo" className="w-8 h-8" />
-              <span className="text-xl font-bold gradient-text">
+              <img src={SomaLogo} alt="text-gray-300 Logo" className="w-8 h-8" />
+              <span className="text-xl font-bold">
                 Stick Soma
               </span>
             </div>
-            <p className="text-gray-300 leading-relaxed">
-              个人主页项目，展示我的技能、兴趣和联系方式。
-            </p>
           </div>
           
           <div className="flex flex-col gap-4">
-            <h4 className="text-lg font-semibold text-gray-200">快速链接</h4>
+            <h4 className="text-lg font-semibold text-gray-200 pl-8">{t.footer.quickLinks}</h4>
             <ul className="flex flex-col gap-2">
-              <li><a href="/" className="text-gray-300 font-medium transition-colors duration-200 hover:text-white">首页</a></li>
-              <li><a href="/about" className="text-gray-300 font-medium transition-colors duration-200 hover:text-white">关于我</a></li>
-              <li><a href="/skills" className="text-gray-300 font-medium transition-colors duration-200 hover:text-white">技能</a></li>
-              <li><a href="/contact" className="text-gray-300 font-medium transition-colors duration-200 hover:text-white">联系</a></li>
+              <li><a href="/" className="text-gray-300 font-medium transition-colors duration-200 hover:text-white">{t.nav.home}</a></li>
+              <li><a href="/developer" className="text-gray-300 font-medium transition-colors duration-200 hover:text-white">{t.nav.developer}</a></li>
+              <li><a href="/creator" className="text-gray-300 font-medium transition-colors duration-200 hover:text-white">{t.nav.creator}</a></li>
+              <li><a href="/gallery" className="text-gray-300 font-medium transition-colors duration-200 hover:text-white">{t.nav.gallery}</a></li>
+              <li><a href="/contact" className="text-gray-300 font-medium transition-colors duration-200 hover:text-white">{t.nav.contact}</a></li>
             </ul>
           </div>
           
           <div className="flex flex-col gap-4">
-            <h4 className="text-lg font-semibold text-gray-200">联系方式</h4>
+            <h4 className="text-lg font-semibold text-gray-200 pl-8">{t.footer.media}</h4>
             <ul className="flex flex-col gap-2">
-              <li><a href="mailto:contact@example.com" className="text-gray-300 font-medium transition-colors duration-200 hover:text-white">邮箱</a></li>
-              <li><a href="https://github.com" target="_blank" rel="noopener noreferrer" className="text-gray-300 font-medium transition-colors duration-200 hover:text-white">GitHub</a></li>
-              <li><a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-gray-300 font-medium transition-colors duration-200 hover:text-white">LinkedIn</a></li>
+              <li><a href="https://github.com/somali0128" target="_blank" rel="noopener noreferrer" className="text-gray-300 font-medium transition-colors duration-200 hover:text-white">GitHub</a></li>
+              <li><a href="https://space.bilibili.com/290997685" target="_blank" rel="noopener noreferrer" className="text-gray-300 font-medium transition-colors duration-200 hover:text-white">Bilibili</a></li>
             </ul>
           </div>
         </div>

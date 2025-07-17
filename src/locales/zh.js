@@ -72,17 +72,23 @@ export default {
     location: '位置',
     social: '社交媒体',
     contactInfo: '联系信息',
-    sendMessage: '发送消息',
+    sendMessage: '给我留个言吧',
     name: '姓名',
     emailLabel: '邮箱',
     subject: '主题',
     message: '消息',
     messageSent: '消息已发送！我会尽快回复您。',
+    messageError: '发送失败，请稍后重试。',
+    sending: '发送中...',
     github: 'GitHub',
     bilibili: 'Bilibili'
   },
   footer: {
-    copyright: '© 2024 我的个人主页. 保留所有权利.',
-    madeWith: '用 ❤️ 制作'
+    copyright: '保留所有权利.',
+    madeWith: '用 ❤️ 制作',
+    quickLinks: '快速链接',
+    contact: '联系方式',
+    media: '媒体',
+    description: '开发者 | 创作者'
   }
 }; 

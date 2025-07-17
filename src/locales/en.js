@@ -78,11 +78,17 @@ export default {
     subject: 'Subject',
     message: 'Message',
     messageSent: 'Message sent! I will reply to you soon.',
+    messageError: 'Message send failed, please try again later.',
+    sending: 'Sending...',
     github: 'GitHub',
     bilibili: 'Bilibili'
   },
   footer: {
-    copyright: '© 2024 My Personal Website. All rights reserved.',
-    madeWith: 'Made with ❤️'
+    copyright: 'All rights reserved.',
+    madeWith: 'Made with ❤️',
+    quickLinks: 'Quick Links',
+    contact: 'Contact',
+    media: 'Media',
+    description: 'Developer | Creator'
   }
 }; 
