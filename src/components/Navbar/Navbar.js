@@ -45,6 +45,10 @@ const Navbar = ({ currentLanguage, onLanguageChange, t }) => {
               {t.nav.contact}
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary-500 transition-all duration-200 group-hover:w-full"></span>
             </Link>
+            <Link to="/messageboard" className="text-gray-600 font-medium transition-colors duration-200 hover:text-primary-500 relative group">
+              {t.nav.messageboard}
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary-500 transition-all duration-200 group-hover:w-full"></span>
+            </Link>
           </div>
 
           <div className="flex items-center gap-3 sm:gap-4">
@@ -81,6 +85,9 @@ const Navbar = ({ currentLanguage, onLanguageChange, t }) => {
             </Link>
             <Link to="/contact" className="block px-4 py-3 text-gray-600 font-medium transition-colors duration-200 hover:text-primary-500 hover:bg-gray-50 rounded-lg" onClick={closeMenu}>
               {t.nav.contact}
+            </Link>
+            <Link to="/messageboard" className="block px-4 py-3 text-gray-600 font-medium transition-colors duration-200 hover:text-primary-500 hover:bg-gray-50 rounded-lg" onClick={closeMenu}>
+              {t.nav.messageboard}
             </Link>
           </div>
         </div>

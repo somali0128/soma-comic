@@ -4,7 +4,8 @@ export default {
     developer: 'Developer',
     creator: 'Creator',
     gallery: 'Gallery',
-    contact: 'Contact'
+    contact: 'Contact',
+    messageboard: 'Message Board'
   },
   hero: {
     title: 'Welcome! Thank you for coming',
@@ -90,5 +91,33 @@ export default {
     contact: 'Contact',
     media: 'Media',
     description: 'Developer | Creator'
+  },
+  messageboard: {
+    title: 'Message Board',
+    subtitle: 'Share your thoughts and feedback',
+    description: 'Welcome to leave your messages, suggestions, or feedback here. I will carefully read every message.',
+    writeMessage: 'Write Message',
+    name: 'Name',
+    email: 'Email',
+    message: 'Message Content',
+    submit: 'Submit Message',
+    submitting: 'Submitting...',
+    messageSent: 'Message submitted! Thank you for your feedback.',
+    messageError: 'Submission failed, please try again later.',
+    recentMessages: 'Recent Messages',
+    noMessages: 'No messages yet',
+    loading: 'Loading...',
+    placeholder: {
+      name: 'Enter your name',
+      email: 'Enter your email',
+      message: 'Enter your message content...'
+    },
+    validation: {
+      nameRequired: 'Please enter your name',
+      emailRequired: 'Please enter your email',
+      emailInvalid: 'Please enter a valid email address',
+      messageRequired: 'Please enter message content',
+      messageMinLength: 'Message content must be at least 10 characters'
+    }
   }
 }; 

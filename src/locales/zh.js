@@ -4,7 +4,8 @@ export default {
     developer: '开发者',
     creator: '创作者',
     gallery: '画廊',
-    contact: '联系'
+    contact: '联系',
+    messageboard: '留言板'
   },
   hero: {
     title: '欢迎欢迎，来者是客',
@@ -90,5 +91,33 @@ export default {
     contact: '联系方式',
     media: '媒体',
     description: '开发者 | 创作者'
+  },
+  messageboard: {
+    title: '留言板',
+    subtitle: '分享您的想法和反馈',
+    description: '欢迎在这里留下您的留言、建议或反馈。我会认真阅读每一条留言。',
+    writeMessage: '写留言',
+    name: '姓名',
+    email: '邮箱',
+    message: '留言内容',
+    submit: '提交留言',
+    submitting: '提交中...',
+    messageSent: '留言已提交！感谢您的反馈。',
+    messageError: '提交失败，请稍后重试。',
+    recentMessages: '最新留言',
+    noMessages: '暂无留言',
+    loading: '加载中...',
+    placeholder: {
+      name: '请输入您的姓名',
+      email: '请输入您的邮箱',
+      message: '请输入您的留言内容...'
+    },
+    validation: {
+      nameRequired: '请输入姓名',
+      emailRequired: '请输入邮箱',
+      emailInvalid: '请输入有效的邮箱地址',
+      messageRequired: '请输入留言内容',
+      messageMinLength: '留言内容至少需要10个字符'
+    }
   }
 }; 

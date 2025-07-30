@@ -7,6 +7,7 @@ import Developer from './components/Developer/Developer';
 import Creator from './components/Creator/Creator';
 import Gallery from './components/Gallery/Gallery';
 import Contact from './components/Contact/Contact';
+import MessageBoard from './components/MessageBoard/MessageBoard';
 import zh from './locales/zh';
 import en from './locales/en';
 import './App.css';
@@ -46,6 +47,7 @@ function App() {
             <Route path="/creator" element={<Creator t={translations} />} />
             <Route path="/gallery" element={<Gallery t={translations} />} />
             <Route path="/contact" element={<Contact t={translations} />} />
+            <Route path="/messageboard" element={<MessageBoard t={translations} />} />
           </Routes>
         </main>
         
