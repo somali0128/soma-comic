@@ -1,16 +1,19 @@
 export default {
   nav: {
     home: '首页',
-    developer: '开发者',
-    creator: '创作者',
-    gallery: '画廊',
-    contact: '联系',
-    messageboard: '留言板'
+    orderMenu: '我要点菜',
+    comicDiary: '漫画日常',
+    socialFeed: '社交动态'
+  },
+  placeholder: {
+    comingSoon: '页面建设中，敬请期待。'
   },
   hero: {
-    title: '欢迎欢迎，来者是客',
-    subtitle: '开发者 | 创作者',
-    description: '相信自己，创造奇迹！'
+    panels: {
+      comics: { title: '漫画日常' },
+      social: { title: '社交媒体' },
+      tools: { title: '我的工具' }
+    }
   },
   developer: {
     title: '开发者',

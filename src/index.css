@@ -95,6 +95,17 @@
     @apply bg-gradient-to-br from-primary-500 to-secondary-600;
   }
 
+  /* Hero 分区标题：描边 + 阴影，复杂背景下仍清晰 */
+  .hero-panel-title {
+    -webkit-text-stroke: 0.045em rgba(0, 0, 0, 0.5);
+    paint-order: stroke fill;
+    text-shadow:
+      0 0 14px rgba(0, 0, 0, 0.55),
+      0 2px 6px rgba(0, 0, 0, 0.65),
+      1px 1px 0 rgba(0, 0, 0, 0.35),
+      -1px -1px 0 rgba(0, 0, 0, 0.3);
+  }
+
   .card-hover {
     @apply transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-lg;
   }

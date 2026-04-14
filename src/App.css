@@ -8,3 +8,7 @@
   flex: 1;
   padding-top: 64px; /* 为固定导航栏留出空间 */
 }
+
+.main-content--no-nav {
+  padding-top: 0;
+}

@@ -1,18 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+} from 'react-router-dom';
 import Navbar from './components/Navbar/Navbar';
 import Footer from './components/Footer/Footer';
 import Hero from './components/Hero/Hero';
-import Developer from './components/Developer/Developer';
-import Creator from './components/Creator/Creator';
-import Gallery from './components/Gallery/Gallery';
-import Contact from './components/Contact/Contact';
-import MessageBoard from './components/MessageBoard/MessageBoard';
+import PlaceholderPage from './components/PlaceholderPage/PlaceholderPage';
+import NotFound from './404';
 import zh from './locales/zh';
 import en from './locales/en';
 import './App.css';
 
-function App() {
+function AppContent() {
+  const location = useLocation();
+  const isHome = location.pathname === '/';
+
   const [currentLanguage, setCurrentLanguage] = useState('zh');
   const [translations, setTranslations] = useState(zh);
 
@@ -32,27 +37,58 @@ function App() {
   };
 
   return (
-    <Router>
-      <div className="App">
-        <Navbar 
+    <div className="App">
+      {!isHome && (
+        <Navbar
           currentLanguage={currentLanguage}
           onLanguageChange={handleLanguageChange}
           t={translations}
         />
-        
-        <main className="main-content">
-          <Routes>
+      )}
+
+      <main className={`main-content${isHome ? ' main-content--no-nav' : ''}`}>
+        <Routes>
             <Route path="/" element={<Hero t={translations} />} />
-            <Route path="/developer" element={<Developer t={translations} />} />
-            <Route path="/creator" element={<Creator t={translations} />} />
-            <Route path="/gallery" element={<Gallery t={translations} />} />
-            <Route path="/contact" element={<Contact t={translations} />} />
-            <Route path="/messageboard" element={<MessageBoard t={translations} />} />
+            <Route
+              path="/order-menu"
+              element={
+                <PlaceholderPage
+                  title={translations.nav.orderMenu}
+                  subtitle={translations.placeholder.comingSoon}
+                />
+              }
+            />
+            <Route
+              path="/comics"
+              element={
+                <PlaceholderPage
+                  title={translations.nav.comicDiary}
+                  subtitle={translations.placeholder.comingSoon}
+                />
+              }
+            />
+            <Route
+              path="/social"
+              element={
+                <PlaceholderPage
+                  title={translations.nav.socialFeed}
+                  subtitle={translations.placeholder.comingSoon}
+                />
+              }
+            />
+            <Route path="*" element={<NotFound />} />
           </Routes>
-        </main>
-        
-        <Footer t={translations} />
-      </div>
+      </main>
+
+      <Footer t={translations} />
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <AppContent />
     </Router>
   );
 }

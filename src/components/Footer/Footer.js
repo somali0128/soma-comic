@@ -12,7 +12,7 @@ const Footer = ({ t }) => {
             <div className="flex items-center gap-2 sm:gap-3">
               <img src={SomaLogo} alt="text-gray-300 Logo" className="w-6 h-6 sm:w-8 sm:h-8" />
               <span className="text-lg sm:text-xl font-bold">
-                Stick Soma
+                Stickman Soma
               </span>
             </div>
           </div>
@@ -21,10 +21,9 @@ const Footer = ({ t }) => {
             <h4 className="text-base sm:text-lg font-semibold text-gray-200 pl-0 sm:pl-8">{t.footer.quickLinks}</h4>
             <ul className="flex flex-col gap-1 sm:gap-2">
               <li><a href="/" className="text-gray-300 font-medium transition-colors duration-200 hover:text-white text-sm sm:text-base">{t.nav.home}</a></li>
-              <li><a href="/developer" className="text-gray-300 font-medium transition-colors duration-200 hover:text-white text-sm sm:text-base">{t.nav.developer}</a></li>
-              <li><a href="/creator" className="text-gray-300 font-medium transition-colors duration-200 hover:text-white text-sm sm:text-base">{t.nav.creator}</a></li>
-              <li><a href="/gallery" className="text-gray-300 font-medium transition-colors duration-200 hover:text-white text-sm sm:text-base">{t.nav.gallery}</a></li>
-              <li><a href="/contact" className="text-gray-300 font-medium transition-colors duration-200 hover:text-white text-sm sm:text-base">{t.nav.contact}</a></li>
+              <li><a href="/order-menu" className="text-gray-300 font-medium transition-colors duration-200 hover:text-white text-sm sm:text-base">{t.nav.orderMenu}</a></li>
+              <li><a href="/comics" className="text-gray-300 font-medium transition-colors duration-200 hover:text-white text-sm sm:text-base">{t.nav.comicDiary}</a></li>
+              <li><a href="/social" className="text-gray-300 font-medium transition-colors duration-200 hover:text-white text-sm sm:text-base">{t.nav.socialFeed}</a></li>
             </ul>
           </div>
           
@@ -39,7 +38,7 @@ const Footer = ({ t }) => {
         
         <div className="border-t border-white/20 pt-4 sm:pt-6 flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-4">
           <p className="text-gray-300 text-xs sm:text-sm text-center sm:text-left">
-            © {currentYear} Stick Soma. {t.footer.copyright}
+            © {currentYear} Stickman Soma. {t.footer.copyright}
           </p>
           <p className="text-gray-300 text-xs sm:text-sm text-center sm:text-right">
             {t.footer.madeWith}

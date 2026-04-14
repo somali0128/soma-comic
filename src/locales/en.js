@@ -1,16 +1,19 @@
 export default {
   nav: {
     home: 'Home',
-    developer: 'Developer',
-    creator: 'Creator',
-    gallery: 'Gallery',
-    contact: 'Contact',
-    messageboard: 'Message Board'
+    orderMenu: 'Order Menu',
+    comicDiary: 'Comic Diary',
+    socialFeed: 'Social Feed'
+  },
+  placeholder: {
+    comingSoon: 'This page is under construction. Check back soon.'
   },
   hero: {
-    title: 'Welcome! Thank you for coming',
-    subtitle: 'Developer | Creator',
-    description: 'Believe in your core, create and explore!'
+    panels: {
+      comics: { title: 'Comic Diary' },
+      social: { title: 'Social Media' },
+      tools: { title: 'My Tools' }
+    }
   },
   developer: {
     title: 'Developer',

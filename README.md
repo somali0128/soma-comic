@@ -1,4 +1,4 @@
-# Stick Soma - 个人主页
+# Stickman Soma - 个人主页
 
 一个使用 React 和 Tailwind CSS 构建的现代化个人主页项目。
 

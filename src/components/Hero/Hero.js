@@ -1,47 +1,108 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import SomaLogo from '../../soma_logo.svg';
+
+const PANEL_IMAGES = {
+  comics:
+    'https://images.unsplash.com/photo-1612036782180-6f0b6cd846fe?auto=format&fit=crop&w=1600&q=80',
+  social:
+    'https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=1600&q=80',
+  tools:
+    'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1600&h=900&q=80',
+};
 
 const Hero = ({ t }) => {
+  const { panels: p } = t.hero;
+  const panelList = [
+    {
+      id: 'comics',
+      to: '/comics',
+      title: p.comics.title,
+      image: PANEL_IMAGES.comics,
+    },
+    {
+      id: 'social',
+      to: '/social',
+      title: p.social.title,
+      image: PANEL_IMAGES.social,
+    },
+    {
+      id: 'tools',
+      to: '/order-menu',
+      title: p.tools.title,
+      image: PANEL_IMAGES.tools,
+    },
+  ];
+
+  const [hovered, setHovered] = useState(null);
+
+  /** 未 hover：三等分；hover 某列：该列 flex-grow 2（约 50%），其余各 25% */
+  const flexClass = (i) => {
+    if (hovered === null) return 'flex-[1_1_0%]';
+    return hovered === i ? 'flex-[2_1_0%]' : 'flex-[1_1_0%]';
+  };
+
   return (
-    <section className="min-h-screen flex items-center gradient-bg relative overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 w-full relative">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center pt-16">
-          <div className="text-white z-10 text-center lg:text-left">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold mb-4 leading-tight bg-gradient-to-r from-white to-gray-100 bg-clip-text text-transparent">
-              {t.hero.title}
-            </h1>
-            <p className="text-lg sm:text-xl lg:text-2xl font-semibold mb-4 lg:mb-6 text-gray-200">
-              {t.hero.subtitle}
-            </p>
-            <p className="text-base sm:text-lg leading-relaxed mb-6 lg:mb-8 text-gray-300 max-w-lg mx-auto lg:mx-0">
-              {t.hero.description}
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-              <Link to="/developer" className="btn-primary text-center">
-                {t.nav.developer}
-              </Link>
-              <Link to="/contact" className="btn-secondary text-center">
-                {t.nav.contact}
-              </Link>
+    <section className="relative min-h-screen min-h-[100dvh] w-full overflow-hidden bg-neutral-950">
+      {/* 桌面：三块长方形；hover 时 50% / 25% / 25%，左向右扩、中双向、右向左扩（由 flex 自然实现） */}
+      <div className="hidden h-screen h-[100dvh] min-h-[420px] w-full md:flex md:flex-row md:gap-0">
+        {panelList.map((panel, i) => (
+          <Link
+            key={panel.id}
+            to={panel.to}
+            aria-label={panel.title}
+            onMouseEnter={() => setHovered(i)}
+            onMouseLeave={() => setHovered(null)}
+            className={`group relative min-h-0 min-w-0 overflow-hidden border-amber-400/80 bg-neutral-900 transition-[flex] duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] first:border-l-0 ${flexClass(
+              i
+            )} border-l-2`}
+          >
+            <img
+              src={panel.image}
+              alt=""
+              className="absolute inset-0 h-full w-full object-cover object-center brightness-[0.88] transition-all duration-500 ease-out group-hover:scale-105 group-hover:brightness-100"
+              loading={i === 0 ? 'eager' : 'lazy'}
+            />
+            <div
+              className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-transparent transition-opacity duration-500 group-hover:from-black/90"
+              aria-hidden
+            />
+            <div className="absolute inset-x-0 bottom-0 z-10 px-5 pb-8 pt-12 sm:px-7 sm:pb-10">
+              <h2 className="hero-panel-title text-balance text-xl font-black tracking-tight text-white transition-transform duration-500 group-hover:translate-y-[-2px] sm:text-2xl lg:text-3xl xl:text-4xl">
+                {panel.title}
+              </h2>
             </div>
-          </div>
-          <div className="relative flex justify-center items-center z-10 mt-8 lg:mt-0">
-            <div className="relative z-30">
-              <div className="w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 lg:w-56 lg:h-56 rounded-full bg-gradient-to-br from-white to-gray-100 flex items-center justify-center shadow-2xl border-4 border-white p-4 sm:p-6 md:p-8">
-                <img src={SomaLogo} alt="Stick Soma Logo" className="w-full h-full" />
-              </div>
+          </Link>
+        ))}
+      </div>
+
+      {/* 移动端：三等分纵向长方形 */}
+      <div className="flex h-screen h-[100dvh] min-h-[360px] flex-col md:hidden">
+        {panelList.map((panel, i) => (
+          <Link
+            key={panel.id}
+            to={panel.to}
+            aria-label={panel.title}
+            className="relative min-h-0 flex-1 overflow-hidden border-b-2 border-amber-400/80 bg-neutral-900 last:border-b-0"
+          >
+            <img
+              src={panel.image}
+              alt=""
+              className="absolute inset-0 h-full w-full object-cover object-center brightness-[0.88]"
+            />
+            <div
+              className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent"
+              aria-hidden
+            />
+            <div className="absolute inset-x-0 bottom-0 z-10 px-4 pb-4 pt-10">
+              <h2 className="hero-panel-title text-lg font-bold text-white">
+                {panel.title}
+              </h2>
             </div>
-            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10">
-              <div className="absolute w-48 h-48 sm:w-56 sm:h-56 md:w-72 md:h-72 lg:w-80 lg:h-80 rounded-full bg-white/10 animate-float"></div>
-              <div className="absolute w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 lg:w-56 lg:h-56 rounded-full bg-white/10 animate-float" style={{ animationDelay: '2s' }}></div>
-              <div className="absolute w-24 h-24 sm:w-28 sm:h-28 md:w-36 md:h-36 lg:w-40 lg:h-40 rounded-full bg-white/10 animate-float" style={{ animationDelay: '4s' }}></div>
-            </div>
-          </div>
-        </div>
+          </Link>
+        ))}
       </div>
     </section>
   );
 };
 
-export default Hero; 
+export default Hero;

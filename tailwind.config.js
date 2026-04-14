@@ -42,6 +42,8 @@ module.exports = {
         'slide-in-left': 'slideInLeft 0.5s ease-out',
         'slide-in-right': 'slideInRight 0.5s ease-out',
         'shimmer': 'shimmer 2s infinite',
+        'hero-diamond-in': 'heroDiamondIn 0.75s cubic-bezier(0.22, 1, 0.36, 1) backwards',
+        'hero-diamond-pulse': 'heroDiamondPulse 4s ease-in-out infinite',
       },
       keyframes: {
         float: {
@@ -67,6 +69,14 @@ module.exports = {
         shimmer: {
           '0%': { transform: 'translateX(-100%)' },
           '100%': { transform: 'translateX(100%)' },
+        },
+        heroDiamondIn: {
+          '0%': { opacity: '0', transform: 'translateY(28px) scale(0.82)' },
+          '100%': { opacity: '1', transform: 'translateY(0) scale(1)' },
+        },
+        heroDiamondPulse: {
+          '0%, 100%': { filter: 'brightness(1)' },
+          '50%': { filter: 'brightness(1.08)' },
         },
       },
       backdropBlur: {
