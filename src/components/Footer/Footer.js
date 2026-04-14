@@ -10,7 +10,7 @@ const Footer = ({ t }) => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mb-6 sm:mb-8">
           <div className="flex flex-col gap-3 sm:gap-4">
             <div className="flex items-center gap-2 sm:gap-3">
-              <img src={SomaLogo} alt="text-gray-300 Logo" className="w-6 h-6 sm:w-8 sm:h-8" />
+              <img src={SomaLogo} alt="" className="w-6 h-6 sm:w-8 sm:h-8" />
               <span className="text-lg sm:text-xl font-bold">
                 Stickman Soma
               </span>

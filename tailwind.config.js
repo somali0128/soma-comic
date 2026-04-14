@@ -1,8 +1,8 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    "./src/**/*.{js,jsx,ts,tsx}",
-    "./public/index.html"
+    './src/**/*.{js,jsx,ts,tsx}',
+    './public/index.html',
   ],
   theme: {
     extend: {
@@ -30,59 +30,27 @@ module.exports = {
           700: '#7c3aed',
           800: '#6b21a8',
           900: '#581c87',
-        }
+        },
       },
       fontFamily: {
-        sans: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', 'sans-serif'],
-      },
-      animation: {
-        'float': 'float 6s ease-in-out infinite',
-        'scroll': 'scroll 2s ease-in-out infinite',
-        'fade-in': 'fadeIn 0.5s ease-in',
-        'slide-in-left': 'slideInLeft 0.5s ease-out',
-        'slide-in-right': 'slideInRight 0.5s ease-out',
-        'shimmer': 'shimmer 2s infinite',
-        'hero-diamond-in': 'heroDiamondIn 0.75s cubic-bezier(0.22, 1, 0.36, 1) backwards',
-        'hero-diamond-pulse': 'heroDiamondPulse 4s ease-in-out infinite',
-      },
-      keyframes: {
-        float: {
-          '0%, 100%': { transform: 'translateY(0px)' },
-          '50%': { transform: 'translateY(-20px)' },
-        },
-        scroll: {
-          '0%, 100%': { transform: 'translateY(0)' },
-          '50%': { transform: 'translateY(10px)' },
-        },
-        fadeIn: {
-          '0%': { opacity: '0', transform: 'translateY(20px)' },
-          '100%': { opacity: '1', transform: 'translateY(0)' },
-        },
-        slideInLeft: {
-          '0%': { opacity: '0', transform: 'translateX(-30px)' },
-          '100%': { opacity: '1', transform: 'translateX(0)' },
-        },
-        slideInRight: {
-          '0%': { opacity: '0', transform: 'translateX(30px)' },
-          '100%': { opacity: '1', transform: 'translateX(0)' },
-        },
-        shimmer: {
-          '0%': { transform: 'translateX(-100%)' },
-          '100%': { transform: 'translateX(100%)' },
-        },
-        heroDiamondIn: {
-          '0%': { opacity: '0', transform: 'translateY(28px) scale(0.82)' },
-          '100%': { opacity: '1', transform: 'translateY(0) scale(1)' },
-        },
-        heroDiamondPulse: {
-          '0%, 100%': { filter: 'brightness(1)' },
-          '50%': { filter: 'brightness(1.08)' },
-        },
+        sans: [
+          '-apple-system',
+          'BlinkMacSystemFont',
+          'Segoe UI',
+          'Roboto',
+          'Oxygen',
+          'Ubuntu',
+          'Cantarell',
+          'Fira Sans',
+          'Droid Sans',
+          'Helvetica Neue',
+          'sans-serif',
+        ],
       },
       backdropBlur: {
         xs: '2px',
-      }
+      },
     },
   },
   plugins: [],
-} 
+};
