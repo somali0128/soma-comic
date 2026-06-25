@@ -1,102 +1,158 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
+import LanguageSwitch from '../LanguageSwitch/LanguageSwitch';
+import SomaLogo from '../../soma_logo.svg';
 
 const PANEL_IMAGES = {
   comics:
     'https://images.unsplash.com/photo-1612036782180-6f0b6cd846fe?auto=format&fit=crop&w=1600&q=80',
   social:
-    'https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=1600&q=80',
+    'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1600&q=80',
   tools:
     'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1600&h=900&q=80',
 };
 
-const Hero = ({ t }) => {
-  const { panels: p } = t.hero;
+const Hero = ({ currentLanguage, onLanguageChange, t }) => {
+  const { home } = t;
   const panelList = [
     {
       id: 'comics',
       to: '/comics',
-      title: p.comics.title,
+      title: home.panels.comics.title,
+      description: home.panels.comics.description,
       image: PANEL_IMAGES.comics,
     },
     {
       id: 'social',
       to: '/social',
-      title: p.social.title,
+      title: home.panels.social.title,
+      description: home.panels.social.description,
       image: PANEL_IMAGES.social,
     },
     {
       id: 'tools',
       to: '/order-menu',
-      title: p.tools.title,
+      title: home.panels.tools.title,
+      description: home.panels.tools.description,
       image: PANEL_IMAGES.tools,
     },
   ];
 
-  const [hovered, setHovered] = useState(null);
-
-  /** 未 hover：三等分；hover 某列：该列 flex-grow 2（约 50%），其余各 25% */
-  const flexClass = (i) => {
-    if (hovered === null) return 'flex-[1_1_0%]';
-    return hovered === i ? 'flex-[2_1_0%]' : 'flex-[1_1_0%]';
-  };
-
   return (
-    <section className="relative min-h-screen min-h-[100dvh] w-full overflow-hidden bg-neutral-950">
-      {/* 桌面：三块长方形；hover 时 50% / 25% / 25%，左向右扩、中双向、右向左扩（由 flex 自然实现） */}
-      <div className="hidden h-screen h-[100dvh] min-h-[420px] w-full md:flex md:flex-row md:gap-0">
-        {panelList.map((panel, i) => (
-          <Link
-            key={panel.id}
-            to={panel.to}
-            aria-label={panel.title}
-            onMouseEnter={() => setHovered(i)}
-            onMouseLeave={() => setHovered(null)}
-            className={`group relative min-h-0 min-w-0 overflow-hidden border-amber-400/80 bg-neutral-900 transition-[flex] duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] first:border-l-0 ${flexClass(
-              i
-            )} border-l-2`}
-          >
-            <img
-              src={panel.image}
-              alt=""
-              className="absolute inset-0 h-full w-full object-cover object-center brightness-[0.88] transition-all duration-500 ease-out group-hover:scale-105 group-hover:brightness-100"
-              loading={i === 0 ? 'eager' : 'lazy'}
-            />
-            <div
-              className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-transparent transition-opacity duration-500 group-hover:from-black/90"
-              aria-hidden
-            />
-            <div className="absolute inset-x-0 bottom-0 z-10 px-5 pb-8 pt-12 sm:px-7 sm:pb-10">
-              <h2 className="hero-panel-title text-balance text-xl font-black tracking-tight text-white transition-transform duration-500 group-hover:translate-y-[-2px] sm:text-2xl lg:text-3xl xl:text-4xl">
-                {panel.title}
-              </h2>
+    <section className="min-h-screen bg-slate-950 text-white">
+      <div className="relative min-h-[88vh] overflow-hidden">
+        <img
+          src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=2200&q=85"
+          alt=""
+          className="absolute inset-0 h-full w-full object-cover opacity-55"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/78 to-slate-950/25" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_78%_28%,rgba(251,191,36,0.22),transparent_30%)]" />
+
+        <div className="relative z-10 mx-auto flex min-h-[88vh] max-w-7xl flex-col justify-between px-4 py-5 sm:px-6 lg:py-7">
+          <header className="flex items-center justify-between gap-4">
+            <Link to="/" className="flex items-center gap-3">
+              <img src={SomaLogo} alt="" className="h-10 w-10" />
+              <span className="text-lg font-black sm:text-2xl">Stickman Soma</span>
+            </Link>
+            <div className="flex items-center gap-4">
+              <nav className="hidden items-center gap-6 text-sm font-semibold text-white/80 md:flex">
+                <Link className="transition hover:text-white" to="/comics">
+                  {t.nav.comicDiary}
+                </Link>
+                <Link className="transition hover:text-white" to="/social">
+                  {t.nav.socialFeed}
+                </Link>
+                <Link className="transition hover:text-white" to="/order-menu">
+                  {t.nav.orderMenu}
+                </Link>
+              </nav>
+              <LanguageSwitch
+                currentLanguage={currentLanguage}
+                onLanguageChange={onLanguageChange}
+                variant="dark"
+              />
             </div>
-          </Link>
-        ))}
+          </header>
+
+          <div className="grid items-end gap-10 pb-10 pt-16 lg:grid-cols-[minmax(0,1fr)_420px] lg:pb-16">
+            <div>
+              <p className="text-sm font-bold uppercase tracking-[0.22em] text-amber-300">
+                {home.eyebrow}
+              </p>
+              <h1 className="mt-4 max-w-4xl text-4xl font-black leading-[1.05] sm:text-6xl lg:text-7xl">
+                {home.title}
+              </h1>
+              <p className="mt-6 max-w-2xl text-base leading-8 text-slate-200 sm:text-lg">
+                {home.subtitle}
+              </p>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <Link
+                  to="/social"
+                  className="rounded-md bg-amber-300 px-5 py-3 text-sm font-black text-slate-950 transition hover:bg-amber-200"
+                >
+                  {home.primaryCta}
+                </Link>
+                <a
+                  href="https://github.com/somali0128"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-md border border-white/35 px-5 py-3 text-sm font-bold text-white transition hover:border-white hover:bg-white/10"
+                >
+                  GitHub
+                </a>
+                <a
+                  href="https://www.linkedin.com/in/dongyue-li-520bb2374/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-md border border-white/35 px-5 py-3 text-sm font-bold text-white transition hover:border-white hover:bg-white/10"
+                >
+                  LinkedIn
+                </a>
+                <a
+                  href="https://space.bilibili.com/290997685"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-md border border-white/35 px-5 py-3 text-sm font-bold text-white transition hover:border-white hover:bg-white/10"
+                >
+                  Bilibili
+                </a>
+              </div>
+            </div>
+
+            <aside className="rounded-md border border-white/15 bg-slate-950/70 p-5 shadow-2xl backdrop-blur">
+              <p className="text-sm font-bold uppercase tracking-[0.18em] text-amber-300">
+                {home.nowTitle}
+              </p>
+              <div className="mt-5 space-y-4">
+                {home.nowItems.map((item) => (
+                  <div key={item.title} className="border-l-2 border-amber-300/70 pl-4">
+                    <p className="font-bold text-white">{item.title}</p>
+                    <p className="mt-1 text-sm leading-6 text-slate-300">{item.description}</p>
+                  </div>
+                ))}
+              </div>
+            </aside>
+          </div>
+        </div>
       </div>
 
-      {/* 移动端：三等分纵向长方形 */}
-      <div className="flex h-screen h-[100dvh] min-h-[360px] flex-col md:hidden">
-        {panelList.map((panel, i) => (
+      <div className="mx-auto grid max-w-7xl gap-4 px-4 pb-12 pt-4 sm:px-6 md:grid-cols-3">
+        {panelList.map((panel) => (
           <Link
             key={panel.id}
             to={panel.to}
-            aria-label={panel.title}
-            className="relative min-h-0 flex-1 overflow-hidden border-b-2 border-amber-400/80 bg-neutral-900 last:border-b-0"
+            className="group relative min-h-[230px] overflow-hidden rounded-md border border-white/10 bg-slate-900"
           >
             <img
               src={panel.image}
               alt=""
-              className="absolute inset-0 h-full w-full object-cover object-center brightness-[0.88]"
+              className="absolute inset-0 h-full w-full object-cover opacity-72 transition duration-500 group-hover:scale-105 group-hover:opacity-90"
             />
-            <div
-              className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent"
-              aria-hidden
-            />
-            <div className="absolute inset-x-0 bottom-0 z-10 px-4 pb-4 pt-10">
-              <h2 className="hero-panel-title text-lg font-bold text-white">
-                {panel.title}
-              </h2>
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/45 to-transparent" />
+            <div className="absolute inset-x-0 bottom-0 p-5">
+              <h2 className="text-2xl font-black">{panel.title}</h2>
+              <p className="mt-2 text-sm leading-6 text-slate-200">{panel.description}</p>
             </div>
           </Link>
         ))}

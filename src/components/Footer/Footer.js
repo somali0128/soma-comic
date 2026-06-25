@@ -31,6 +31,7 @@ const Footer = ({ t }) => {
             <h4 className="text-base sm:text-lg font-semibold text-gray-200 pl-0 sm:pl-8">{t.footer.media}</h4>
             <ul className="flex flex-col gap-1 sm:gap-2">
               <li><a href="https://github.com/somali0128" target="_blank" rel="noopener noreferrer" className="text-gray-300 font-medium transition-colors duration-200 hover:text-white text-sm sm:text-base">GitHub</a></li>
+              <li><a href="https://www.linkedin.com/in/dongyue-li-520bb2374/" target="_blank" rel="noopener noreferrer" className="text-gray-300 font-medium transition-colors duration-200 hover:text-white text-sm sm:text-base">LinkedIn</a></li>
               <li><a href="https://space.bilibili.com/290997685" target="_blank" rel="noopener noreferrer" className="text-gray-300 font-medium transition-colors duration-200 hover:text-white text-sm sm:text-base">Bilibili</a></li>
             </ul>
           </div>
