@@ -39,57 +39,58 @@ const Hero = ({ currentLanguage, onLanguageChange, t }) => {
   ];
 
   return (
-    <section className="min-h-screen bg-slate-950 text-white">
-      <div className="relative min-h-[88vh] overflow-hidden">
-        <img
-          src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=2200&q=85"
-          alt=""
-          className="absolute inset-0 h-full w-full object-cover opacity-55"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/78 to-slate-950/25" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_78%_28%,rgba(251,191,36,0.22),transparent_30%)]" />
+    <section className="stickman-paper min-h-screen text-slate-950">
+      <div className="relative min-h-[88vh] overflow-hidden border-b-[3px] border-slate-950 bg-primary-50">
+        <div className="pointer-events-none absolute left-[8%] top-28 hidden h-28 w-28 rotate-[-8deg] rounded-full border-[10px] border-primary-400/70 md:block" />
+        <div className="pointer-events-none absolute bottom-24 right-[9%] hidden h-24 w-36 rotate-[7deg] border-[10px] border-primary-300/80 md:block" />
+        <div className="pointer-events-none absolute right-[18%] top-24 hidden h-20 w-20 rotate-12 border-l-[10px] border-t-[10px] border-slate-950/20 lg:block" />
 
         <div className="relative z-10 mx-auto flex min-h-[88vh] max-w-7xl flex-col justify-between px-4 py-5 sm:px-6 lg:py-7">
           <header className="flex items-center justify-between gap-4">
             <Link to="/" className="flex items-center gap-3">
-              <img src={SomaLogo} alt="" className="h-10 w-10" />
-              <span className="text-lg font-black sm:text-2xl">Stickman Soma</span>
+              <img
+                src={SomaLogo}
+                alt=""
+                className="h-10 w-10 rounded-full border-2 border-slate-950 bg-primary-50"
+              />
+              <span className="font-display text-lg font-black text-primary-800 sm:text-2xl">
+                Stickman Soma
+              </span>
             </Link>
             <div className="flex items-center gap-4">
-              <nav className="hidden items-center gap-6 text-sm font-semibold text-white/80 md:flex">
-                <Link className="transition hover:text-white" to="/comics">
+              <nav className="hidden items-center gap-6 text-sm font-extrabold text-slate-700 md:flex">
+                <Link className="transition hover:text-primary-700" to="/comics">
                   {t.nav.comicDiary}
                 </Link>
-                <Link className="transition hover:text-white" to="/social">
+                <Link className="transition hover:text-primary-700" to="/social">
                   {t.nav.socialFeed}
                 </Link>
-                <Link className="transition hover:text-white" to="/order-menu">
+                <Link className="transition hover:text-primary-700" to="/order-menu">
                   {t.nav.orderMenu}
                 </Link>
               </nav>
               <LanguageSwitch
                 currentLanguage={currentLanguage}
                 onLanguageChange={onLanguageChange}
-                variant="dark"
               />
             </div>
           </header>
 
           <div className="grid items-end gap-10 pb-10 pt-16 lg:grid-cols-[minmax(0,1fr)_420px] lg:pb-16">
             <div>
-              <p className="text-sm font-bold uppercase tracking-[0.22em] text-amber-300">
+              <p className="font-display text-sm font-black uppercase tracking-[0.18em] text-primary-700">
                 {home.eyebrow}
               </p>
-              <h1 className="mt-4 max-w-4xl text-4xl font-black leading-[1.05] sm:text-6xl lg:text-7xl">
-                {home.title}
+              <h1 className="stickman-title mt-4 max-w-4xl text-4xl font-black leading-[1.02] text-primary-600 sm:text-6xl lg:text-7xl">
+                <span className="stickman-scribble inline-block">{home.title}</span>
               </h1>
-              <p className="mt-6 max-w-2xl text-base leading-8 text-slate-200 sm:text-lg">
+              <p className="mt-8 max-w-2xl text-base font-semibold leading-8 text-slate-700 sm:text-lg">
                 {home.subtitle}
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <Link
                   to="/social"
-                  className="rounded-md bg-amber-300 px-5 py-3 text-sm font-black text-slate-950 transition hover:bg-amber-200"
+                  className="stickman-card rounded-md bg-primary-500 px-5 py-3 text-sm font-black text-white transition hover:-translate-y-0.5 hover:bg-primary-600"
                 >
                   {home.primaryCta}
                 </Link>
@@ -97,7 +98,7 @@ const Hero = ({ currentLanguage, onLanguageChange, t }) => {
                   href="https://github.com/somali0128"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="rounded-md border border-white/35 px-5 py-3 text-sm font-bold text-white transition hover:border-white hover:bg-white/10"
+                  className="rounded-md border-[3px] border-slate-950 bg-white px-5 py-3 text-sm font-black text-primary-800 transition hover:-translate-y-0.5 hover:bg-primary-100"
                 >
                   GitHub
                 </a>
@@ -105,7 +106,7 @@ const Hero = ({ currentLanguage, onLanguageChange, t }) => {
                   href="https://www.linkedin.com/in/dongyue-li-520bb2374/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="rounded-md border border-white/35 px-5 py-3 text-sm font-bold text-white transition hover:border-white hover:bg-white/10"
+                  className="rounded-md border-[3px] border-slate-950 bg-white px-5 py-3 text-sm font-black text-primary-800 transition hover:-translate-y-0.5 hover:bg-primary-100"
                 >
                   LinkedIn
                 </a>
@@ -113,22 +114,31 @@ const Hero = ({ currentLanguage, onLanguageChange, t }) => {
                   href="https://space.bilibili.com/290997685"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="rounded-md border border-white/35 px-5 py-3 text-sm font-bold text-white transition hover:border-white hover:bg-white/10"
+                  className="rounded-md border-[3px] border-slate-950 bg-white px-5 py-3 text-sm font-black text-primary-800 transition hover:-translate-y-0.5 hover:bg-primary-100"
                 >
                   Bilibili
                 </a>
               </div>
             </div>
 
-            <aside className="rounded-md border border-white/15 bg-slate-950/70 p-5 shadow-2xl backdrop-blur">
-              <p className="text-sm font-bold uppercase tracking-[0.18em] text-amber-300">
+            <aside className="stickman-card-blue rounded-md bg-white p-5">
+              <div className="mb-5 flex justify-center">
+                <img
+                  src={SomaLogo}
+                  alt=""
+                  className="h-24 w-24 rounded-full border-[4px] border-slate-950 bg-primary-50"
+                />
+              </div>
+              <p className="font-display text-sm font-black uppercase tracking-[0.16em] text-primary-700">
                 {home.nowTitle}
               </p>
               <div className="mt-5 space-y-4">
                 {home.nowItems.map((item) => (
-                  <div key={item.title} className="border-l-2 border-amber-300/70 pl-4">
-                    <p className="font-bold text-white">{item.title}</p>
-                    <p className="mt-1 text-sm leading-6 text-slate-300">{item.description}</p>
+                  <div key={item.title} className="border-l-[5px] border-primary-400 pl-4">
+                    <p className="font-display font-black text-slate-950">{item.title}</p>
+                    <p className="mt-1 text-sm font-semibold leading-6 text-slate-600">
+                      {item.description}
+                    </p>
                   </div>
                 ))}
               </div>
@@ -137,22 +147,24 @@ const Hero = ({ currentLanguage, onLanguageChange, t }) => {
         </div>
       </div>
 
-      <div className="mx-auto grid max-w-7xl gap-4 px-4 pb-12 pt-4 sm:px-6 md:grid-cols-3">
+      <div className="mx-auto grid max-w-7xl gap-4 px-4 pb-12 pt-6 sm:px-6 md:grid-cols-3">
         {panelList.map((panel) => (
           <Link
             key={panel.id}
             to={panel.to}
-            className="group relative min-h-[230px] overflow-hidden rounded-md border border-white/10 bg-slate-900"
+            className="stickman-card-blue group relative min-h-[230px] overflow-hidden rounded-md bg-primary-900"
           >
             <img
               src={panel.image}
               alt=""
-              className="absolute inset-0 h-full w-full object-cover opacity-72 transition duration-500 group-hover:scale-105 group-hover:opacity-90"
+              className="absolute inset-0 h-full w-full object-cover opacity-58 grayscale transition duration-500 group-hover:scale-105 group-hover:opacity-80 group-hover:grayscale-0"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/45 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-primary-900 via-primary-900/55 to-primary-600/10" />
             <div className="absolute inset-x-0 bottom-0 p-5">
-              <h2 className="text-2xl font-black">{panel.title}</h2>
-              <p className="mt-2 text-sm leading-6 text-slate-200">{panel.description}</p>
+              <h2 className="font-display text-2xl font-black text-white">{panel.title}</h2>
+              <p className="mt-2 text-sm font-semibold leading-6 text-primary-50">
+                {panel.description}
+              </p>
             </div>
           </Link>
         ))}

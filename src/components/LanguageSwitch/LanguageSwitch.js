@@ -6,7 +6,7 @@ const LanguageSwitch = ({ currentLanguage, onLanguageChange, variant = 'light' }
     ? 'border-white/30 bg-white/10 text-white hover:bg-white/20 hover:border-white/60'
     : 'border-gray-300 bg-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-400 hover:text-gray-700';
   const activeClass = isDark
-    ? 'bg-amber-300 border-amber-300 text-slate-950 hover:bg-amber-200'
+    ? 'bg-primary-300 border-primary-300 text-slate-950 hover:bg-primary-200'
     : 'bg-primary-500 border-primary-500 text-white hover:bg-primary-600';
 
   return (
