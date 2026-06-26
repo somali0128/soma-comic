@@ -14,19 +14,19 @@ const en = {
     },
   },
   home: {
-    eyebrow: 'Full Stack Developer / Applied AI / Creative Tech',
-    title: "Soma Li's creative engineering home",
+    eyebrow: 'AI / Automation / Creative Tech',
+    title: 'Soma Li',
     subtitle:
-      'I build AI agents, automation systems, and local LLM applications in Halifax.',
-    primaryCta: 'View social feed',
-    nowTitle: 'Now building',
+      'AI Agent Builder in Halifax',
+    primaryCta: 'Updates',
+    nowTitle: 'Focus',
     nowItems: [
       {
-        title: 'AI Agent Stack',
+        title: 'AI Agents',
         description: 'Local agent workflows and automation systems.',
       },
       {
-        title: 'soma-comic',
+        title: 'Automation',
         description: 'A personal home for updates, tools, and creative work.',
       },
       {

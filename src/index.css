@@ -164,6 +164,114 @@
     border-radius: 999px;
     transform: rotate(-1.5deg);
   }
+
+  .stickman-enter {
+    animation: stickman-rise 0.68s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+
+  .stickman-enter-delay {
+    animation: stickman-rise 0.78s cubic-bezier(0.2, 0.8, 0.2, 1) 0.08s both;
+  }
+
+  .stickman-enter-delay-2 {
+    animation: stickman-rise 0.82s cubic-bezier(0.2, 0.8, 0.2, 1) 0.16s both;
+  }
+
+  .stickman-enter-delay-3 {
+    animation: stickman-rise 0.86s cubic-bezier(0.2, 0.8, 0.2, 1) 0.24s both;
+  }
+
+  .stickman-float {
+    animation: stickman-float 5.8s ease-in-out infinite;
+  }
+
+  .stickman-float-slow {
+    animation: stickman-float 7.4s ease-in-out infinite reverse;
+  }
+
+  .stickman-wiggle {
+    animation: stickman-wiggle 4.8s ease-in-out infinite;
+    transform-origin: center;
+  }
+
+  .stickman-pop {
+    transform: translateY(0) rotate(0deg);
+    transition:
+      transform 180ms ease,
+      box-shadow 180ms ease,
+      background-color 180ms ease;
+  }
+
+  .stickman-pop:hover {
+    box-shadow: 9px 9px 0 rgba(7, 143, 242, 0.24);
+    transform: translateY(-3px) rotate(-1deg);
+  }
+
+  .stickman-panel {
+    animation: stickman-rise 0.72s cubic-bezier(0.2, 0.8, 0.2, 1) 0.32s both;
+  }
+
+  .stickman-panel::after {
+    position: absolute;
+    inset: 0;
+    content: '';
+    background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, 0.22), transparent 62%);
+    transform: translateX(-120%);
+    transition: transform 600ms ease;
+  }
+
+  .stickman-panel:hover::after {
+    transform: translateX(120%);
+  }
+}
+
+@keyframes stickman-rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes stickman-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-8deg);
+  }
+  50% {
+    transform: translateY(-14px) rotate(4deg);
+  }
+}
+
+@keyframes stickman-wiggle {
+  0%,
+  100% {
+    transform: rotate(12deg) scale(1);
+  }
+  50% {
+    transform: rotate(2deg) scale(1.04);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stickman-enter,
+  .stickman-enter-delay,
+  .stickman-enter-delay-2,
+  .stickman-enter-delay-3,
+  .stickman-float,
+  .stickman-float-slow,
+  .stickman-wiggle,
+  .stickman-panel {
+    animation: none;
+  }
+
+  .stickman-pop,
+  .stickman-panel::after {
+    transition: none;
+  }
 }
 
 @layer utilities {

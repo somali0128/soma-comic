@@ -14,19 +14,19 @@ const zh = {
     },
   },
   home: {
-    eyebrow: 'Full Stack Developer / Applied AI / Creative Tech',
-    title: 'Soma Li 的创作与工程主页',
+    eyebrow: 'AI / Automation / Creative Tech',
+    title: 'Soma Li',
     subtitle:
-      '我在 Halifax 做 AI agents、自动化系统和本地 LLM 应用。这里聚合我的项目、动态和公开社交入口。',
-    primaryCta: '查看社交动态',
-    nowTitle: '近期关注',
+      'AI Agent Builder in Halifax',
+    primaryCta: '动态',
+    nowTitle: 'Focus',
     nowItems: [
       {
-        title: 'AI Agent Stack',
+        title: 'AI Agents',
         description: '本地智能体工作流与自动化系统。',
       },
       {
-        title: 'soma-comic',
+        title: 'Automation',
         description: '个人主页、社交动态和创作展示。',
       },
       {
