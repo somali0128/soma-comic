@@ -84,15 +84,6 @@ function AppContent() {
               }
             />
             <Route
-              path="/comics"
-              element={
-                <PlaceholderPage
-                  title={translations.nav.comicDiary}
-                  subtitle={translations.placeholder.comingSoon}
-                />
-              }
-            />
-            <Route
               path="/social"
               element={<SocialFeed t={translations} />}
             />

@@ -1,11 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import LanguageSwitch from '../LanguageSwitch/LanguageSwitch';
-import SomaLogo from '../../soma_logo.svg';
 
 const PANEL_IMAGES = {
-  comics:
-    'https://images.unsplash.com/photo-1612036782180-6f0b6cd846fe?auto=format&fit=crop&w=1600&q=80',
   social:
     'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1600&q=80',
   tools:
@@ -15,13 +12,6 @@ const PANEL_IMAGES = {
 const Hero = ({ currentLanguage, onLanguageChange, t }) => {
   const { home } = t;
   const panelList = [
-    {
-      id: 'comics',
-      to: '/comics',
-      title: home.panels.comics.title,
-      description: home.panels.comics.description,
-      image: PANEL_IMAGES.comics,
-    },
     {
       id: 'social',
       to: '/social',
@@ -47,21 +37,11 @@ const Hero = ({ currentLanguage, onLanguageChange, t }) => {
 
         <div className="relative z-10 mx-auto flex min-h-[88vh] max-w-7xl flex-col justify-between px-4 py-5 sm:px-6 lg:py-7">
           <header className="flex items-center justify-between gap-4">
-            <Link to="/" className="flex items-center gap-3">
-              <img
-                src={SomaLogo}
-                alt=""
-                className="h-10 w-10 rounded-full border-2 border-slate-950 bg-primary-50"
-              />
-              <span className="font-display text-lg font-black text-primary-800 sm:text-2xl">
-                Stickman Soma
-              </span>
+            <Link to="/" className="font-display text-xl font-black text-primary-800 sm:text-3xl">
+              Stickman Soma
             </Link>
             <div className="flex items-center gap-4">
               <nav className="hidden items-center gap-6 text-sm font-extrabold text-slate-700 md:flex">
-                <Link className="transition hover:text-primary-700" to="/comics">
-                  {t.nav.comicDiary}
-                </Link>
                 <Link className="transition hover:text-primary-700" to="/social">
                   {t.nav.socialFeed}
                 </Link>
@@ -122,13 +102,6 @@ const Hero = ({ currentLanguage, onLanguageChange, t }) => {
             </div>
 
             <aside className="stickman-card-blue rounded-md bg-white p-5">
-              <div className="mb-5 flex justify-center">
-                <img
-                  src={SomaLogo}
-                  alt=""
-                  className="h-24 w-24 rounded-full border-[4px] border-slate-950 bg-primary-50"
-                />
-              </div>
               <p className="font-display text-sm font-black uppercase tracking-[0.16em] text-primary-700">
                 {home.nowTitle}
               </p>
@@ -147,7 +120,7 @@ const Hero = ({ currentLanguage, onLanguageChange, t }) => {
         </div>
       </div>
 
-      <div className="mx-auto grid max-w-7xl gap-4 px-4 pb-12 pt-6 sm:px-6 md:grid-cols-3">
+      <div className="mx-auto grid max-w-7xl gap-4 px-4 pb-12 pt-6 sm:px-6 md:grid-cols-2">
         {panelList.map((panel) => (
           <Link
             key={panel.id}

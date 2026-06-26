@@ -2,7 +2,6 @@ const en = {
   nav: {
     home: 'Home',
     orderMenu: 'My Tools',
-    comicDiary: 'Comic Diary',
     socialFeed: 'Social Feed',
   },
   placeholder: {
@@ -10,7 +9,6 @@ const en = {
   },
   hero: {
     panels: {
-      comics: { title: 'Comic Diary' },
       social: { title: 'Social Media' },
       tools: { title: 'My Tools' },
     },
@@ -19,35 +17,31 @@ const en = {
     eyebrow: 'Full Stack Developer / Applied AI / Creative Tech',
     title: "Soma Li's creative engineering home",
     subtitle:
-      'I build AI agents, automation systems, and local LLM applications in Halifax while maintaining comics, community, and content projects.',
+      'I build AI agents, automation systems, and local LLM applications in Halifax.',
     primaryCta: 'View social feed',
     nowTitle: 'Now building',
     nowItems: [
       {
         title: 'AI Agent Stack',
-        description: 'Refining local agent workflows with Ollama, OpenWebUI, n8n, and PostgreSQL.',
+        description: 'Local agent workflows and automation systems.',
       },
       {
         title: 'soma-comic',
-        description: 'Blending comics, personal expression, and interactive web experiences.',
+        description: 'A personal home for updates, tools, and creative work.',
       },
       {
-        title: 'Community & VTuber',
-        description: 'Creating content, streaming, and organizing communities around human technology.',
+        title: 'Creative Tech',
+        description: 'Engineering work shaped into memorable experiences.',
       },
     ],
     panels: {
-      comics: {
-        title: 'Comic Diary',
-        description: 'Sketches, story fragments, and creative experiments.',
-      },
       social: {
         title: 'Social Feed',
-        description: 'A public hub for GitHub, LinkedIn, and Bilibili updates.',
+        description: 'GitHub, LinkedIn, and Bilibili updates.',
       },
       tools: {
         title: 'My Tools',
-        description: 'Automation, AI, and personal productivity experiments.',
+        description: 'AI, automation, and productivity tools.',
       },
     },
   },
@@ -55,7 +49,7 @@ const en = {
     eyebrow: 'Social Hub',
     title: 'Public activity timeline',
     subtitle:
-      "A single view of Soma Li's engineering progress, career profile, and creative content channels.",
+      "A clean hub for engineering progress, career context, and content channels.",
     profileRole: 'Independent Developer / Applied AI Builder',
     filterLabel: 'Filter platform',
     openLink: 'Open link',
@@ -94,9 +88,9 @@ const en = {
         type: 'Project',
         title: 'soma-comic continues as a personal site and comic space',
         summary:
-          'The site is evolving from a simple entry page into a richer home for profile, social feed, comic diary, and tool showcases.',
+          'The site is evolving into a focused home for profile, social feed, and tool showcases.',
         href: 'https://github.com/somali0128/soma-comic',
-        tags: ['Personal Site', 'Comics', 'Tailwind'],
+        tags: ['Personal Site', 'Tailwind'],
       },
       {
         id: 'linkedin',
@@ -136,7 +130,7 @@ const en = {
       {
         platform: 'bilibili',
         title: 'Creative content',
-        description: 'Videos, streams, comics, and community updates in Chinese.',
+        description: 'Videos, posts, and community updates in Chinese.',
       },
     ],
     contactTitle: 'Collaboration',

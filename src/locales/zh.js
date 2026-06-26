@@ -2,7 +2,6 @@ const zh = {
   nav: {
     home: '首页',
     orderMenu: '我的工具',
-    comicDiary: '漫画日常',
     socialFeed: '社交动态',
   },
   placeholder: {
@@ -10,7 +9,6 @@ const zh = {
   },
   hero: {
     panels: {
-      comics: { title: '漫画日常' },
       social: { title: '社交媒体' },
       tools: { title: '我的工具' },
     },
@@ -19,35 +17,31 @@ const zh = {
     eyebrow: 'Full Stack Developer / Applied AI / Creative Tech',
     title: 'Soma Li 的创作与工程主页',
     subtitle:
-      '我在 Halifax 做 AI agents、自动化系统、本地 LLM 应用，也维护漫画、社区和内容创作项目。这里聚合我的项目、动态和公开社交入口。',
+      '我在 Halifax 做 AI agents、自动化系统和本地 LLM 应用。这里聚合我的项目、动态和公开社交入口。',
     primaryCta: '查看社交动态',
     nowTitle: '近期关注',
     nowItems: [
       {
         title: 'AI Agent Stack',
-        description: '用 Ollama、OpenWebUI、n8n 和 PostgreSQL 打磨本地智能体工作流。',
+        description: '本地智能体工作流与自动化系统。',
       },
       {
         title: 'soma-comic',
-        description: '把漫画、个人表达和交互式网页结合成更有生命力的创作空间。',
+        description: '个人主页、社交动态和创作展示。',
       },
       {
-        title: 'Community & VTuber',
-        description: '持续做内容、直播和社群组织，让技术作品更有人味。',
+        title: 'Creative Tech',
+        description: '把工程能力做成清晰、有记忆点的体验。',
       },
     ],
     panels: {
-      comics: {
-        title: '漫画日常',
-        description: '收纳画稿、故事片段和创意实验。',
-      },
       social: {
         title: '社交动态',
-        description: '聚合 GitHub、LinkedIn、B 站的公开更新。',
+        description: 'GitHub、LinkedIn、B 站公开更新。',
       },
       tools: {
         title: '我的工具',
-        description: '展示自动化、AI 和个人效率工具。',
+        description: 'AI、自动化和效率工具。',
       },
     },
   },
@@ -55,7 +49,7 @@ const zh = {
     eyebrow: 'Social Hub',
     title: '公开动态时间线',
     subtitle:
-      '这里把 Soma Li 的工程进展、职业资料和内容创作放在同一个界面里，方便快速了解最近在做什么。',
+      '工程进展、职业资料和内容频道，统一放在一个简洁入口里。',
     profileRole: 'Independent Developer / Applied AI Builder',
     filterLabel: '筛选平台',
     openLink: '打开链接',
@@ -94,9 +88,9 @@ const zh = {
         type: 'Project',
         title: 'soma-comic 作为个人站与漫画创作空间继续迭代',
         summary:
-          '站点正在从入口型页面升级为个人主页、社交动态、漫画日常和工具展示的组合体验。',
+          '站点正在升级为个人主页、社交动态和工具展示的组合体验。',
         href: 'https://github.com/somali0128/soma-comic',
-        tags: ['Personal Site', 'Comics', 'Tailwind'],
+        tags: ['Personal Site', 'Tailwind'],
       },
       {
         id: 'linkedin',
@@ -116,7 +110,7 @@ const zh = {
         type: 'Content',
         title: 'B 站空间承载中文内容与社区互动',
         summary:
-          '适合展示视频、动态、直播相关内容和面向中文社区的创作活动。',
+          '适合展示视频、动态和面向中文社区的创作活动。',
         href: 'https://space.bilibili.com/290997685',
         tags: ['Video', 'Community', '中文内容'],
       },
@@ -136,7 +130,7 @@ const zh = {
       {
         platform: 'bilibili',
         title: '内容创作',
-        description: '视频、直播、漫画相关表达和中文社区互动。',
+        description: '视频、动态和中文社区互动。',
       },
     ],
     contactTitle: '合作入口',

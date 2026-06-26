@@ -22,7 +22,6 @@ const Footer = ({ t }) => {
             <ul className="flex flex-col gap-1 sm:gap-2">
               <li><a href="/" className="text-primary-50 font-bold transition-colors duration-200 hover:text-white text-sm sm:text-base">{t.nav.home}</a></li>
               <li><a href="/order-menu" className="text-primary-50 font-bold transition-colors duration-200 hover:text-white text-sm sm:text-base">{t.nav.orderMenu}</a></li>
-              <li><a href="/comics" className="text-primary-50 font-bold transition-colors duration-200 hover:text-white text-sm sm:text-base">{t.nav.comicDiary}</a></li>
               <li><a href="/social" className="text-primary-50 font-bold transition-colors duration-200 hover:text-white text-sm sm:text-base">{t.nav.socialFeed}</a></li>
             </ul>
           </div>

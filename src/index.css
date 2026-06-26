@@ -1,5 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800;900&display=swap');
 
+@font-face {
+  font-family: 'Brown Cookies';
+  src: url('./assets/fonts/brown-cookies/Brown Cookies.otf') format('opentype');
+  font-style: normal;
+  font-weight: 400 900;
+  font-display: swap;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -21,6 +29,10 @@
     background: #eff8ff;
     -webkit-text-size-adjust: 100%;
     -ms-text-size-adjust: 100%;
+  }
+
+  html[lang='en'] body {
+    font-family: 'Brown Cookies', 'Nunito', 'Comic Sans MS', cursive;
   }
 
   ::-webkit-scrollbar {
@@ -102,6 +114,11 @@
 
   .font-display {
     font-family: 'Baloo 2', 'Nunito', 'Comic Sans MS', 'Segoe Print', cursive;
+  }
+
+  html[lang='en'] .font-display,
+  html[lang='en'] .stickman-title {
+    font-family: 'Brown Cookies', 'Baloo 2', 'Nunito', cursive;
   }
 
   .stickman-title {

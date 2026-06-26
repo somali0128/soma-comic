@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import LanguageSwitch from '../LanguageSwitch/LanguageSwitch';
-import SomaLogo from '../../soma_logo.svg';
 
 const Navbar = ({ currentLanguage, onLanguageChange, t }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -19,11 +18,6 @@ const Navbar = ({ currentLanguage, onLanguageChange, t }) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between h-16">
           <Link to="/" className="flex items-center gap-2 sm:gap-3 transition-colors duration-200 hover:opacity-80" onClick={closeMenu}>
-            <img
-              src={SomaLogo}
-              alt="Stickman Soma Logo"
-              className="w-8 h-8 rounded-full border-2 border-slate-950 bg-primary-50 sm:w-10 sm:h-10"
-            />
             <span className="font-display text-lg font-black text-primary-700 sm:text-2xl">Stickman Soma</span>
           </Link>
 
@@ -35,10 +29,6 @@ const Navbar = ({ currentLanguage, onLanguageChange, t }) => {
             </Link>
             <Link to="/order-menu" className="relative font-display font-black text-slate-700 transition-colors duration-200 hover:text-primary-700 group">
               {t.nav.orderMenu}
-              <span className="absolute bottom-0 left-0 w-0 h-[3px] rounded-full bg-primary-500 transition-all duration-200 group-hover:w-full"></span>
-            </Link>
-            <Link to="/comics" className="relative font-display font-black text-slate-700 transition-colors duration-200 hover:text-primary-700 group">
-              {t.nav.comicDiary}
               <span className="absolute bottom-0 left-0 w-0 h-[3px] rounded-full bg-primary-500 transition-all duration-200 group-hover:w-full"></span>
             </Link>
             <Link to="/social" className="relative font-display font-black text-slate-700 transition-colors duration-200 hover:text-primary-700 group">
@@ -72,9 +62,6 @@ const Navbar = ({ currentLanguage, onLanguageChange, t }) => {
             </Link>
             <Link to="/order-menu" className="block rounded-md border-2 border-transparent px-4 py-3 font-display font-black text-slate-700 transition-colors duration-200 hover:border-slate-950 hover:bg-white hover:text-primary-700" onClick={closeMenu}>
               {t.nav.orderMenu}
-            </Link>
-            <Link to="/comics" className="block rounded-md border-2 border-transparent px-4 py-3 font-display font-black text-slate-700 transition-colors duration-200 hover:border-slate-950 hover:bg-white hover:text-primary-700" onClick={closeMenu}>
-              {t.nav.comicDiary}
             </Link>
             <Link to="/social" className="block rounded-md border-2 border-transparent px-4 py-3 font-display font-black text-slate-700 transition-colors duration-200 hover:border-slate-950 hover:bg-white hover:text-primary-700" onClick={closeMenu}>
               {t.nav.socialFeed}
