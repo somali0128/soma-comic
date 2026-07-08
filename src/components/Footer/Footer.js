@@ -16,16 +16,16 @@ const Footer = ({ t }) => {
               </span>
             </div>
           </div>
-          
+
           <div className="flex flex-col gap-3 sm:gap-4">
             <h4 className="font-display text-base font-black text-primary-100 sm:pl-8 sm:text-lg">{t.footer.quickLinks}</h4>
             <ul className="flex flex-col gap-1 sm:gap-2">
               <li><a href="/" className="text-primary-50 font-bold transition-colors duration-200 hover:text-white text-sm sm:text-base">{t.nav.home}</a></li>
-              <li><a href="/order-menu" className="text-primary-50 font-bold transition-colors duration-200 hover:text-white text-sm sm:text-base">{t.nav.orderMenu}</a></li>
+              <li><a href="/tools" className="text-primary-50 font-bold transition-colors duration-200 hover:text-white text-sm sm:text-base">{t.nav.tools}</a></li>
               <li><a href="/social" className="text-primary-50 font-bold transition-colors duration-200 hover:text-white text-sm sm:text-base">{t.nav.socialFeed}</a></li>
             </ul>
           </div>
-          
+
           <div className="flex flex-col gap-3 sm:gap-4 sm:col-span-2 lg:col-span-1">
             <h4 className="font-display text-base font-black text-primary-100 sm:pl-8 sm:text-lg">{t.footer.media}</h4>
             <ul className="flex flex-col gap-1 sm:gap-2">
@@ -35,7 +35,7 @@ const Footer = ({ t }) => {
             </ul>
           </div>
         </div>
-        
+
         <div className="border-t border-white/20 pt-4 sm:pt-6 flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-4">
           <p className="text-primary-100 text-xs sm:text-sm text-center sm:text-left font-semibold">
             © {currentYear} Stickman Soma. {t.footer.copyright}
@@ -49,4 +49,4 @@ const Footer = ({ t }) => {
   );
 };
 
-export default Footer; 
+export default Footer;

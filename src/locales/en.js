@@ -1,7 +1,8 @@
 const en = {
   nav: {
     home: 'Home',
-    orderMenu: 'My Tools',
+    tools: 'My Tools',
+    orderMenu: 'Order Menu',
     socialFeed: 'Social Feed',
   },
   placeholder: {
@@ -16,8 +17,7 @@ const en = {
   home: {
     eyebrow: 'AI / Automation / Creative Tech',
     title: 'Soma Li',
-    subtitle:
-      'AI Agent Builder in Halifax',
+    subtitle: 'AI Agent Builder in Halifax',
     primaryCta: 'Updates',
     nowTitle: 'Focus',
     nowItems: [
@@ -41,15 +41,14 @@ const en = {
       },
       tools: {
         title: 'My Tools',
-        description: 'AI, automation, and productivity tools.',
+        description: 'Clock plugin, WeChat ordering mini program, and productivity tools.',
       },
     },
   },
   social: {
     eyebrow: 'Social Hub',
     title: 'Public activity timeline',
-    subtitle:
-      "A clean hub for engineering progress, career context, and content channels.",
+    subtitle: 'A clean hub for engineering progress, career context, and content channels.',
     profileRole: 'Independent Developer / Applied AI Builder',
     filterLabel: 'Filter platform',
     openLink: 'Open link',
@@ -142,6 +141,28 @@ const en = {
     madeWith: 'Made with care',
     quickLinks: 'Quick Links',
     media: 'Media',
+  },
+  toolsPage: {
+    title: 'My Tools',
+    subtitle:
+      'A small shelf for recent personal tools, from a desktop clock plugin to a WeChat ordering mini program for home meals.',
+    statusLabel: 'Recent',
+    items: {
+      clock: {
+        title: 'Clock Plugin',
+        status: 'Desktop time and focus helper',
+        description:
+          'A lightweight clock plugin that keeps time, date, and focus rhythm close at hand.',
+        details: ['Live time display', 'Designed for always-on desktop use', 'Ready for focus reminders and themes'],
+      },
+      orderMenu: {
+        title: 'WeChat Ordering Mini Program',
+        status: 'Family menu and grocery checks',
+        description:
+          'A WeChat mini program demo for choosing home meals, collecting ingredients, and preparing shopping checks.',
+        details: ['Menu categories and dish details', 'Ingredient checklist', 'Reserved cloud sync support'],
+      },
+    },
   },
 };
 

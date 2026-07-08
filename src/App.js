@@ -8,8 +8,9 @@ import {
 import Navbar from './components/Navbar/Navbar';
 import Footer from './components/Footer/Footer';
 import Hero from './components/Hero/Hero';
-import PlaceholderPage from './components/PlaceholderPage/PlaceholderPage';
 import SocialFeed from './components/SocialFeed/SocialFeed';
+import OrderMenu from './components/OrderMenu';
+import Tools from './components/Tools/Tools';
 import NotFound from './404';
 import zh from './locales/zh';
 import en from './locales/en';
@@ -64,31 +65,21 @@ function AppContent() {
 
       <main className={`main-content${isHome ? ' main-content--no-nav' : ''}`}>
         <Routes>
-            <Route
-              path="/"
-              element={
-                <Hero
-                  currentLanguage={currentLanguage}
-                  onLanguageChange={handleLanguageChange}
-                  t={translations}
-                />
-              }
-            />
-            <Route
-              path="/order-menu"
-              element={
-                <PlaceholderPage
-                  title={translations.nav.orderMenu}
-                  subtitle={translations.placeholder.comingSoon}
-                />
-              }
-            />
-            <Route
-              path="/social"
-              element={<SocialFeed t={translations} />}
-            />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <Route
+            path="/"
+            element={
+              <Hero
+                currentLanguage={currentLanguage}
+                onLanguageChange={handleLanguageChange}
+                t={translations}
+              />
+            }
+          />
+          <Route path="/tools" element={<Tools t={translations} />} />
+          <Route path="/order-menu" element={<OrderMenu />} />
+          <Route path="/social" element={<SocialFeed t={translations} />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
       </main>
 
       <Footer t={translations} />

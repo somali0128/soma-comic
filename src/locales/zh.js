@@ -1,7 +1,8 @@
 const zh = {
   nav: {
     home: '首页',
-    orderMenu: '我的工具',
+    tools: '我的工具',
+    orderMenu: '我要点菜',
     socialFeed: '社交动态',
   },
   placeholder: {
@@ -16,8 +17,7 @@ const zh = {
   home: {
     eyebrow: 'AI / Automation / Creative Tech',
     title: 'Soma Li',
-    subtitle:
-      'AI Agent Builder in Halifax',
+    subtitle: 'AI Agent Builder in Halifax',
     primaryCta: '动态',
     nowTitle: 'Focus',
     nowItems: [
@@ -41,15 +41,14 @@ const zh = {
       },
       tools: {
         title: '我的工具',
-        description: 'AI、自动化和效率工具。',
+        description: '时钟插件、微信点单小程序和效率工具。',
       },
     },
   },
   social: {
     eyebrow: 'Social Hub',
     title: '公开动态时间线',
-    subtitle:
-      '工程进展、职业资料和内容频道，统一放在一个简洁入口里。',
+    subtitle: '工程进展、职业资料和内容频道，统一放在一个简洁入口里。',
     profileRole: 'Independent Developer / Applied AI Builder',
     filterLabel: '筛选平台',
     openLink: '打开链接',
@@ -87,8 +86,7 @@ const zh = {
         date: 'Active',
         type: 'Project',
         title: 'soma-comic 作为个人站与漫画创作空间继续迭代',
-        summary:
-          '站点正在升级为个人主页、社交动态和工具展示的组合体验。',
+        summary: '站点正在升级为个人主页、社交动态和工具展示的组合体验。',
         href: 'https://github.com/somali0128/soma-comic',
         tags: ['Personal Site', 'Tailwind'],
       },
@@ -109,8 +107,7 @@ const zh = {
         date: 'Space',
         type: 'Content',
         title: 'B 站空间承载中文内容与社区互动',
-        summary:
-          '适合展示视频、动态和面向中文社区的创作活动。',
+        summary: '适合展示视频、动态和面向中文社区的创作活动。',
         href: 'https://space.bilibili.com/290997685',
         tags: ['Video', 'Community', '中文内容'],
       },
@@ -141,6 +138,28 @@ const zh = {
     madeWith: '用热爱制作',
     quickLinks: '快速链接',
     media: '媒体',
+  },
+  toolsPage: {
+    title: '我的工具',
+    subtitle:
+      '这里收集最近做的小工具和生活向项目，从提升桌面效率的小插件，到给家里点菜采购用的小程序。',
+    statusLabel: '最近制作',
+    items: {
+      clock: {
+        title: '时钟插件',
+        status: '桌面时间与专注提醒',
+        description:
+          '一个轻量时钟插件，用来把当前时间、日期和专注节奏放在更顺手的位置。',
+        details: ['实时显示时间', '适合桌面常驻', '方便后续扩展专注提醒和主题样式'],
+      },
+      orderMenu: {
+        title: '微信点单小程序',
+        status: '家庭点菜与采购确认',
+        description:
+          '为家庭场景制作的微信小程序 demo，可以像点餐一样选择菜品，并自动汇总采购食材。',
+        details: ['菜单分类与菜品信息', '采购清单勾选确认', '预留微信云开发远程同步'],
+      },
+    },
   },
 };
 

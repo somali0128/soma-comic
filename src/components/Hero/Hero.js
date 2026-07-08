@@ -21,7 +21,7 @@ const Hero = ({ currentLanguage, onLanguageChange, t }) => {
     },
     {
       id: 'tools',
-      to: '/order-menu',
+      to: '/tools',
       title: home.panels.tools.title,
       description: home.panels.tools.description,
       image: PANEL_IMAGES.tools,
@@ -45,8 +45,8 @@ const Hero = ({ currentLanguage, onLanguageChange, t }) => {
                 <Link className="transition hover:text-primary-700" to="/social">
                   {t.nav.socialFeed}
                 </Link>
-                <Link className="transition hover:text-primary-700" to="/order-menu">
-                  {t.nav.orderMenu}
+                <Link className="transition hover:text-primary-700" to="/tools">
+                  {t.nav.tools}
                 </Link>
               </nav>
               <LanguageSwitch
@@ -135,6 +135,7 @@ const Hero = ({ currentLanguage, onLanguageChange, t }) => {
             <div className="absolute inset-0 bg-gradient-to-t from-primary-900 via-primary-900/55 to-primary-600/10" />
             <div className="absolute inset-x-0 bottom-0 p-5">
               <h2 className="font-display text-3xl font-black text-white">{panel.title}</h2>
+              <p className="mt-2 max-w-md text-sm font-bold text-primary-50">{panel.description}</p>
             </div>
           </Link>
         ))}

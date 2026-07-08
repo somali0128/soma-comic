@@ -21,14 +21,13 @@ const Navbar = ({ currentLanguage, onLanguageChange, t }) => {
             <span className="font-display text-lg font-black text-primary-700 sm:text-2xl">Stickman Soma</span>
           </Link>
 
-          {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-6 lg:gap-8">
             <Link to="/" className="relative font-display font-black text-slate-700 transition-colors duration-200 hover:text-primary-700 group">
               {t.nav.home}
               <span className="absolute bottom-0 left-0 w-0 h-[3px] rounded-full bg-primary-500 transition-all duration-200 group-hover:w-full"></span>
             </Link>
-            <Link to="/order-menu" className="relative font-display font-black text-slate-700 transition-colors duration-200 hover:text-primary-700 group">
-              {t.nav.orderMenu}
+            <Link to="/tools" className="relative font-display font-black text-slate-700 transition-colors duration-200 hover:text-primary-700 group">
+              {t.nav.tools}
               <span className="absolute bottom-0 left-0 w-0 h-[3px] rounded-full bg-primary-500 transition-all duration-200 group-hover:w-full"></span>
             </Link>
             <Link to="/social" className="relative font-display font-black text-slate-700 transition-colors duration-200 hover:text-primary-700 group">
@@ -38,11 +37,11 @@ const Navbar = ({ currentLanguage, onLanguageChange, t }) => {
           </div>
 
           <div className="flex items-center gap-3 sm:gap-4">
-            <LanguageSwitch 
-              currentLanguage={currentLanguage} 
-              onLanguageChange={onLanguageChange} 
+            <LanguageSwitch
+              currentLanguage={currentLanguage}
+              onLanguageChange={onLanguageChange}
             />
-            <button 
+            <button
               className="md:hidden flex flex-col p-2 gap-1.5 rounded-md border-2 border-slate-950 bg-white transition-colors duration-200 hover:bg-primary-100"
               onClick={toggleMenu}
               aria-label="Toggle menu"
@@ -54,14 +53,13 @@ const Navbar = ({ currentLanguage, onLanguageChange, t }) => {
           </div>
         </div>
 
-        {/* Mobile Menu */}
         <div className={`md:hidden transition-all duration-300 ease-in-out ${isMenuOpen ? 'max-h-80 opacity-100' : 'max-h-0 opacity-0 overflow-hidden'}`}>
           <div className="py-4 space-y-2 border-t-[3px] border-slate-950">
             <Link to="/" className="block rounded-md border-2 border-transparent px-4 py-3 font-display font-black text-slate-700 transition-colors duration-200 hover:border-slate-950 hover:bg-white hover:text-primary-700" onClick={closeMenu}>
               {t.nav.home}
             </Link>
-            <Link to="/order-menu" className="block rounded-md border-2 border-transparent px-4 py-3 font-display font-black text-slate-700 transition-colors duration-200 hover:border-slate-950 hover:bg-white hover:text-primary-700" onClick={closeMenu}>
-              {t.nav.orderMenu}
+            <Link to="/tools" className="block rounded-md border-2 border-transparent px-4 py-3 font-display font-black text-slate-700 transition-colors duration-200 hover:border-slate-950 hover:bg-white hover:text-primary-700" onClick={closeMenu}>
+              {t.nav.tools}
             </Link>
             <Link to="/social" className="block rounded-md border-2 border-transparent px-4 py-3 font-display font-black text-slate-700 transition-colors duration-200 hover:border-slate-950 hover:bg-white hover:text-primary-700" onClick={closeMenu}>
               {t.nav.socialFeed}
@@ -73,4 +71,4 @@ const Navbar = ({ currentLanguage, onLanguageChange, t }) => {
   );
 };
 
-export default Navbar; 
+export default Navbar;
