@@ -11,7 +11,9 @@ const Tools = ({ t }) => {
       description: items.clock.description,
       details: items.clock.details,
       status: items.clock.status,
+      linkLabel: items.clock.linkLabel,
       icon: '⏰',
+      href: 'https://github.com/somali0128/clock-widget-qiu',
     },
     {
       id: 'orderMenu',
@@ -19,8 +21,9 @@ const Tools = ({ t }) => {
       description: items.orderMenu.description,
       details: items.orderMenu.details,
       status: items.orderMenu.status,
+      linkLabel: items.orderMenu.linkLabel,
       icon: '🍜',
-      to: '/order-menu',
+      href: 'https://github.com/somali0128/wechat-order-menu',
     },
   ];
 
@@ -79,10 +82,23 @@ const Tools = ({ t }) => {
                     </li>
                   ))}
                 </ul>
+                <p className="mt-6 font-display text-sm font-black text-primary-700">
+                  {tool.linkLabel}
+                </p>
               </article>
             );
 
-            return tool.to ? (
+            return tool.href ? (
+              <a
+                key={tool.id}
+                href={tool.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block"
+              >
+                {CardContent}
+              </a>
+            ) : tool.to ? (
               <Link key={tool.id} to={tool.to} className="block">
                 {CardContent}
               </Link>

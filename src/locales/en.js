@@ -41,7 +41,7 @@ const en = {
       },
       tools: {
         title: 'My Tools',
-        description: 'Clock plugin, WeChat ordering mini program, and productivity tools.',
+        description: 'Live clock widget, WeChat ordering mini program, and productivity tools.',
       },
     },
   },
@@ -145,22 +145,24 @@ const en = {
   toolsPage: {
     title: 'My Tools',
     subtitle:
-      'A small shelf for recent personal tools, from a desktop clock plugin to a WeChat ordering mini program for home meals.',
+      'A small shelf for recent personal tools, including a livestream browser-source clock widget and an open-source mini program for answering "what should we eat?" at home.',
     statusLabel: 'Recent',
     items: {
       clock: {
         title: 'Clock Plugin',
-        status: 'Desktop time and focus helper',
+        status: 'VTS / livestream browser-source widget',
         description:
-          'A lightweight clock plugin that keeps time, date, and focus rhythm close at hand.',
-        details: ['Live time display', 'Designed for always-on desktop use', 'Ready for focus reminders and themes'],
+          'A lightweight clock widget built for VTube Studio and livestream scenes. It can be inserted into OBS or similar streaming software as a browser source to add a clear time overlay to the stream.',
+        details: ['Designed for livestream overlays', 'Works as a browser source widget', 'Open source and easy to restyle or resize'],
+        linkLabel: 'View clock-widget-qiu repo',
       },
       orderMenu: {
         title: 'WeChat Ordering Mini Program',
-        status: 'Family menu and grocery checks',
+        status: 'Open-source family menu reference',
         description:
-          'A WeChat mini program demo for choosing home meals, collecting ingredients, and preparing shopping checks.',
-        details: ['Menu categories and dish details', 'Ingredient checklist', 'Reserved cloud sync support'],
+          'An open-source WeChat mini program reference project for helping families decide what to eat. It turns meal discussion into a simple ordering flow and can be used as a practical example for mini program development.',
+        details: ['Built around family meal decisions', 'Menu categories, dish details, and grocery confirmation flow', 'Open-source code for WeChat mini program reference'],
+        linkLabel: 'View wechat-order-menu repo',
       },
     },
   },
