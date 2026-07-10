@@ -14,8 +14,17 @@
 - `/`：首页三栏入口。
 - `/tools`：工具总览，展示时钟插件和微信点单小程序。
 - `/order-menu`：家庭点菜小助手，可按食材和标签筛选菜品。
-- `/comics`：漫画日常占位页。
-- `/social`：社交动态占位页。
+- `/social`：社交动态页，优先读取自动同步的 GitHub 与 Bilibili 公开动态。
+
+## 社交动态同步
+
+`scripts/sync-social-feed.js` 会抓取 GitHub public events 和 Bilibili 公开图文动态，生成 `public/social-feed.json`。页面加载时优先使用这份数据，抓取失败或文件为空时回退到本地静态内容。
+
+GitHub Actions 的 `Sync social feed` workflow 每小时运行一次，并重新构建部署到 `gh-pages`。也可以手动运行：
+
+```bash
+npm run sync:social
+```
 
 ## 技术栈
 
@@ -28,6 +37,7 @@
 
 ```bash
 npm start
+npm run sync:social
 npm run build
 npm test
 npm run deploy

@@ -46,6 +46,7 @@ const en = {
     },
   },
   social: {
+    locale: 'en',
     eyebrow: 'Social Hub',
     title: 'Public activity timeline',
     subtitle: 'A clean hub for engineering progress, career context, and content channels.',

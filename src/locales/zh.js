@@ -46,6 +46,7 @@ const zh = {
     },
   },
   social: {
+    locale: 'zh',
     eyebrow: 'Social Hub',
     title: '公开动态时间线',
     subtitle: '工程进展、职业资料和内容频道，统一放在一个简洁入口里。',

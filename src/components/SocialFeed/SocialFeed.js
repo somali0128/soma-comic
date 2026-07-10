@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 const platformStyles = {
   github: {
@@ -25,12 +25,53 @@ const platformStyles = {
 
 const SocialFeed = ({ t }) => {
   const [activePlatform, setActivePlatform] = useState('all');
+  const [syncedItems, setSyncedItems] = useState(null);
   const { social } = t;
+  const locale = social.locale || 'en';
+
+  useEffect(() => {
+    let isMounted = true;
+    const publicUrl = process.env.PUBLIC_URL || '';
+
+    fetch(`${publicUrl}/social-feed.json`, { cache: 'no-store' })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`Unable to load social feed: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        if (!isMounted || !Array.isArray(data.items) || data.items.length === 0) {
+          return;
+        }
+
+        setSyncedItems(data.items);
+      })
+      .catch(() => {
+        if (isMounted) {
+          setSyncedItems(null);
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const feedItems = useMemo(() => {
+    if (!syncedItems) return social.items;
+
+    const staticItems = social.items.filter(
+      (item) => !['github', 'bilibili'].includes(item.platform)
+    );
+
+    return [...syncedItems, ...staticItems];
+  }, [social.items, syncedItems]);
 
   const visibleItems = useMemo(() => {
-    if (activePlatform === 'all') return social.items;
-    return social.items.filter((item) => item.platform === activePlatform);
-  }, [activePlatform, social.items]);
+    if (activePlatform === 'all') return feedItems;
+    return feedItems.filter((item) => item.platform === activePlatform);
+  }, [activePlatform, feedItems]);
 
   return (
     <section className="stickman-paper min-h-screen pb-16">
@@ -112,6 +153,10 @@ const SocialFeed = ({ t }) => {
           <div className="space-y-4">
             {visibleItems.map((item) => {
               const style = platformStyles[item.platform];
+              const dateLabel =
+                typeof item.date === 'object'
+                  ? item.date[locale] || item.date.en || item.date.zh
+                  : item.date;
               return (
                 <article
                   key={item.id}
@@ -121,7 +166,7 @@ const SocialFeed = ({ t }) => {
                     <span className={`rounded border-2 border-slate-950 px-2.5 py-1 text-xs font-black ${style.badge}`}>
                       {style.label}
                     </span>
-                    <span className="text-sm font-bold text-slate-500">{item.date}</span>
+                    <span className="text-sm font-bold text-slate-500">{dateLabel}</span>
                     <span className="text-sm font-bold text-primary-400">/</span>
                     <span className="text-sm font-bold text-slate-500">{item.type}</span>
                   </div>
@@ -130,7 +175,7 @@ const SocialFeed = ({ t }) => {
                   </h2>
                   <p className="mt-3 text-base font-semibold leading-7 text-slate-600">{item.summary}</p>
                   <div className="mt-4 flex flex-wrap gap-2">
-                    {item.tags.map((tag) => (
+                    {(item.tags || []).map((tag) => (
                       <span
                         key={tag}
                         className="rounded border-2 border-primary-200 bg-primary-50 px-2.5 py-1 text-xs font-bold text-primary-800"
