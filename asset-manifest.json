@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/static/css/main.af7e9da4.css",
-    "main.js": "/static/js/main.4ee72cda.js",
+    "main.css": "/static/css/main.c8b054ed.css",
+    "main.js": "/static/js/main.f0bedf63.js",
     "static/media/Brown Cookies.otf": "/static/media/Brown Cookies.2a4e53c6f7c7ef35a632.otf",
     "index.html": "/index.html",
-    "static/media/soma_logo.svg": "/static/media/soma_logo.604ea26a4d77fedf3ce7c4ee23644540.svg",
-    "main.af7e9da4.css.map": "/static/css/main.af7e9da4.css.map",
-    "main.4ee72cda.js.map": "/static/js/main.4ee72cda.js.map"
+    "static/media/soma_logo.svg": "/static/media/soma_logo.e066035e213d485649390a370fa8e0f8.svg",
+    "main.c8b054ed.css.map": "/static/css/main.c8b054ed.css.map",
+    "main.f0bedf63.js.map": "/static/js/main.f0bedf63.js.map"
   },
   "entrypoints": [
-    "static/css/main.af7e9da4.css",
-    "static/js/main.4ee72cda.js"
+    "static/css/main.c8b054ed.css",
+    "static/js/main.f0bedf63.js"
   ]
 }
