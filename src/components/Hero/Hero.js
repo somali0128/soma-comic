@@ -10,7 +10,7 @@ const PANEL_IMAGES = {
 };
 
 const Hero = ({ currentLanguage, onLanguageChange, t }) => {
-  const { home } = t;
+  const { home, social } = t;
   const panelList = [
     {
       id: 'social',
@@ -38,7 +38,7 @@ const Hero = ({ currentLanguage, onLanguageChange, t }) => {
         <div className="relative z-10 mx-auto flex min-h-[88vh] max-w-7xl flex-col justify-between px-4 py-5 sm:px-6 lg:py-7">
           <header className="stickman-enter flex items-center justify-between gap-4">
             <Link to="/" className="font-display text-xl font-black text-primary-800 sm:text-3xl">
-              Stickman Soma
+              {t.brandName}
             </Link>
             <div className="flex items-center gap-4">
               <nav className="hidden items-center gap-6 text-sm font-extrabold text-slate-700 md:flex">
@@ -74,30 +74,17 @@ const Hero = ({ currentLanguage, onLanguageChange, t }) => {
                 >
                   {home.primaryCta}
                 </Link>
-                <a
-                  href="https://github.com/somali0128"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="stickman-pop rounded-md border-[3px] border-slate-950 bg-white px-5 py-3 text-sm font-black text-primary-800 transition hover:bg-primary-100"
-                >
-                  GitHub
-                </a>
-                <a
-                  href="https://www.linkedin.com/in/dongyue-li-520bb2374/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="stickman-pop rounded-md border-[3px] border-slate-950 bg-white px-5 py-3 text-sm font-black text-primary-800 transition hover:bg-primary-100"
-                >
-                  LinkedIn
-                </a>
-                <a
-                  href="https://space.bilibili.com/290997685"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="stickman-pop rounded-md border-[3px] border-slate-950 bg-white px-5 py-3 text-sm font-black text-primary-800 transition hover:bg-primary-100"
-                >
-                  Bilibili
-                </a>
+                {social.links.map((link) => (
+                  <a
+                    key={link.label}
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="stickman-pop rounded-md border-[3px] border-slate-950 bg-white px-5 py-3 text-sm font-black text-primary-800 transition hover:bg-primary-100"
+                  >
+                    {link.label}
+                  </a>
+                ))}
               </div>
             </div>
 

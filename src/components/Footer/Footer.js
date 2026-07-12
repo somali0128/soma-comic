@@ -12,7 +12,7 @@ const Footer = ({ t }) => {
             <div className="flex items-center gap-2 sm:gap-3">
               <img src={SomaLogo} alt="" className="w-8 h-8 rounded-full border-2 border-slate-950 bg-primary-50 sm:w-10 sm:h-10" />
               <span className="font-display text-lg font-black sm:text-xl">
-                Stickman Soma
+                {t.brandName}
               </span>
             </div>
           </div>
@@ -29,16 +29,20 @@ const Footer = ({ t }) => {
           <div className="flex flex-col gap-3 sm:gap-4 sm:col-span-2 lg:col-span-1">
             <h4 className="font-display text-base font-black text-primary-100 sm:pl-8 sm:text-lg">{t.footer.media}</h4>
             <ul className="flex flex-col gap-1 sm:gap-2">
-              <li><a href="https://github.com/somali0128" target="_blank" rel="noopener noreferrer" className="text-primary-50 font-bold transition-colors duration-200 hover:text-white text-sm sm:text-base">GitHub</a></li>
-              <li><a href="https://www.linkedin.com/in/dongyue-li-520bb2374/" target="_blank" rel="noopener noreferrer" className="text-primary-50 font-bold transition-colors duration-200 hover:text-white text-sm sm:text-base">LinkedIn</a></li>
-              <li><a href="https://space.bilibili.com/290997685" target="_blank" rel="noopener noreferrer" className="text-primary-50 font-bold transition-colors duration-200 hover:text-white text-sm sm:text-base">Bilibili</a></li>
+              {t.social.links.map((link) => (
+                <li key={link.label}>
+                  <a href={link.href} target="_blank" rel="noopener noreferrer" className="text-primary-50 font-bold transition-colors duration-200 hover:text-white text-sm sm:text-base">
+                    {link.label}
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
         </div>
 
         <div className="border-t border-white/20 pt-4 sm:pt-6 flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-4">
           <p className="text-primary-100 text-xs sm:text-sm text-center sm:text-left font-semibold">
-            © {currentYear} Stickman Soma. {t.footer.copyright}
+            © {currentYear} {t.brandName}. {t.footer.copyright}
           </p>
           <p className="text-primary-100 text-xs sm:text-sm text-center sm:text-right font-semibold">
             {t.footer.madeWith}

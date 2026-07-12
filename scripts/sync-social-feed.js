@@ -22,11 +22,13 @@ const truncate = (text, maxLength = 140) => {
 
 const formatDate = (dateValue) => {
   const date = new Date(dateValue);
-  if (Number.isNaN(date.getTime())) return 'Latest';
+  if (Number.isNaN(date.getTime())) return localized('最新', 'Latest');
   return date.toISOString().slice(0, 10);
 };
 
 const toRepoUrl = (repoName) => `https://github.com/${repoName}`;
+
+const localized = (zh, en) => ({ zh, en });
 
 async function fetchJson(url, options = {}) {
   const response = await fetch(url, {
@@ -58,7 +60,7 @@ function buildGitHubItem(event) {
     platform: 'github',
     date: formatDate(createdAt),
     href: toRepoUrl(repoName),
-    tags: ['GitHub', repoShortName],
+    tags: localized(['GitHub', repoShortName], ['GitHub', repoShortName]),
     sortTime: new Date(createdAt).getTime(),
   };
 
@@ -66,41 +68,71 @@ function buildGitHubItem(event) {
     const commits = event.payload?.commits || [];
     const commitCount = commits.length || event.payload?.size || 1;
     const firstMessage = commits[0]?.message;
+    const branch = event.payload?.ref?.replace('refs/heads/', '') || 'main';
     return {
       ...baseItem,
-      type: 'Push',
-      title: `Pushed ${commitCount} commit${commitCount > 1 ? 's' : ''} to ${repoShortName}`,
-      summary: truncate(firstMessage || `Updated ${repoName}.`),
+      type: localized('推送', 'Push'),
+      title: localized(
+        `向 ${repoShortName} 推送了 ${commitCount} 个提交`,
+        `Pushed ${commitCount} commit${commitCount > 1 ? 's' : ''} to ${repoShortName}`
+      ),
+      summary: localized(
+        truncate(firstMessage || `更新了 ${repoName}。`),
+        truncate(firstMessage || `Updated ${repoName}.`)
+      ),
       href: event.payload?.head
         ? `${toRepoUrl(repoName)}/commit/${event.payload.head}`
         : baseItem.href,
-      tags: [...baseItem.tags, event.payload?.ref?.replace('refs/heads/', '') || 'main'],
+      tags: localized(['GitHub', repoShortName, branch], ['GitHub', repoShortName, branch]),
     };
   }
 
   if (event.type === 'PullRequestEvent') {
     const action = event.payload?.action || 'updated';
+    const actionZh = {
+      opened: '打开',
+      closed: '关闭',
+      reopened: '重新打开',
+      synchronize: '更新',
+    }[action] || '更新';
     const number = event.payload?.number;
     const pullRequest = event.payload?.pull_request;
     return {
       ...baseItem,
-      type: 'Pull Request',
-      title: `${action} pull request${number ? ` #${number}` : ''} in ${repoShortName}`,
-      summary: truncate(pullRequest?.title || `Pull request ${action} in ${repoName}.`),
+      type: localized('拉取请求', 'Pull Request'),
+      title: localized(
+        `${actionZh}了 ${repoShortName} 的拉取请求${number ? ` #${number}` : ''}`,
+        `${action} pull request${number ? ` #${number}` : ''} in ${repoShortName}`
+      ),
+      summary: localized(
+        truncate(pullRequest?.title || `${repoName} 的拉取请求有新动态。`),
+        truncate(pullRequest?.title || `Pull request ${action} in ${repoName}.`)
+      ),
       href: pullRequest?.html_url || baseItem.href,
-      tags: [...baseItem.tags, 'PR'],
+      tags: localized(['GitHub', repoShortName, '拉取请求'], ['GitHub', repoShortName, 'PR']),
     };
   }
 
   if (event.type === 'CreateEvent') {
     const refType = event.payload?.ref_type || 'item';
+    const refTypeZh = {
+      branch: '分支',
+      repository: '仓库',
+      tag: '标签',
+    }[refType] || '项目';
     const ref = event.payload?.ref;
     return {
       ...baseItem,
-      type: 'Create',
-      title: `Created ${refType} in ${repoShortName}`,
-      summary: truncate(ref ? `${refType}: ${ref}` : `Created a new ${refType} in ${repoName}.`),
-      tags: [...baseItem.tags, refType],
+      type: localized('创建', 'Create'),
+      title: localized(
+        `在 ${repoShortName} 创建了${refTypeZh}`,
+        `Created ${refType} in ${repoShortName}`
+      ),
+      summary: localized(
+        truncate(ref ? `${refTypeZh}：${ref}` : `在 ${repoName} 创建了新的${refTypeZh}。`),
+        truncate(ref ? `${refType}: ${ref}` : `Created a new ${refType} in ${repoName}.`)
+      ),
+      tags: localized(['GitHub', repoShortName, refTypeZh], ['GitHub', repoShortName, refType]),
     };
   }
 
@@ -108,19 +140,26 @@ function buildGitHubItem(event) {
     const issue = event.payload?.issue;
     return {
       ...baseItem,
-      type: 'Issue',
-      title: `${event.payload?.action || 'updated'} issue in ${repoShortName}`,
-      summary: truncate(issue?.title || `Issue activity in ${repoName}.`),
+      type: localized('议题', 'Issue'),
+      title: localized(
+        `${repoShortName} 的议题有新动态`,
+        `${event.payload?.action || 'updated'} issue in ${repoShortName}`
+      ),
+      summary: localized(
+        truncate(issue?.title || `${repoName} 的议题有新动态。`),
+        truncate(issue?.title || `Issue activity in ${repoName}.`)
+      ),
       href: issue?.html_url || baseItem.href,
-      tags: [...baseItem.tags, 'Issue'],
+      tags: localized(['GitHub', repoShortName, '议题'], ['GitHub', repoShortName, 'Issue']),
     };
   }
 
+  const eventType = event.type.replace('Event', '');
   return {
     ...baseItem,
-    type: event.type.replace('Event', ''),
-    title: `${event.type.replace('Event', '')} on ${repoShortName}`,
-    summary: `Public GitHub activity in ${repoName}.`,
+    type: localized('动态', eventType),
+    title: localized(`${repoShortName} 有 GitHub 新动态`, `${eventType} on ${repoShortName}`),
+    summary: localized(`来自 ${repoName} 的公开 GitHub 动态。`, `Public GitHub activity in ${repoName}.`),
   };
 }
 
@@ -139,6 +178,7 @@ function normalizeBilibiliUrl(url) {
 
 function buildBilibiliItem(item, index, generatedAt) {
   const content = truncate(item.content || 'Bilibili update', 120);
+  const likeCount = item.stat?.like;
   return {
     id: `bilibili-${item.opus_id || index}`,
     platform: 'bilibili',
@@ -146,13 +186,14 @@ function buildBilibiliItem(item, index, generatedAt) {
       zh: '最新动态',
       en: 'Latest',
     },
-    type: 'Dynamic',
-    title: content,
-    summary: item.stat?.like
-      ? `${content} · ${item.stat.like} likes on Bilibili.`
-      : content,
+    type: localized('动态', 'Dynamic'),
+    title: localized(content, content),
+    summary: localized(
+      likeCount ? `${content} · B站 ${likeCount} 个赞。` : content,
+      likeCount ? `${content} · ${likeCount} likes on Bilibili.` : content
+    ),
     href: normalizeBilibiliUrl(item.jump_url),
-    tags: ['Bilibili', 'Dynamic'],
+    tags: localized(['B站', '动态'], ['Bilibili', 'Dynamic']),
     cover: item.cover?.url ? normalizeBilibiliUrl(item.cover.url) : undefined,
     sortTime: new Date(generatedAt).getTime() - index,
   };

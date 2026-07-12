@@ -1,4 +1,5 @@
 const en = {
+  brandName: 'Stickman Soma',
   nav: {
     home: 'Home',
     tools: 'My Tools',
@@ -50,9 +51,16 @@ const en = {
     eyebrow: 'Social Hub',
     title: 'Public activity timeline',
     subtitle: 'A clean hub for engineering progress, career context, and content channels.',
+    profileName: 'Soma Li',
     profileRole: 'Independent Developer / Applied AI Builder',
     filterLabel: 'Filter platform',
     openLink: 'Open link',
+    platformLabels: {
+      github: 'GitHub',
+      linkedin: 'LinkedIn',
+      bilibili: 'Bilibili',
+      site: 'Site',
+    },
     stats: [
       { label: 'Repos', value: '48' },
       { label: 'Stars', value: '17' },
@@ -136,6 +144,7 @@ const en = {
     contactTitle: 'Collaboration',
     contactBody:
       'For projects, AI automation, creative content, or community work, LinkedIn is the clearest contact channel.',
+    contactLinkLabel: 'LinkedIn',
   },
   footer: {
     copyright: 'All rights reserved.',
@@ -144,6 +153,7 @@ const en = {
     media: 'Media',
   },
   toolsPage: {
+    eyebrow: 'My Tools',
     title: 'My Tools',
     subtitle:
       'A small shelf for recent personal tools, including a livestream browser-source clock widget and an open-source mini program for answering "what should we eat?" at home.',

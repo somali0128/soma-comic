@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-10T02:58:06.411Z",
+  "generatedAt": "2026-07-12T04:29:38.771Z",
   "sources": [
     {
       "name": "github",
@@ -18,16 +18,31 @@
         "zh": "最新动态",
         "en": "Latest"
       },
-      "type": "Dynamic",
-      "title": "【臭鱼烂虾杯】街霸杯个人正式赛赛报！",
-      "summary": "【臭鱼烂虾杯】街霸杯个人正式赛赛报！ · 4 likes on Bilibili.",
+      "type": {
+        "zh": "动态",
+        "en": "Dynamic"
+      },
+      "title": {
+        "zh": "【臭鱼烂虾杯】街霸杯个人正式赛赛报！",
+        "en": "【臭鱼烂虾杯】街霸杯个人正式赛赛报！"
+      },
+      "summary": {
+        "zh": "【臭鱼烂虾杯】街霸杯个人正式赛赛报！ · B站 4 个赞。",
+        "en": "【臭鱼烂虾杯】街霸杯个人正式赛赛报！ · 4 likes on Bilibili."
+      },
       "href": "https://www.bilibili.com/opus/1203199439810854920",
-      "tags": [
-        "Bilibili",
-        "Dynamic"
-      ],
+      "tags": {
+        "zh": [
+          "B站",
+          "动态"
+        ],
+        "en": [
+          "Bilibili",
+          "Dynamic"
+        ]
+      },
       "cover": "http://i0.hdslb.com/bfs/new_dyn/d1fe8ab858cda6cbfc37a8b0ace2ea39290997685.png",
-      "sortTime": 1783652286411
+      "sortTime": 1783830578771
     },
     {
       "id": "bilibili-1199921847127244801",
@@ -36,16 +51,31 @@
         "zh": "最新动态",
         "en": "Latest"
       },
-      "type": "Dynamic",
-      "title": "【臭鱼烂虾】街霸活动开始报名啦！",
-      "summary": "【臭鱼烂虾】街霸活动开始报名啦！ · 5 likes on Bilibili.",
+      "type": {
+        "zh": "动态",
+        "en": "Dynamic"
+      },
+      "title": {
+        "zh": "【臭鱼烂虾】街霸活动开始报名啦！",
+        "en": "【臭鱼烂虾】街霸活动开始报名啦！"
+      },
+      "summary": {
+        "zh": "【臭鱼烂虾】街霸活动开始报名啦！ · B站 5 个赞。",
+        "en": "【臭鱼烂虾】街霸活动开始报名啦！ · 5 likes on Bilibili."
+      },
       "href": "https://www.bilibili.com/opus/1199921847127244801",
-      "tags": [
-        "Bilibili",
-        "Dynamic"
-      ],
+      "tags": {
+        "zh": [
+          "B站",
+          "动态"
+        ],
+        "en": [
+          "Bilibili",
+          "Dynamic"
+        ]
+      },
       "cover": "http://i0.hdslb.com/bfs/new_dyn/22f76449230fb6413ef38e91233e5407290997685.png",
-      "sortTime": 1783652286410
+      "sortTime": 1783830578770
     },
     {
       "id": "bilibili-1174314663752499219",
@@ -54,16 +84,31 @@
         "zh": "最新动态",
         "en": "Latest"
       },
-      "type": "Dynamic",
-      "title": "臭鱼烂虾无畏契约3v5挑战者杯！就在今晚",
-      "summary": "臭鱼烂虾无畏契约3v5挑战者杯！就在今晚 · 3 likes on Bilibili.",
+      "type": {
+        "zh": "动态",
+        "en": "Dynamic"
+      },
+      "title": {
+        "zh": "臭鱼烂虾无畏契约3v5挑战者杯！就在今晚",
+        "en": "臭鱼烂虾无畏契约3v5挑战者杯！就在今晚"
+      },
+      "summary": {
+        "zh": "臭鱼烂虾无畏契约3v5挑战者杯！就在今晚 · B站 3 个赞。",
+        "en": "臭鱼烂虾无畏契约3v5挑战者杯！就在今晚 · 3 likes on Bilibili."
+      },
       "href": "https://www.bilibili.com/opus/1174314663752499219",
-      "tags": [
-        "Bilibili",
-        "Dynamic"
-      ],
+      "tags": {
+        "zh": [
+          "B站",
+          "动态"
+        ],
+        "en": [
+          "Bilibili",
+          "Dynamic"
+        ]
+      },
       "cover": "http://i0.hdslb.com/bfs/new_dyn/6aef688fc6203d437e989ecc0a1682b4290997685.png",
-      "sortTime": 1783652286409
+      "sortTime": 1783830578769
     },
     {
       "id": "bilibili-1170860204330319894",
@@ -72,15 +117,30 @@
         "zh": "最新动态",
         "en": "Latest"
       },
-      "type": "Dynamic",
-      "title": "臭鱼烂虾挑战杯无畏契约活动说明及致歉公告",
-      "summary": "臭鱼烂虾挑战杯无畏契约活动说明及致歉公告 · 10 likes on Bilibili.",
+      "type": {
+        "zh": "动态",
+        "en": "Dynamic"
+      },
+      "title": {
+        "zh": "臭鱼烂虾挑战杯无畏契约活动说明及致歉公告",
+        "en": "臭鱼烂虾挑战杯无畏契约活动说明及致歉公告"
+      },
+      "summary": {
+        "zh": "臭鱼烂虾挑战杯无畏契约活动说明及致歉公告 · B站 10 个赞。",
+        "en": "臭鱼烂虾挑战杯无畏契约活动说明及致歉公告 · 10 likes on Bilibili."
+      },
       "href": "https://www.bilibili.com/opus/1170860204330319894",
-      "tags": [
-        "Bilibili",
-        "Dynamic"
-      ],
-      "sortTime": 1783652286408
+      "tags": {
+        "zh": [
+          "B站",
+          "动态"
+        ],
+        "en": [
+          "Bilibili",
+          "Dynamic"
+        ]
+      },
+      "sortTime": 1783830578768
     },
     {
       "id": "bilibili-1168630682519339009",
@@ -89,16 +149,31 @@
         "zh": "最新动态",
         "en": "Latest"
       },
-      "type": "Dynamic",
-      "title": "臭鱼烂虾-无畏契约挑战者杯开启！",
-      "summary": "臭鱼烂虾-无畏契约挑战者杯开启！ · 4 likes on Bilibili.",
+      "type": {
+        "zh": "动态",
+        "en": "Dynamic"
+      },
+      "title": {
+        "zh": "臭鱼烂虾-无畏契约挑战者杯开启！",
+        "en": "臭鱼烂虾-无畏契约挑战者杯开启！"
+      },
+      "summary": {
+        "zh": "臭鱼烂虾-无畏契约挑战者杯开启！ · B站 4 个赞。",
+        "en": "臭鱼烂虾-无畏契约挑战者杯开启！ · 4 likes on Bilibili."
+      },
       "href": "https://www.bilibili.com/opus/1168630682519339009",
-      "tags": [
-        "Bilibili",
-        "Dynamic"
-      ],
+      "tags": {
+        "zh": [
+          "B站",
+          "动态"
+        ],
+        "en": [
+          "Bilibili",
+          "Dynamic"
+        ]
+      },
       "cover": "http://i0.hdslb.com/bfs/new_dyn/c35132e53d28ae3d0a9e16cfa0cc5d93290997685.png",
-      "sortTime": 1783652286407
+      "sortTime": 1783830578767
     },
     {
       "id": "bilibili-1163930137190727687",
@@ -107,105 +182,217 @@
         "zh": "最新动态",
         "en": "Latest"
       },
-      "type": "Dynamic",
-      "title": "【臭鱼烂虾】雀魂杯圆满结束！濑濑_Rayi勇夺冠军！",
-      "summary": "【臭鱼烂虾】雀魂杯圆满结束！濑濑_Rayi勇夺冠军！ · 8 likes on Bilibili.",
+      "type": {
+        "zh": "动态",
+        "en": "Dynamic"
+      },
+      "title": {
+        "zh": "【臭鱼烂虾】雀魂杯圆满结束！濑濑_Rayi勇夺冠军！",
+        "en": "【臭鱼烂虾】雀魂杯圆满结束！濑濑_Rayi勇夺冠军！"
+      },
+      "summary": {
+        "zh": "【臭鱼烂虾】雀魂杯圆满结束！濑濑_Rayi勇夺冠军！ · B站 8 个赞。",
+        "en": "【臭鱼烂虾】雀魂杯圆满结束！濑濑_Rayi勇夺冠军！ · 8 likes on Bilibili."
+      },
       "href": "https://www.bilibili.com/opus/1163930137190727687",
-      "tags": [
-        "Bilibili",
-        "Dynamic"
-      ],
+      "tags": {
+        "zh": [
+          "B站",
+          "动态"
+        ],
+        "en": [
+          "Bilibili",
+          "Dynamic"
+        ]
+      },
       "cover": "http://i0.hdslb.com/bfs/new_dyn/7447e293fd27649f7e0b4967f22534cf290997685.png",
-      "sortTime": 1783652286406
+      "sortTime": 1783830578766
+    },
+    {
+      "id": "github-14794477522",
+      "platform": "github",
+      "date": "2026-07-12",
+      "href": "https://github.com/somali0128/soma-comic/commit/4301d095eefaef447081808149dce2e607a1daee",
+      "tags": {
+        "zh": [
+          "GitHub",
+          "soma-comic",
+          "gh-pages"
+        ],
+        "en": [
+          "GitHub",
+          "soma-comic",
+          "gh-pages"
+        ]
+      },
+      "sortTime": 1783822268000,
+      "type": {
+        "zh": "推送",
+        "en": "Push"
+      },
+      "title": {
+        "zh": "向 soma-comic 推送了 1 个提交",
+        "en": "Pushed 1 commit to soma-comic"
+      },
+      "summary": {
+        "zh": "更新了 somali0128/soma-comic。",
+        "en": "Updated somali0128/soma-comic."
+      }
+    },
+    {
+      "id": "github-14794469549",
+      "platform": "github",
+      "date": "2026-07-12",
+      "href": "https://github.com/somali0128/soma-comic/commit/3eccba7161f659c190a376a0183c024d9d2d0ffb",
+      "tags": {
+        "zh": [
+          "GitHub",
+          "soma-comic",
+          "main"
+        ],
+        "en": [
+          "GitHub",
+          "soma-comic",
+          "main"
+        ]
+      },
+      "sortTime": 1783822251000,
+      "type": {
+        "zh": "推送",
+        "en": "Push"
+      },
+      "title": {
+        "zh": "向 soma-comic 推送了 1 个提交",
+        "en": "Pushed 1 commit to soma-comic"
+      },
+      "summary": {
+        "zh": "更新了 somali0128/soma-comic。",
+        "en": "Updated somali0128/soma-comic."
+      }
+    },
+    {
+      "id": "github-14792665351",
+      "platform": "github",
+      "date": "2026-07-12",
+      "href": "https://github.com/somali0128/clock-widget-qiu/commit/77c670f187fb71179bc363e7c1c415682d73956b",
+      "tags": {
+        "zh": [
+          "GitHub",
+          "clock-widget-qiu",
+          "main"
+        ],
+        "en": [
+          "GitHub",
+          "clock-widget-qiu",
+          "main"
+        ]
+      },
+      "sortTime": 1783818429000,
+      "type": {
+        "zh": "推送",
+        "en": "Push"
+      },
+      "title": {
+        "zh": "向 clock-widget-qiu 推送了 1 个提交",
+        "en": "Pushed 1 commit to clock-widget-qiu"
+      },
+      "summary": {
+        "zh": "更新了 somali0128/clock-widget-qiu。",
+        "en": "Updated somali0128/clock-widget-qiu."
+      }
+    },
+    {
+      "id": "github-14666039073",
+      "platform": "github",
+      "date": "2026-07-10",
+      "href": "https://github.com/somali0128/soma-comic/commit/043a861cb7b6026ec330b89f264599cdd0c204c8",
+      "tags": {
+        "zh": [
+          "GitHub",
+          "soma-comic",
+          "main"
+        ],
+        "en": [
+          "GitHub",
+          "soma-comic",
+          "main"
+        ]
+      },
+      "sortTime": 1783652381000,
+      "type": {
+        "zh": "推送",
+        "en": "Push"
+      },
+      "title": {
+        "zh": "向 soma-comic 推送了 1 个提交",
+        "en": "Pushed 1 commit to soma-comic"
+      },
+      "summary": {
+        "zh": "更新了 somali0128/soma-comic。",
+        "en": "Updated somali0128/soma-comic."
+      }
     },
     {
       "id": "github-14665712515",
       "platform": "github",
       "date": "2026-07-10",
       "href": "https://github.com/somali0128/soma-comic/commit/0b065d7e09d852aba2716554d0c930cf3537dba4",
-      "tags": [
-        "GitHub",
-        "soma-comic",
-        "main"
-      ],
+      "tags": {
+        "zh": [
+          "GitHub",
+          "soma-comic",
+          "main"
+        ],
+        "en": [
+          "GitHub",
+          "soma-comic",
+          "main"
+        ]
+      },
       "sortTime": 1783651835000,
-      "type": "Push",
-      "title": "Pushed 1 commit to soma-comic",
-      "summary": "Updated somali0128/soma-comic."
+      "type": {
+        "zh": "推送",
+        "en": "Push"
+      },
+      "title": {
+        "zh": "向 soma-comic 推送了 1 个提交",
+        "en": "Pushed 1 commit to soma-comic"
+      },
+      "summary": {
+        "zh": "更新了 somali0128/soma-comic。",
+        "en": "Updated somali0128/soma-comic."
+      }
     },
     {
       "id": "github-14571129949",
       "platform": "github",
       "date": "2026-07-08",
       "href": "https://github.com/somali0128/soma-comic/commit/97eb088655463dedc09c9e851968a2cf9b0ad798",
-      "tags": [
-        "GitHub",
-        "soma-comic",
-        "main"
-      ],
+      "tags": {
+        "zh": [
+          "GitHub",
+          "soma-comic",
+          "main"
+        ],
+        "en": [
+          "GitHub",
+          "soma-comic",
+          "main"
+        ]
+      },
       "sortTime": 1783532993000,
-      "type": "Push",
-      "title": "Pushed 1 commit to soma-comic",
-      "summary": "Updated somali0128/soma-comic."
-    },
-    {
-      "id": "github-11492987186",
-      "platform": "github",
-      "date": "2026-07-08",
-      "href": "https://github.com/somali0128/wechat-order-menu",
-      "tags": [
-        "GitHub",
-        "wechat-order-menu",
-        "PR"
-      ],
-      "sortTime": 1783486332000,
-      "type": "Pull Request",
-      "title": "opened pull request #1 in wechat-order-menu",
-      "summary": "Pull request opened in somali0128/wechat-order-menu."
-    },
-    {
-      "id": "github-14529135879",
-      "platform": "github",
-      "date": "2026-07-08",
-      "href": "https://github.com/somali0128/wechat-order-menu",
-      "tags": [
-        "GitHub",
-        "wechat-order-menu",
-        "branch"
-      ],
-      "sortTime": 1783486307000,
-      "type": "Create",
-      "title": "Created branch in wechat-order-menu",
-      "summary": "branch: codex/improve-login-sharing-sync"
-    },
-    {
-      "id": "github-11472654947",
-      "platform": "github",
-      "date": "2026-07-07",
-      "href": "https://github.com/somali0128/clock-widget-qiu",
-      "tags": [
-        "GitHub",
-        "clock-widget-qiu"
-      ],
-      "sortTime": 1783445971000,
-      "type": "Watch",
-      "title": "Watch on clock-widget-qiu",
-      "summary": "Public GitHub activity in somali0128/clock-widget-qiu."
-    },
-    {
-      "id": "github-14494187015",
-      "platform": "github",
-      "date": "2026-07-07",
-      "href": "https://github.com/somali0128/clock-widget-qiu/commit/305f6e0866ff5badca2e02fc9f5c75eafce2c955",
-      "tags": [
-        "GitHub",
-        "clock-widget-qiu",
-        "main"
-      ],
-      "sortTime": 1783436353000,
-      "type": "Push",
-      "title": "Pushed 1 commit to clock-widget-qiu",
-      "summary": "Updated somali0128/clock-widget-qiu."
+      "type": {
+        "zh": "推送",
+        "en": "Push"
+      },
+      "title": {
+        "zh": "向 soma-comic 推送了 1 个提交",
+        "en": "Pushed 1 commit to soma-comic"
+      },
+      "summary": {
+        "zh": "更新了 somali0128/soma-comic。",
+        "en": "Updated somali0128/soma-comic."
+      }
     }
   ]
 }

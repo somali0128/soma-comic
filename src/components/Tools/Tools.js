@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 const Tools = ({ t }) => {
-  const { title, subtitle, statusLabel, items } = t.toolsPage;
+  const { eyebrow, title, subtitle, statusLabel, items } = t.toolsPage;
 
   const tools = [
     {
@@ -32,7 +32,7 @@ const Tools = ({ t }) => {
       <div className="mx-auto max-w-5xl">
         <header className="mb-8">
           <p className="font-display text-sm font-black uppercase tracking-[0.18em] text-primary-700">
-            My Tools
+            {eyebrow}
           </p>
           <h1 className="mt-3 font-display text-4xl font-black text-primary-700 sm:text-5xl">
             {title}

@@ -23,6 +23,14 @@ const platformStyles = {
   },
 };
 
+const localizeValue = (value, locale) => {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    return value;
+  }
+
+  return value[locale] || value.en || value.zh || '';
+};
+
 const SocialFeed = ({ t }) => {
   const [activePlatform, setActivePlatform] = useState('all');
   const [syncedItems, setSyncedItems] = useState(null);
@@ -93,11 +101,11 @@ const SocialFeed = ({ t }) => {
             <div className="flex items-center gap-4">
               <img
                 src="https://avatars.githubusercontent.com/u/66934242?v=4"
-                alt="Soma Li"
+                alt={social.profileName}
                 className="h-16 w-16 rounded-full border-[3px] border-slate-950 bg-primary-50"
               />
               <div>
-                <p className="font-display text-lg font-black text-primary-800">Soma Li</p>
+                <p className="font-display text-lg font-black text-primary-800">{social.profileName}</p>
                 <p className="text-sm font-semibold text-slate-600">{social.profileRole}</p>
               </div>
             </div>
@@ -153,10 +161,15 @@ const SocialFeed = ({ t }) => {
           <div className="space-y-4">
             {visibleItems.map((item) => {
               const style = platformStyles[item.platform];
+              const platformLabel = social.platformLabels?.[item.platform] || style.label;
               const dateLabel =
                 typeof item.date === 'object'
                   ? item.date[locale] || item.date.en || item.date.zh
                   : item.date;
+              const typeLabel = localizeValue(item.type, locale);
+              const titleLabel = localizeValue(item.title, locale);
+              const summaryLabel = localizeValue(item.summary, locale);
+              const tagLabels = localizeValue(item.tags, locale) || item.tags || [];
               return (
                 <article
                   key={item.id}
@@ -164,18 +177,18 @@ const SocialFeed = ({ t }) => {
                 >
                   <div className="flex flex-wrap items-center gap-3">
                     <span className={`rounded border-2 border-slate-950 px-2.5 py-1 text-xs font-black ${style.badge}`}>
-                      {style.label}
+                      {platformLabel}
                     </span>
                     <span className="text-sm font-bold text-slate-500">{dateLabel}</span>
                     <span className="text-sm font-bold text-primary-400">/</span>
-                    <span className="text-sm font-bold text-slate-500">{item.type}</span>
+                    <span className="text-sm font-bold text-slate-500">{typeLabel}</span>
                   </div>
                   <h2 className="mt-4 font-display text-xl font-black leading-snug text-slate-950">
-                    {item.title}
+                    {titleLabel}
                   </h2>
-                  <p className="mt-3 text-base font-semibold leading-7 text-slate-600">{item.summary}</p>
+                  <p className="mt-3 text-base font-semibold leading-7 text-slate-600">{summaryLabel}</p>
                   <div className="mt-4 flex flex-wrap gap-2">
-                    {(item.tags || []).map((tag) => (
+                    {tagLabels.map((tag) => (
                       <span
                         key={tag}
                         className="rounded border-2 border-primary-200 bg-primary-50 px-2.5 py-1 text-xs font-bold text-primary-800"
@@ -225,7 +238,7 @@ const SocialFeed = ({ t }) => {
                 rel="noopener noreferrer"
                 className="mt-5 inline-flex rounded-md border-[3px] border-slate-950 px-4 py-2 text-sm font-black text-primary-700 transition hover:-translate-y-0.5 hover:bg-primary-600 hover:text-white"
               >
-                LinkedIn
+                {social.contactLinkLabel}
               </a>
             </section>
           </aside>
