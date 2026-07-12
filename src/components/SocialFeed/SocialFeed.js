@@ -86,18 +86,18 @@ const SocialFeed = ({ t }) => {
       <div className="border-b-[3px] border-slate-950 bg-primary-50">
         <div className="mx-auto grid max-w-7xl gap-8 px-4 py-10 sm:px-6 lg:grid-cols-[minmax(0,1fr)_360px] lg:py-14">
           <div className="flex flex-col justify-center">
-            <p className="font-display text-sm font-black uppercase tracking-[0.16em] text-primary-700">
+            <p className="stickman-enter font-display text-sm font-black uppercase tracking-[0.16em] text-primary-700">
               {social.eyebrow}
             </p>
-            <h1 className="stickman-title mt-3 text-3xl font-black leading-tight text-primary-600 sm:text-4xl lg:text-5xl">
+            <h1 className="stickman-title stickman-enter-delay mt-3 text-3xl font-black leading-tight text-primary-600 sm:text-4xl lg:text-5xl">
               <span className="stickman-scribble inline-block">{social.title}</span>
             </h1>
-            <p className="mt-7 max-w-2xl text-base font-semibold leading-8 text-slate-700 sm:text-lg">
+            <p className="stickman-enter-delay-2 mt-7 max-w-2xl text-base font-semibold leading-8 text-slate-700 sm:text-lg">
               {social.subtitle}
             </p>
           </div>
 
-          <aside className="stickman-card-blue rounded-md bg-white p-5 text-slate-950">
+          <aside className="stickman-card-blue stickman-enter-delay-3 rounded-md bg-white p-5 text-slate-950">
             <div className="flex items-center gap-4">
               <img
                 src="https://avatars.githubusercontent.com/u/66934242?v=4"
@@ -122,7 +122,7 @@ const SocialFeed = ({ t }) => {
       </div>
 
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
-        <div className="flex flex-wrap items-center justify-between gap-4">
+        <div className="stickman-enter-delay-3 flex flex-wrap items-center justify-between gap-4">
           <div className="flex flex-wrap gap-2" role="tablist" aria-label={social.filterLabel}>
             {social.filters.map((filter) => (
               <button
@@ -131,7 +131,7 @@ const SocialFeed = ({ t }) => {
                 role="tab"
                 aria-selected={activePlatform === filter.id}
                 onClick={() => setActivePlatform(filter.id)}
-                className={`rounded-md border px-4 py-2 text-sm font-semibold transition ${
+                className={`stickman-pop rounded-md border px-4 py-2 text-sm font-semibold transition ${
                   activePlatform === filter.id
                     ? 'border-[3px] border-slate-950 bg-primary-600 text-white shadow-[4px_4px_0_rgba(7,27,52,0.18)]'
                     : 'border-[3px] border-slate-950 bg-white text-primary-800 hover:bg-primary-100'
@@ -149,7 +149,7 @@ const SocialFeed = ({ t }) => {
                 href={link.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-md border-[3px] border-slate-950 bg-white px-4 py-2 text-sm font-black text-primary-800 transition hover:-translate-y-0.5 hover:bg-primary-100"
+                className="stickman-pop rounded-md border-[3px] border-slate-950 bg-white px-4 py-2 text-sm font-black text-primary-800 transition hover:bg-primary-100"
               >
                 {link.label}
               </a>
@@ -157,7 +157,7 @@ const SocialFeed = ({ t }) => {
           </div>
         </div>
 
-        <div className="mt-8 grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
+        <div className="stickman-enter-delay-3 mt-8 grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
           <div className="space-y-4">
             {visibleItems.map((item) => {
               const style = platformStyles[item.platform];
@@ -201,7 +201,7 @@ const SocialFeed = ({ t }) => {
                     href={item.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="stickman-card mt-5 inline-flex rounded-md bg-primary-500 px-4 py-2 text-sm font-black text-white transition hover:-translate-y-0.5 hover:bg-primary-600"
+                    className="stickman-card stickman-pop mt-5 inline-flex rounded-md bg-primary-500 px-4 py-2 text-sm font-black text-white transition hover:bg-primary-600"
                   >
                     {social.openLink}
                   </a>
@@ -236,7 +236,7 @@ const SocialFeed = ({ t }) => {
                 href="https://www.linkedin.com/in/dongyue-li-520bb2374/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-5 inline-flex rounded-md border-[3px] border-slate-950 px-4 py-2 text-sm font-black text-primary-700 transition hover:-translate-y-0.5 hover:bg-primary-600 hover:text-white"
+                className="stickman-pop mt-5 inline-flex rounded-md border-[3px] border-slate-950 px-4 py-2 text-sm font-black text-primary-700 transition hover:bg-primary-600 hover:text-white"
               >
                 {social.contactLinkLabel}
               </a>

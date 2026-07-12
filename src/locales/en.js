@@ -153,7 +153,7 @@ const en = {
     media: 'Media',
   },
   toolsPage: {
-    eyebrow: 'My Tools',
+    eyebrow: 'Projects & Experiments',
     title: 'My Tools',
     subtitle:
       'A small shelf for recent personal tools, including a livestream browser-source clock widget and an open-source mini program for answering "what should we eat?" at home.',

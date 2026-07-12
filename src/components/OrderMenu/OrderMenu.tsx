@@ -90,7 +90,7 @@ function RecipeCard({
   showMissing: boolean;
 }) {
   return (
-    <article className="group flex flex-col rounded-2xl border border-orange-100 bg-white/90 p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+    <article className="stickman-pop group flex flex-col rounded-2xl border border-orange-100 bg-white/90 p-5 shadow-sm transition hover:shadow-md">
       <div className="mb-3 flex items-start justify-between gap-3">
         <div>
           <h3 className="text-lg font-bold text-stone-800">{recipe.name}</h3>
@@ -180,19 +180,19 @@ export default function OrderMenu() {
     <section className="mx-auto max-w-5xl px-4 pb-16 pt-24 sm:px-6">
       {/* Header */}
       <header className="mb-8 text-center">
-        <div className="mb-2 inline-flex items-center gap-2 rounded-full bg-orange-100 px-4 py-1.5 text-sm font-medium text-orange-700">
+        <div className="stickman-enter mb-2 inline-flex items-center gap-2 rounded-full bg-orange-100 px-4 py-1.5 text-sm font-medium text-orange-700">
           <span aria-hidden>🧑‍🍳</span>
           今日吃什么
         </div>
-        <h1 className="text-3xl font-bold text-stone-800 sm:text-4xl">
+        <h1 className="stickman-enter-delay text-3xl font-bold text-stone-800 sm:text-4xl">
           家庭点菜小助手
         </h1>
-        <p className="mx-auto mt-3 max-w-lg text-stone-500">
+        <p className="stickman-enter-delay-2 mx-auto mt-3 max-w-lg text-stone-500">
           勾选家里有的食材，看看今天能做什么好吃的～
         </p>
       </header>
 
-      <div className="space-y-6">
+      <div className="stickman-enter-delay-3 space-y-6">
         {/* Mode toggle */}
         <div className="rounded-2xl border border-orange-100 bg-gradient-to-br from-orange-50 to-amber-50 p-5">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -208,7 +208,7 @@ export default function OrderMenu() {
               <button
                 type="button"
                 onClick={() => setMode('strict')}
-                className={`rounded-lg px-4 py-2 text-sm font-medium transition ${
+                className={`stickman-pop rounded-lg px-4 py-2 text-sm font-medium transition ${
                   mode === 'strict'
                     ? 'bg-orange-400 text-white shadow-sm'
                     : 'text-stone-500 hover:text-stone-700'
@@ -219,7 +219,7 @@ export default function OrderMenu() {
               <button
                 type="button"
                 onClick={() => setMode('relaxed')}
-                className={`rounded-lg px-4 py-2 text-sm font-medium transition ${
+                className={`stickman-pop rounded-lg px-4 py-2 text-sm font-medium transition ${
                   mode === 'relaxed'
                     ? 'bg-orange-400 text-white shadow-sm'
                     : 'text-stone-500 hover:text-stone-700'
@@ -247,7 +247,7 @@ export default function OrderMenu() {
               <button
                 type="button"
                 onClick={clearFilters}
-                className="text-sm text-stone-400 transition hover:text-orange-500"
+                className="stickman-pop text-sm text-stone-400 transition hover:text-orange-500"
               >
                 清空筛选
               </button>
@@ -261,7 +261,7 @@ export default function OrderMenu() {
                   key={ingredient.id}
                   type="button"
                   onClick={() => toggleIngredient(ingredient.id)}
-                  className={`inline-flex items-center gap-1.5 rounded-xl border px-3 py-2 text-sm font-medium transition ${
+                  className={`stickman-pop inline-flex items-center gap-1.5 rounded-xl border px-3 py-2 text-sm font-medium transition ${
                     isSelected
                       ? 'border-orange-300 bg-orange-100 text-orange-800 shadow-sm'
                       : 'border-stone-100 bg-stone-50 text-stone-600 hover:border-orange-200 hover:bg-orange-50'
@@ -292,7 +292,7 @@ export default function OrderMenu() {
                   key={tag}
                   type="button"
                   onClick={() => toggleTag(tag)}
-                  className={`rounded-full px-3 py-1.5 text-sm font-medium transition ${
+                  className={`stickman-pop rounded-full px-3 py-1.5 text-sm font-medium transition ${
                     isSelected
                       ? 'bg-amber-400 text-white shadow-sm'
                       : 'bg-stone-100 text-stone-600 hover:bg-amber-100 hover:text-amber-800'

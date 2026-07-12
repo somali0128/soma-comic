@@ -31,18 +31,18 @@ const Tools = ({ t }) => {
     <section className="stickman-paper min-h-[70vh] px-4 pb-16 pt-24 text-slate-950 sm:px-6">
       <div className="mx-auto max-w-5xl">
         <header className="mb-8">
-          <p className="font-display text-sm font-black uppercase tracking-[0.18em] text-primary-700">
+          <p className="stickman-enter font-display text-sm font-black uppercase tracking-[0.18em] text-primary-700">
             {eyebrow}
           </p>
-          <h1 className="mt-3 font-display text-4xl font-black text-primary-700 sm:text-5xl">
+          <h1 className="stickman-enter-delay mt-3 font-display text-4xl font-black text-primary-700 sm:text-5xl">
             {title}
           </h1>
-          <p className="mt-3 max-w-2xl text-base font-bold leading-7 text-slate-700">
+          <p className="stickman-enter-delay-2 mt-3 max-w-2xl text-base font-bold leading-7 text-slate-700">
             {subtitle}
           </p>
         </header>
 
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="stickman-enter-delay-3 grid gap-4 md:grid-cols-2">
           {tools.map((tool) => {
             const CardContent = (
               <article className="stickman-card-blue h-full rounded-md bg-white p-6 transition hover:-translate-y-0.5">
@@ -94,12 +94,12 @@ const Tools = ({ t }) => {
                 href={tool.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block"
+                className="stickman-pop block"
               >
                 {CardContent}
               </a>
             ) : tool.to ? (
-              <Link key={tool.id} to={tool.to} className="block">
+              <Link key={tool.id} to={tool.to} className="stickman-pop block">
                 {CardContent}
               </Link>
             ) : (
