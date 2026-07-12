@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
 import {
   BrowserRouter as Router,
   Routes,
@@ -42,6 +42,10 @@ function AppContent() {
 
   const [currentLanguage, setCurrentLanguage] = useState(getPreferredLanguage);
   const translations = getTranslations(currentLanguage);
+
+  useLayoutEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
 
   useEffect(() => {
     document.documentElement.lang = currentLanguage === 'zh' ? 'zh-CN' : 'en';

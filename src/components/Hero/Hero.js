@@ -56,8 +56,8 @@ const Hero = ({ currentLanguage, onLanguageChange, t }) => {
             </div>
           </header>
 
-          <div className="grid items-end gap-10 pb-10 pt-16 lg:grid-cols-[minmax(0,1fr)_360px] lg:pb-16">
-            <div>
+          <div className="pb-10 pt-16 lg:pb-16">
+            <div className="max-w-4xl">
               <p className="stickman-enter font-display text-sm font-black uppercase tracking-[0.18em] text-primary-700">
                 {home.eyebrow}
               </p>
@@ -88,21 +88,6 @@ const Hero = ({ currentLanguage, onLanguageChange, t }) => {
               </div>
             </div>
 
-            <aside className="stickman-card-blue stickman-enter-delay-2 rounded-md bg-white p-5">
-              <p className="font-display text-sm font-black uppercase tracking-[0.16em] text-primary-700">
-                {home.nowTitle}
-              </p>
-              <div className="mt-5 flex flex-wrap gap-3">
-                {home.nowItems.map((item) => (
-                  <span
-                    key={item.title}
-                    className="stickman-pop rounded-md border-[3px] border-slate-950 bg-primary-50 px-3 py-2 font-display text-sm font-black text-primary-800"
-                  >
-                    {item.title}
-                  </span>
-                ))}
-              </div>
-            </aside>
           </div>
         </div>
       </div>
