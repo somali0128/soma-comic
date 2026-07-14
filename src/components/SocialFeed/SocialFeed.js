@@ -33,15 +33,15 @@ const localizeValue = (value, locale) => {
 
 const SocialFeed = ({ t }) => {
   const [activePlatform, setActivePlatform] = useState('all');
-  const [syncedItems, setSyncedItems] = useState(null);
+  const [syncedItems, setSyncedItems] = useState([]);
   const { social } = t;
   const locale = social.locale || 'en';
 
   useEffect(() => {
     let isMounted = true;
-    const publicUrl = process.env.PUBLIC_URL || '';
+    const apiBaseUrl = process.env.REACT_APP_SOMA_API_URL || 'https://api.sticksoma.art';
 
-    fetch(`${publicUrl}/social-feed.json`, { cache: 'no-store' })
+    fetch(`${apiBaseUrl}/api/social-posts?limit=14`, { cache: 'no-store' })
       .then((response) => {
         if (!response.ok) {
           throw new Error(`Unable to load social feed: ${response.status}`);
@@ -49,15 +49,24 @@ const SocialFeed = ({ t }) => {
         return response.json();
       })
       .then((data) => {
-        if (!isMounted || !Array.isArray(data.items) || data.items.length === 0) {
+        if (!isMounted || !Array.isArray(data.data)) {
           return;
         }
-
-        setSyncedItems(data.items);
+        setSyncedItems(data.data.map((item) => ({
+          id: item.id,
+          platform: item.platform,
+          date: item.publishedAt?.slice(0, 10) || '',
+          href: item.url,
+          cover: item.imageUrl,
+          type: item.type,
+          title: item.title || item.content,
+          summary: item.summary || item.content,
+          tags: item.tags || [],
+        })));
       })
       .catch(() => {
         if (isMounted) {
-          setSyncedItems(null);
+          setSyncedItems([]);
         }
       });
 
@@ -67,8 +76,6 @@ const SocialFeed = ({ t }) => {
   }, []);
 
   const feedItems = useMemo(() => {
-    if (!syncedItems) return social.items;
-
     const staticItems = social.items.filter(
       (item) => !['github', 'bilibili'].includes(item.platform)
     );
