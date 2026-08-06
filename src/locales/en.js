@@ -156,7 +156,7 @@ const en = {
     eyebrow: 'Projects & Experiments',
     title: 'My Tools',
     subtitle:
-      'A small shelf for recent personal tools, including a livestream browser-source clock widget and an open-source mini program for answering "what should we eat?" at home.',
+      'A small shelf for recent personal tools, including livestream browser sources, a real-time heart-rate battle overlay, and an open-source family menu mini program.',
     statusLabel: 'Recent',
     items: {
       clock: {
@@ -174,6 +174,14 @@ const en = {
           'An open-source WeChat mini program reference project for helping families decide what to eat. It turns meal discussion into a simple ordering flow and can be used as a practical example for mini program development.',
         details: ['Built around family meal decisions', 'Menu categories, dish details, and grocery confirmation flow', 'Open-source code for WeChat mini program reference'],
         linkLabel: 'View wechat-order-menu repo',
+      },
+      heartRateBattle: {
+        title: 'Heart Rate Battle',
+        status: 'Real-time OBS heart-rate overlay',
+        description:
+          'A highly customizable two-player OBS browser source that reads live heart rates and compares each player’s average BPM at the end of every round.',
+        details: ['Supports JSON HTTP, WebSocket, Pulsoid, and HypeRate', 'Automatically samples, reconnects, and excludes stale or invalid data', 'Transparent background for landscape and portrait livestream layouts'],
+        linkLabel: 'View heart-rate-battle repo',
       },
     },
   },

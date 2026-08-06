@@ -25,6 +25,16 @@ const Tools = ({ t }) => {
       icon: '🍜',
       href: 'https://github.com/somali0128/wechat-order-menu',
     },
+    {
+      id: 'heartRateBattle',
+      title: items.heartRateBattle.title,
+      description: items.heartRateBattle.description,
+      details: items.heartRateBattle.details,
+      status: items.heartRateBattle.status,
+      linkLabel: items.heartRateBattle.linkLabel,
+      icon: '❤️',
+      href: 'https://github.com/somali0128/heart-rate-battle',
+    },
   ];
 
   return (
