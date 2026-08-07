@@ -6,6 +6,22 @@ const Tools = ({ t }) => {
 
   const tools = [
     {
+      id: 'lottery',
+      title: t.social.locale === 'zh' ? '幸运抽奖工具' : 'Lucky Draw',
+      description:
+        t.social.locale === 'zh'
+          ? '一个集合幸运转盘、随机名单和抛硬币的轻量抽奖台。'
+          : 'A playful raffle desk for prize wheels, random lists, and coin flips.',
+      details:
+        t.social.locale === 'zh'
+          ? ['三种抽奖模式', '支持权重与名单导入', '内置抽奖动画与结果展示']
+          : ['Three draw modes', 'Weighted entries and imports', 'Animated draws and clear results'],
+      status: t.social.locale === 'zh' ? '站内工具 / 即开即用' : 'On-site tool / ready to use',
+      linkLabel: t.social.locale === 'zh' ? '打开幸运抽奖工具 →' : 'Open Lucky Draw →',
+      icon: '🎲',
+      to: '/lottery',
+    },
+    {
       id: 'clock',
       title: items.clock.title,
       description: items.clock.description,
