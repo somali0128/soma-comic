@@ -67,6 +67,9 @@ const Hero = ({ currentLanguage, onLanguageChange, t }) => {
               <p className="stickman-enter-delay-2 mt-7 max-w-xl text-xl font-black leading-8 text-slate-800 sm:text-2xl">
                 {home.subtitle}
               </p>
+              <p className="stickman-enter-delay-2 mt-3 text-sm font-extrabold tracking-wide text-slate-600 sm:text-base">
+                {home.identity}
+              </p>
               <div className="stickman-enter-delay-3 mt-8 flex flex-wrap gap-3">
                 <Link
                   to="/social"
