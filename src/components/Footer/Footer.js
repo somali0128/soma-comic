@@ -22,7 +22,7 @@ const Footer = ({ t }) => {
             <ul className="flex flex-col gap-1 sm:gap-2">
               <li><a href="/" className="text-primary-50 font-bold transition-colors duration-200 hover:text-white text-sm sm:text-base">{t.nav.home}</a></li>
               <li><a href="/tools" className="text-primary-50 font-bold transition-colors duration-200 hover:text-white text-sm sm:text-base">{t.nav.tools}</a></li>
-              <li><a href="/social" className="text-primary-50 font-bold transition-colors duration-200 hover:text-white text-sm sm:text-base">{t.nav.socialFeed}</a></li>
+              <li><a href="/tools#projects" className="text-primary-50 font-bold transition-colors duration-200 hover:text-white text-sm sm:text-base">{t.nav.projects}</a></li>
             </ul>
           </div>
 
@@ -54,3 +54,4 @@ const Footer = ({ t }) => {
 };
 
 export default Footer;
+
