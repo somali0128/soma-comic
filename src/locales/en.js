@@ -4,7 +4,7 @@ const en = {
     home: 'Home',
     tools: 'My Tools',
     orderMenu: 'Order Menu',
-    socialFeed: 'Social Feed',
+    projects: 'Projects',
   },
   placeholder: {
     comingSoon: 'This page is under construction. Check back soon.',
@@ -20,7 +20,7 @@ const en = {
     title: 'Soma Li',
     subtitle: 'AI Agent Builder in Halifax',
     identity: 'Dongyue Li · Soma Li · 李东樾 · 樾哥',
-    primaryCta: 'Updates',
+    primaryCta: 'Open Toolbox',
     nowTitle: 'Focus',
     nowItems: [
       {
@@ -37,9 +37,9 @@ const en = {
       },
     ],
     panels: {
-      social: {
-        title: 'Social Feed',
-        description: 'GitHub, LinkedIn, and Bilibili updates.',
+      projects: {
+        title: 'Selected Work',
+        description: 'AI experiments, livestream components, and useful everyday tools.',
       },
       tools: {
         title: 'My Tools',
@@ -159,6 +159,11 @@ const en = {
     subtitle:
       'A small shelf for recent personal tools, including livestream browser sources, a real-time heart-rate battle overlay, and an open-source family menu mini program.',
     statusLabel: 'Recent',
+    useNow: 'Use it now',
+    viewSource: 'View project',
+    projectsEyebrow: 'Selected work',
+    projectsTitle: 'Small problems, finished into useful things',
+    projectsSubtitle: 'Less posting for the sake of posting; more work that shows how I think and build.',
     items: {
       clock: {
         title: 'Clock Plugin',
@@ -189,3 +194,4 @@ const en = {
 };
 
 export default en;
+
