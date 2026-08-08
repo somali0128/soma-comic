@@ -3,12 +3,12 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
+  Navigate,
   useLocation,
 } from 'react-router-dom';
 import Navbar from './components/Navbar/Navbar';
 import Footer from './components/Footer/Footer';
 import Hero from './components/Hero/Hero';
-import SocialFeed from './components/SocialFeed/SocialFeed';
 import OrderMenu from './components/OrderMenu';
 import Tools from './components/Tools/Tools';
 import LotteryTool from './components/LotteryTool/LotteryTool';
@@ -83,7 +83,7 @@ function AppContent() {
           <Route path="/tools" element={<Tools t={translations} />} />
           <Route path="/lottery" element={<LotteryTool key={currentLanguage} language={currentLanguage} />} />
           <Route path="/order-menu" element={<OrderMenu />} />
-          <Route path="/social" element={<SocialFeed t={translations} />} />
+          <Route path="/social" element={<Navigate to="/tools" replace />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
@@ -102,3 +102,4 @@ function App() {
 }
 
 export default App;
+
