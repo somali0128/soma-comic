@@ -19,7 +19,7 @@ const en = {
     eyebrow: 'AI / Automation / Creative Tech',
     title: 'Soma Li',
     subtitle: 'AI Agent Builder in Halifax',
-    identity: 'Dongyue Li · Soma Li · 李东樾 · 樾哥',
+    identity: 'Dongyue Li · Soma Li · 樾哥',
     primaryCta: 'Updates',
     nowTitle: 'Focus',
     nowItems: [

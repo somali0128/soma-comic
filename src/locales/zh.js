@@ -19,7 +19,7 @@ const zh = {
     eyebrow: 'AI / 自动化工具 / UP主',
     title: '樾哥Soma',
     subtitle: '在哈利法克斯折腾 AI 智能体、自动化工具和内容创作',
-    identity: '李东樾 · 樾哥 · Dongyue Li · Soma Li',
+    identity: '樾哥 · Dongyue Li · Soma Li',
     primaryCta: '动态',
     nowTitle: '最近在做',
     nowItems: [
