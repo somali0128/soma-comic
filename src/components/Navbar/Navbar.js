@@ -30,10 +30,10 @@ const Navbar = ({ currentLanguage, onLanguageChange, t }) => {
               {t.nav.tools}
               <span className="absolute bottom-0 left-0 w-0 h-[3px] rounded-full bg-primary-500 transition-all duration-200 group-hover:w-full"></span>
             </Link>
-            <Link to="/social" className="relative font-display font-black text-slate-700 transition-colors duration-200 hover:text-primary-700 group">
-              {t.nav.socialFeed}
+            <a href="/tools#projects" className="relative font-display font-black text-slate-700 transition-colors duration-200 hover:text-primary-700 group">
+              {t.nav.projects}
               <span className="absolute bottom-0 left-0 w-0 h-[3px] rounded-full bg-primary-500 transition-all duration-200 group-hover:w-full"></span>
-            </Link>
+            </a>
           </div>
 
           <div className="flex items-center gap-3 sm:gap-4">
@@ -61,9 +61,9 @@ const Navbar = ({ currentLanguage, onLanguageChange, t }) => {
             <Link to="/tools" className="block rounded-md border-2 border-transparent px-4 py-3 font-display font-black text-slate-700 transition-colors duration-200 hover:border-slate-950 hover:bg-white hover:text-primary-700" onClick={closeMenu}>
               {t.nav.tools}
             </Link>
-            <Link to="/social" className="block rounded-md border-2 border-transparent px-4 py-3 font-display font-black text-slate-700 transition-colors duration-200 hover:border-slate-950 hover:bg-white hover:text-primary-700" onClick={closeMenu}>
-              {t.nav.socialFeed}
-            </Link>
+            <a href="/tools#projects" className="block rounded-md border-2 border-transparent px-4 py-3 font-display font-black text-slate-700 transition-colors duration-200 hover:border-slate-950 hover:bg-white hover:text-primary-700" onClick={closeMenu}>
+              {t.nav.projects}
+            </a>
           </div>
         </div>
       </div>
@@ -72,3 +72,4 @@ const Navbar = ({ currentLanguage, onLanguageChange, t }) => {
 };
 
 export default Navbar;
+

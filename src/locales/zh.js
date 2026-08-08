@@ -4,7 +4,7 @@ const zh = {
     home: '首页',
     tools: '我的工具',
     orderMenu: '我要点菜',
-    socialFeed: '社交动态',
+    projects: '作品集',
   },
   placeholder: {
     comingSoon: '页面建设中，敬请期待。',
@@ -20,7 +20,7 @@ const zh = {
     title: '樾哥Soma',
     subtitle: '在哈利法克斯折腾 AI 智能体、自动化工具和内容创作',
     identity: '李东樾 · 樾哥 · Dongyue Li · Soma Li',
-    primaryCta: '动态',
+    primaryCta: '打开工具箱',
     nowTitle: '最近在做',
     nowItems: [
       {
@@ -37,9 +37,9 @@ const zh = {
       },
     ],
     panels: {
-      social: {
-        title: '社交动态',
-        description: 'GitHub、领英、B 站公开更新。',
+      projects: {
+        title: '作品集',
+        description: '我做过的 AI、直播组件与生活工具。',
       },
       tools: {
         title: '我的工具',
@@ -156,6 +156,11 @@ const zh = {
     subtitle:
       '这里收集最近做的小工具和生活向项目，包括直播浏览器源、实时心率对决组件，以及帮助家庭解决“吃什么”的开源小程序。',
     statusLabel: '最近制作',
+    useNow: '立即使用',
+    viewSource: '查看作品',
+    projectsEyebrow: '选择的作品',
+    projectsTitle: '从一个小问题，做成能用的东西',
+    projectsSubtitle: '不追求发布频率，只放真正能说明思考和实现能力的作品。',
     items: {
       clock: {
         title: '时钟插件',
@@ -186,3 +191,4 @@ const zh = {
 };
 
 export default zh;
+

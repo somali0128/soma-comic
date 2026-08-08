@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import LanguageSwitch from '../LanguageSwitch/LanguageSwitch';
 
 const PANEL_IMAGES = {
-  social:
+  projects:
     'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1600&q=80',
   tools:
     'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1600&h=900&q=80',
@@ -13,11 +13,11 @@ const Hero = ({ currentLanguage, onLanguageChange, t }) => {
   const { home, social } = t;
   const panelList = [
     {
-      id: 'social',
-      to: '/social',
-      title: home.panels.social.title,
-      description: home.panels.social.description,
-      image: PANEL_IMAGES.social,
+      id: 'projects',
+      to: '/tools#projects',
+      title: home.panels.projects.title,
+      description: home.panels.projects.description,
+      image: PANEL_IMAGES.projects,
     },
     {
       id: 'tools',
@@ -42,9 +42,9 @@ const Hero = ({ currentLanguage, onLanguageChange, t }) => {
             </Link>
             <div className="flex items-center gap-4">
               <nav className="hidden items-center gap-6 text-sm font-extrabold text-slate-700 md:flex">
-                <Link className="transition hover:text-primary-700" to="/social">
-                  {t.nav.socialFeed}
-                </Link>
+                <a className="transition hover:text-primary-700" href="/tools#projects">
+                  {t.nav.projects}
+                </a>
                 <Link className="transition hover:text-primary-700" to="/tools">
                   {t.nav.tools}
                 </Link>
@@ -72,7 +72,7 @@ const Hero = ({ currentLanguage, onLanguageChange, t }) => {
               </p>
               <div className="stickman-enter-delay-3 mt-8 flex flex-wrap gap-3">
                 <Link
-                  to="/social"
+                  to="/tools"
                   className="stickman-card stickman-pop rounded-md bg-primary-500 px-5 py-3 text-sm font-black text-white transition hover:bg-primary-600"
                 >
                   {home.primaryCta}
@@ -120,3 +120,4 @@ const Hero = ({ currentLanguage, onLanguageChange, t }) => {
 };
 
 export default Hero;
+

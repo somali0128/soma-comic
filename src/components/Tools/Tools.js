@@ -2,140 +2,80 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 const Tools = ({ t }) => {
-  const { eyebrow, title, subtitle, statusLabel, items } = t.toolsPage;
+  const { eyebrow, title, subtitle, items } = t.toolsPage;
+  const isZh = t.social.locale === 'zh';
 
   const tools = [
     {
-      id: 'lottery',
-      title: t.social.locale === 'zh' ? '幸运抽奖工具' : 'Lucky Draw',
-      description:
-        t.social.locale === 'zh'
-          ? '一个集合幸运转盘、随机名单和抛硬币的轻量抽奖台。'
-          : 'A playful raffle desk for prize wheels, random lists, and coin flips.',
-      details:
-        t.social.locale === 'zh'
-          ? ['三种抽奖模式', '支持权重与名单导入', '内置抽奖动画与结果展示']
-          : ['Three draw modes', 'Weighted entries and imports', 'Animated draws and clear results'],
-      status: t.social.locale === 'zh' ? '站内工具 / 即开即用' : 'On-site tool / ready to use',
-      linkLabel: t.social.locale === 'zh' ? '打开幸运抽奖工具 →' : 'Open Lucky Draw →',
-      icon: '🎲',
-      to: '/lottery',
+      id: 'lottery', icon: '🎯', accent: 'bg-amber-100', to: '/lottery',
+      title: isZh ? '幸运抽奖工具' : 'Lucky Draw',
+      status: isZh ? '站内工具 · 即开即用' : 'On-site tool · ready to use',
+      description: isZh ? '转盘、随机名单与硬币三种抽选方式，适合直播、活动和日常决策。' : 'A playful raffle desk with a wheel, random list, and coin flip for streams, events, and everyday decisions.',
+      details: isZh ? ['三种抽选模式', '支持权重和名单导入', '动画结果展示'] : ['Three draw modes', 'Weighted entries and imports', 'Animated, clear results'],
     },
     {
-      id: 'clock',
-      title: items.clock.title,
-      description: items.clock.description,
-      details: items.clock.details,
-      status: items.clock.status,
-      linkLabel: items.clock.linkLabel,
-      icon: '⏰',
-      href: 'https://github.com/somali0128/clock-widget-qiu',
-    },
-    {
-      id: 'orderMenu',
-      title: items.orderMenu.title,
-      description: items.orderMenu.description,
-      details: items.orderMenu.details,
-      status: items.orderMenu.status,
-      linkLabel: items.orderMenu.linkLabel,
-      icon: '🍜',
-      href: 'https://github.com/somali0128/wechat-order-menu',
-    },
-    {
-      id: 'heartRateBattle',
-      title: items.heartRateBattle.title,
-      description: items.heartRateBattle.description,
-      details: items.heartRateBattle.details,
-      status: items.heartRateBattle.status,
-      linkLabel: items.heartRateBattle.linkLabel,
-      icon: '❤️',
-      href: 'https://github.com/somali0128/heart-rate-battle',
+      id: 'menu', icon: '🍜', accent: 'bg-emerald-100', to: '/order-menu',
+      title: isZh ? '今天吃什么' : 'What Should We Eat?',
+      status: isZh ? '站内工具 · 家庭菜单' : 'On-site tool · family menu',
+      description: isZh ? '把“今天吃什么”变成一个轻松的点菜流程，收集想法、确认菜品。' : 'Turn the daily “what should we eat?” question into a lightweight family ordering flow.',
+      details: isZh ? ['菜单分类与筛选', '点菜清单', '手机端优先'] : ['Menu categories and filters', 'Shared order list', 'Mobile-first experience'],
     },
   ];
 
+  const projects = [
+    { id: 'clock', icon: '◷', href: 'https://github.com/somali0128/clock-widget-qiu', ...items.clock },
+    { id: 'orderMenu', icon: '☕', href: 'https://github.com/somali0128/wechat-order-menu', ...items.orderMenu },
+    { id: 'heartRateBattle', icon: '♥', href: 'https://github.com/somali0128/heart-rate-battle', ...items.heartRateBattle },
+  ];
+
   return (
-    <section className="stickman-paper min-h-[70vh] px-4 pb-16 pt-24 text-slate-950 sm:px-6">
-      <div className="mx-auto max-w-5xl">
-        <header className="mb-8">
-          <p className="stickman-enter font-display text-sm font-black uppercase tracking-[0.18em] text-primary-700">
-            {eyebrow}
-          </p>
-          <h1 className="stickman-enter-delay mt-3 font-display text-4xl font-black text-primary-700 sm:text-5xl">
-            {title}
-          </h1>
-          <p className="stickman-enter-delay-2 mt-3 max-w-2xl text-base font-bold leading-7 text-slate-700">
-            {subtitle}
-          </p>
+    <section className="stickman-paper min-h-screen px-4 pb-20 pt-24 text-slate-950 sm:px-6">
+      <div className="mx-auto max-w-6xl">
+        <header className="mb-10 grid gap-6 border-b-[3px] border-slate-950 pb-9 lg:grid-cols-[1fr_280px] lg:items-end">
+          <div>
+            <p className="stickman-enter font-display text-sm font-black uppercase tracking-[0.18em] text-primary-700">{eyebrow}</p>
+            <h1 className="stickman-enter-delay mt-3 font-display text-5xl font-black leading-none text-primary-700 sm:text-6xl">{title}</h1>
+            <p className="stickman-enter-delay-2 mt-5 max-w-2xl text-base font-bold leading-7 text-slate-700">{subtitle}</p>
+          </div>
+          <div className="rounded-md border-[3px] border-slate-950 bg-primary-600 p-5 text-white shadow-[6px_6px_0_#071b34]">
+            <p className="font-display text-4xl font-black">02</p>
+            <p className="mt-1 text-sm font-extrabold">{isZh ? '个可直接使用的站内工具' : 'tools you can use right here'}</p>
+          </div>
         </header>
 
-        <div className="stickman-enter-delay-3 grid gap-4 md:grid-cols-2">
-          {tools.map((tool) => {
-            const CardContent = (
-              <article className="stickman-card-blue h-full rounded-md bg-white p-6 transition hover:-translate-y-0.5">
-                <div className="mb-5 flex items-start justify-between gap-4">
-                  <div className="flex items-center gap-3">
-                    <span
-                      className="flex h-12 w-12 items-center justify-center rounded-md border-[3px] border-slate-950 bg-primary-50 text-2xl"
-                      aria-hidden
-                    >
-                      {tool.icon}
-                    </span>
-                    <div>
-                      <h2 className="font-display text-xl font-black text-slate-950">
-                        {tool.title}
-                      </h2>
-                      <p className="mt-1 text-sm font-bold text-primary-700">
-                        {tool.status}
-                      </p>
-                    </div>
-                  </div>
-                  <span className="rounded-md border-2 border-slate-950 bg-primary-100 px-3 py-1 text-xs font-black text-primary-800">
-                    {statusLabel}
-                  </span>
-                </div>
-
-                <p className="text-sm font-semibold leading-6 text-slate-700">
-                  {tool.description}
-                </p>
-                <ul className="mt-5 space-y-2">
-                  {tool.details.map((detail) => (
-                    <li
-                      key={detail}
-                      className="flex gap-2 text-sm font-semibold leading-6 text-slate-700"
-                    >
-                      <span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-primary-500" />
-                      <span>{detail}</span>
-                    </li>
-                  ))}
-                </ul>
-                <p className="mt-6 font-display text-sm font-black text-primary-700">
-                  {tool.linkLabel}
-                </p>
-              </article>
-            );
-
-            return tool.href ? (
-              <a
-                key={tool.id}
-                href={tool.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="stickman-pop block"
-              >
-                {CardContent}
-              </a>
-            ) : tool.to ? (
-              <Link key={tool.id} to={tool.to} className="stickman-pop block">
-                {CardContent}
-              </Link>
-            ) : (
-              <div key={tool.id}>{CardContent}</div>
-            );
-          })}
+        <div className="grid gap-5 md:grid-cols-2">
+          {tools.map((tool) => (
+            <Link key={tool.id} to={tool.to} className="stickman-card-blue stickman-pop group rounded-md bg-white p-6 transition hover:-translate-y-1 sm:p-7">
+              <div className={`flex h-14 w-14 items-center justify-center rounded-md border-[3px] border-slate-950 text-2xl ${tool.accent}`}>{tool.icon}</div>
+              <p className="mt-6 text-xs font-black uppercase tracking-[0.16em] text-primary-700">{tool.status}</p>
+              <h2 className="mt-2 font-display text-3xl font-black">{tool.title}</h2>
+              <p className="mt-3 font-semibold leading-7 text-slate-600">{tool.description}</p>
+              <ul className="mt-5 flex flex-wrap gap-2">{tool.details.map((detail) => <li key={detail} className="rounded border-2 border-primary-200 bg-primary-50 px-3 py-1 text-xs font-extrabold text-primary-800">{detail}</li>)}</ul>
+              <p className="mt-7 font-display font-black text-primary-700 group-hover:translate-x-1 transition-transform">{t.toolsPage.useNow} →</p>
+            </Link>
+          ))}
         </div>
+
+        <section id="projects" className="scroll-mt-24 pt-20">
+          <p className="font-display text-sm font-black uppercase tracking-[0.18em] text-primary-700">{t.toolsPage.projectsEyebrow}</p>
+          <h2 className="mt-3 max-w-3xl font-display text-4xl font-black leading-tight sm:text-5xl">{t.toolsPage.projectsTitle}</h2>
+          <p className="mt-4 max-w-2xl font-semibold leading-7 text-slate-600">{t.toolsPage.projectsSubtitle}</p>
+          <div className="mt-8 grid gap-4 lg:grid-cols-3">
+            {projects.map((project, index) => (
+              <a key={project.id} href={project.href} target="_blank" rel="noopener noreferrer" className="stickman-pop flex h-full flex-col rounded-md border-[3px] border-slate-950 bg-white p-5 shadow-[5px_5px_0_rgba(7,27,52,.16)] transition hover:-translate-y-1">
+                <div className="flex items-center justify-between"><span className="text-3xl" aria-hidden>{project.icon}</span><span className="font-display text-sm font-black text-primary-300">0{index + 1}</span></div>
+                <h3 className="mt-5 font-display text-2xl font-black">{project.title}</h3>
+                <p className="mt-2 text-xs font-black uppercase tracking-wide text-primary-700">{project.status}</p>
+                <p className="mt-4 flex-1 text-sm font-semibold leading-6 text-slate-600">{project.description}</p>
+                <p className="mt-6 font-display text-sm font-black text-primary-700">{t.toolsPage.viewSource} ↗</p>
+              </a>
+            ))}
+          </div>
+        </section>
       </div>
     </section>
   );
 };
 
 export default Tools;
+
