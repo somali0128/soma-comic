@@ -7,6 +7,13 @@ const Tools = ({ t }) => {
 
   const tools = [
     {
+      id: 'vocal', icon: '♫', accent: 'bg-sky-100', to: '/vocal-practice',
+      title: isZh ? '声乐练习室' : 'Vocal Practice Lab',
+      status: isZh ? '麦克风工具 · 实时音高' : 'Microphone tool · live pitch',
+      description: isZh ? '用实时音高轨迹、音准偏差提示和模拟钢琴，完成每天几分钟的发声练习。' : 'Warm up with a live pitch trace, tuning feedback, target notes, and an interactive piano.',
+      details: isZh ? ['实时音高检测', '每日练习打卡', '两组八度钢琴'] : ['Live pitch detection', 'Daily practice streak', 'Two-octave piano'],
+    },
+    {
       id: 'lottery', icon: '🎯', accent: 'bg-amber-100', to: '/lottery',
       title: isZh ? '幸运抽奖工具' : 'Lucky Draw',
       status: isZh ? '站内工具 · 即开即用' : 'On-site tool · ready to use',
@@ -38,7 +45,7 @@ const Tools = ({ t }) => {
             <p className="stickman-enter-delay-2 mt-5 max-w-2xl text-base font-bold leading-7 text-slate-700">{subtitle}</p>
           </div>
           <div className="rounded-md border-[3px] border-slate-950 bg-primary-600 p-5 text-white shadow-[6px_6px_0_#071b34]">
-            <p className="font-display text-4xl font-black">02</p>
+            <p className="font-display text-4xl font-black">03</p>
             <p className="mt-1 text-sm font-extrabold">{isZh ? '个可直接使用的站内工具' : 'tools you can use right here'}</p>
           </div>
         </header>
