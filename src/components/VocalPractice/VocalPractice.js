@@ -4,6 +4,8 @@ import './VocalPractice.css';
 const NOTE_NAMES = ['C', 'C♯', 'D', 'D♯', 'E', 'F', 'F♯', 'G', 'G♯', 'A', 'A♯', 'B'];
 const KEYBOARD_KEYS = ['z', 's', 'x', 'd', 'c', 'v', 'g', 'b', 'h', 'n', 'j', 'm', ',', 'l', '.', ';', '/', 'q', '2', 'w'];
 const PIANO_NOTES = Array.from({ length: 20 }, (_, index) => 45 + index);
+const PITCH_MIN_MIDI = 38; // D2
+const PITCH_MAX_MIDI = 74; // D5
 
 const copy = {
   zh: {
@@ -13,7 +15,7 @@ const copy = {
     micHint: '音频只在你的浏览器中分析，不会上传或保存。建议佩戴耳机。',
     current: '当前音高', target: '目标音', accuracy: '音准', cents: '音分', frequency: '频率',
     low: '偏低', high: '偏高', inTune: '很准', quiet: '唱一个稳定的音…',
-    trace: '刚才的音高', traceHint: '显示最近约 20 秒 · 纵向代表音调高低',
+    trace: '刚才的音高', traceHint: '显示最近约 20 秒 · 纵轴固定为 D2—D5',
     routine: '今日发声练习', routineHint: '轻声、放松，舒服比音量更重要。', done: '完成今日练习', completed: '今天已完成', streak: '连续练习', days: '天',
     steps: ['唇颤音 · 1 分钟', '哼鸣滑音 · 2 分钟', '五声音阶 · 3 分钟'],
     keyboard: '模拟键盘', keyboardHint: '按住琴键持续发声，松开停止；也可使用琴键上标注的电脑按键。',
@@ -26,7 +28,7 @@ const copy = {
     micHint: 'Audio is analysed only in your browser—it is never uploaded or saved. Headphones are recommended.',
     current: 'Current pitch', target: 'Target note', accuracy: 'Accuracy', cents: 'cents', frequency: 'Frequency',
     low: 'Flat', high: 'Sharp', inTune: 'In tune', quiet: 'Sing a steady note…',
-    trace: 'Recent pitch', traceHint: 'About 20 seconds · higher on the chart means higher pitch',
+    trace: 'Recent pitch', traceHint: 'About 20 seconds · fixed D2—D5 vertical range',
     routine: "Today's warm-up", routineHint: 'Stay gentle and relaxed. Comfort matters more than volume.', done: 'Finish today', completed: 'Done for today', streak: 'Practice streak', days: 'days',
     steps: ['Lip trill · 1 min', 'Humming sirens · 2 min', 'Five-note scales · 3 min'],
     keyboard: 'Practice piano', keyboardHint: 'Press and hold a piano key to sustain it; release to stop. Computer-key shortcuts are shown on the keys.',
@@ -36,40 +38,74 @@ const copy = {
 
 function midiToNote(midi) { return `${NOTE_NAMES[((midi % 12) + 12) % 12]}${Math.floor(midi / 12) - 1}`; }
 function frequencyToMidi(frequency) { return 69 + 12 * Math.log2(frequency / 440); }
+function midiToFrequency(midi) { return 440 * (2 ** ((midi - 69) / 12)); }
 
-function autoCorrelate(buffer, sampleRate) {
+function detectPitchYin(buffer, sampleRate, differenceBuffer) {
   let rms = 0;
   for (let i = 0; i < buffer.length; i += 1) rms += buffer[i] * buffer[i];
   rms = Math.sqrt(rms / buffer.length);
   if (rms < 0.012) return null;
-  const minLag = Math.floor(sampleRate / 1000);
-  const maxLag = Math.min(Math.floor(sampleRate / 65), buffer.length - 1);
-  let bestLag = -1;
-  let bestCorrelation = 0;
-  for (let lag = minLag; lag <= maxLag; lag += 1) {
-    let correlation = 0;
-    for (let i = 0; i < buffer.length - lag; i += 1) correlation += buffer[i] * buffer[i + lag];
-    correlation /= buffer.length - lag;
-    if (correlation > bestCorrelation) { bestCorrelation = correlation; bestLag = lag; }
+
+  const minLag = Math.max(2, Math.floor(sampleRate / midiToFrequency(PITCH_MAX_MIDI)));
+  const maxLag = Math.min(
+    Math.ceil(sampleRate / midiToFrequency(PITCH_MIN_MIDI)),
+    Math.floor(buffer.length / 2),
+  );
+  const comparisonLength = buffer.length - maxLag;
+
+  differenceBuffer.fill(0, 0, maxLag + 1);
+  for (let lag = 1; lag <= maxLag; lag += 1) {
+    let difference = 0;
+    for (let i = 0; i < comparisonLength; i += 1) {
+      const delta = buffer[i] - buffer[i + lag];
+      difference += delta * delta;
+    }
+    differenceBuffer[lag] = difference;
   }
-  return bestCorrelation > 0.01 && bestLag > 0 ? sampleRate / bestLag : null;
+
+  differenceBuffer[0] = 1;
+  let runningSum = 0;
+  for (let lag = 1; lag <= maxLag; lag += 1) {
+    runningSum += differenceBuffer[lag];
+    differenceBuffer[lag] = runningSum === 0 ? 1 : (differenceBuffer[lag] * lag) / runningSum;
+  }
+
+  const threshold = 0.14;
+  let selectedLag = -1;
+  for (let lag = minLag; lag <= maxLag; lag += 1) {
+    if (differenceBuffer[lag] < threshold) {
+      selectedLag = lag;
+      while (selectedLag + 1 <= maxLag && differenceBuffer[selectedLag + 1] < differenceBuffer[selectedLag]) selectedLag += 1;
+      break;
+    }
+  }
+  if (selectedLag < 0 || 1 - differenceBuffer[selectedLag] < 0.82) return null;
+
+  const before = differenceBuffer[Math.max(1, selectedLag - 1)];
+  const center = differenceBuffer[selectedLag];
+  const after = differenceBuffer[Math.min(maxLag, selectedLag + 1)];
+  const denominator = before - (2 * center) + after;
+  const adjustment = Math.abs(denominator) < 1e-6 ? 0 : 0.5 * (before - after) / denominator;
+  const refinedLag = selectedLag + Math.max(-0.5, Math.min(0.5, adjustment));
+  return sampleRate / refinedLag;
 }
 
 function PitchTrace({ points, targetMidi }) {
   const width = 1200; const height = 280;
-  const values = points.filter(Boolean);
-  const center = values.length ? values[values.length - 1] : targetMidi;
-  const min = Math.floor(center - 5); const max = Math.ceil(center + 5);
+  const plotLeft = 58; const plotRight = width - 14; const plotTop = 14; const plotBottom = height - 18;
+  const min = PITCH_MIN_MIDI; const max = PITCH_MAX_MIDI;
+  const yForMidi = (midi) => plotBottom - ((midi - min) / (max - min)) * (plotBottom - plotTop);
   const path = points.map((value, index) => {
     if (!value) return null;
-    const x = (index / Math.max(points.length - 1, 1)) * width;
-    const y = height - ((Math.max(min, Math.min(max, value)) - min) / (max - min)) * height;
+    const x = plotLeft + (index / Math.max(points.length - 1, 1)) * (plotRight - plotLeft);
+    const y = yForMidi(Math.max(min, Math.min(max, value)));
     return `${index === 0 || !points[index - 1] ? 'M' : 'L'}${x.toFixed(1)},${y.toFixed(1)}`;
   }).filter(Boolean).join(' ');
-  const targetY = height - ((targetMidi - min) / (max - min)) * height;
+  const targetY = yForMidi(targetMidi);
+  const scaleNotes = [PITCH_MAX_MIDI, 62, 50, PITCH_MIN_MIDI];
   return <svg className="pitch-trace" viewBox={`0 0 ${width} ${height}`} role="img" aria-label="Pitch history graph">
-    {[0, 1, 2, 3, 4].map((line) => <line key={line} x1="0" x2={width} y1={line * height / 4} y2={line * height / 4} className="trace-grid" />)}
-    {targetY >= 0 && targetY <= height && <line x1="0" x2={width} y1={targetY} y2={targetY} className="trace-target" />}
+    {scaleNotes.map((midi) => <g key={midi}><line x1={plotLeft} x2={plotRight} y1={yForMidi(midi)} y2={yForMidi(midi)} className="trace-grid" /><text x="12" y={yForMidi(midi) + 5} className="trace-label">{midiToNote(midi)}</text></g>)}
+    {targetY >= plotTop && targetY <= plotBottom && <line x1={plotLeft} x2={plotRight} y1={targetY} y2={targetY} className="trace-target" />}
     <path d={path} className="trace-line" />
   </svg>;
 }
@@ -86,6 +122,7 @@ export default function VocalPractice({ language = 'zh' }) {
   const [completed, setCompleted] = useState(() => localStorage.getItem('vocal-practice-last') === new Date().toISOString().slice(0, 10));
   const [streak, setStreak] = useState(() => Number(localStorage.getItem('vocal-practice-streak') || 0));
   const audioContextRef = useRef(null); const streamRef = useRef(null); const frameRef = useRef(null); const oscillatorRef = useRef(null);
+  const recentFrequenciesRef = useRef([]); const quietFramesRef = useRef(0);
 
   const currentMidiFloat = frequency ? frequencyToMidi(frequency) : null;
   const displayedFrequency = frequency || lastFrequency;
@@ -113,20 +150,33 @@ export default function VocalPractice({ language = 'zh' }) {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false } });
       const context = audioContextRef.current || new AudioContext(); audioContextRef.current = context;
       if (context.state === 'suspended') await context.resume();
-      const analyser = context.createAnalyser(); analyser.fftSize = 2048; analyser.smoothingTimeConstant = 0.15;
+      const analyser = context.createAnalyser(); analyser.fftSize = 2048; analyser.smoothingTimeConstant = 0;
       context.createMediaStreamSource(stream).connect(analyser); streamRef.current = stream;
-      const buffer = new Float32Array(analyser.fftSize); setIsListening(true);
-      let lastSample = 0;
+      const buffer = new Float32Array(analyser.fftSize); const differenceBuffer = new Float32Array(Math.floor(analyser.fftSize / 2) + 1);
+      recentFrequenciesRef.current = []; quietFramesRef.current = 0; setIsListening(true);
+      let lastDetection = 0;
       const detect = (time) => {
+        if (time - lastDetection < 32) {
+          frameRef.current = requestAnimationFrame(detect);
+          return;
+        }
+        lastDetection = time;
         analyser.getFloatTimeDomainData(buffer);
-        const detected = autoCorrelate(buffer, context.sampleRate);
-        const validFrequency = detected && detected >= 65 && detected <= 1000 ? detected : null;
+        const detected = detectPitchYin(buffer, context.sampleRate, differenceBuffer);
+        const inRange = detected && detected >= midiToFrequency(PITCH_MIN_MIDI) && detected <= midiToFrequency(PITCH_MAX_MIDI) ? detected : null;
+        if (inRange) {
+          quietFramesRef.current = 0;
+          recentFrequenciesRef.current = [...recentFrequenciesRef.current.slice(-4), inRange];
+        } else {
+          quietFramesRef.current += 1;
+          if (quietFramesRef.current > 8) recentFrequenciesRef.current = [];
+        }
+        const sorted = [...recentFrequenciesRef.current].sort((a, b) => a - b);
+        const validFrequency = inRange && sorted.length ? sorted[Math.floor(sorted.length / 2)] : null;
         setFrequency(validFrequency);
         if (validFrequency) setLastFrequency(validFrequency);
-        if (time - lastSample > 32) {
-          const midi = validFrequency ? frequencyToMidi(validFrequency) : null;
-          setPitchPoints((previous) => [...previous.slice(1), midi]); lastSample = time;
-        }
+        const midi = validFrequency ? frequencyToMidi(validFrequency) : null;
+        setPitchPoints((previous) => [...previous.slice(1), midi]);
         frameRef.current = requestAnimationFrame(detect);
       };
       frameRef.current = requestAnimationFrame(detect);
@@ -215,4 +265,3 @@ export default function VocalPractice({ language = 'zh' }) {
     </div>
   </section>;
 }
-
