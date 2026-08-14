@@ -6,6 +6,10 @@ const KEYBOARD_KEYS = ['z', 's', 'x', 'd', 'c', 'v', 'g', 'b', 'h', 'n', 'j', 'm
 const PIANO_NOTES = Array.from({ length: 20 }, (_, index) => 45 + index);
 const PITCH_MIN_MIDI = 38; // D2
 const PITCH_MAX_MIDI = 74; // D5
+const VOICE_RANGES = {
+  male: { minMidi: 38, maxMidi: 69 }, // D2—A4
+  female: { minMidi: 45, maxMidi: 74 }, // A2—D5
+};
 
 const copy = {
   zh: {
@@ -15,9 +19,10 @@ const copy = {
     micHint: '音频只在你的浏览器中分析，不会上传或保存。建议佩戴耳机。',
     current: '当前音高', target: '目标音', accuracy: '音准', cents: '音分', frequency: '频率',
     low: '偏低', high: '偏高', inTune: '很准', quiet: '唱一个稳定的音…',
-    trace: '刚才的音高', traceHint: '显示最近约 20 秒 · 纵轴固定为 D2—D5',
-    routine: '今日发声练习', routineHint: '轻声、放松，舒服比音量更重要。', done: '完成今日练习', completed: '今天已完成', streak: '连续练习', days: '天',
-    steps: ['唇颤音 · 1 分钟', '哼鸣滑音 · 2 分钟', '五声音阶 · 3 分钟'],
+    trace: '刚才的音高', traceHint: '显示最近约 20 秒 · 纵轴固定为',
+    voiceType: '声音类型', male: '男声', female: '女声', vocalRange: '音域范围',
+    rangeHint: '持续唱出不同音高，系统会自动记录稳定检测到的最低音和最高音。',
+    lowest: '最低音', highest: '最高音', resetLowest: '重置最低音', resetHighest: '重置最高音', notRecorded: '尚未记录',
     keyboard: '模拟键盘', keyboardHint: '按住琴键持续发声，松开停止；也可使用琴键上标注的电脑按键。',
     permission: '无法读取麦克风。请在浏览器地址栏允许麦克风权限后重试。', unsupported: '这个浏览器暂不支持麦克风音高检测。',
   },
@@ -28,9 +33,10 @@ const copy = {
     micHint: 'Audio is analysed only in your browser—it is never uploaded or saved. Headphones are recommended.',
     current: 'Current pitch', target: 'Target note', accuracy: 'Accuracy', cents: 'cents', frequency: 'Frequency',
     low: 'Flat', high: 'Sharp', inTune: 'In tune', quiet: 'Sing a steady note…',
-    trace: 'Recent pitch', traceHint: 'About 20 seconds · fixed D2—D5 vertical range',
-    routine: "Today's warm-up", routineHint: 'Stay gentle and relaxed. Comfort matters more than volume.', done: 'Finish today', completed: 'Done for today', streak: 'Practice streak', days: 'days',
-    steps: ['Lip trill · 1 min', 'Humming sirens · 2 min', 'Five-note scales · 3 min'],
+    trace: 'Recent pitch', traceHint: 'About 20 seconds · fixed vertical range',
+    voiceType: 'Voice type', male: 'Male', female: 'Female', vocalRange: 'Vocal range',
+    rangeHint: 'Sing across your range and stable detected notes will update your lowest and highest notes.',
+    lowest: 'Lowest note', highest: 'Highest note', resetLowest: 'Reset lowest', resetHighest: 'Reset highest', notRecorded: 'Not recorded yet',
     keyboard: 'Practice piano', keyboardHint: 'Press and hold a piano key to sustain it; release to stop. Computer-key shortcuts are shown on the keys.',
     permission: 'Microphone access failed. Allow it in your browser address bar, then try again.', unsupported: 'This browser does not support microphone pitch detection.',
   },
@@ -90,10 +96,10 @@ function detectPitchYin(buffer, sampleRate, differenceBuffer) {
   return sampleRate / refinedLag;
 }
 
-function PitchTrace({ points, targetMidi }) {
-  const width = 1200; const height = 280;
-  const plotLeft = 58; const plotRight = width - 14; const plotTop = 14; const plotBottom = height - 18;
-  const min = PITCH_MIN_MIDI; const max = PITCH_MAX_MIDI;
+function PitchTrace({ points, targetMidi, minMidi, maxMidi }) {
+  const width = 1600; const height = Math.max(600, ((maxMidi - minMidi) + 1) * 20 + 40);
+  const plotLeft = 72; const plotRight = width - 18; const plotTop = 20; const plotBottom = height - 20;
+  const min = minMidi; const max = maxMidi;
   const yForMidi = (midi) => plotBottom - ((midi - min) / (max - min)) * (plotBottom - plotTop);
   const path = points.map((value, index) => {
     if (!value) return null;
@@ -102,9 +108,12 @@ function PitchTrace({ points, targetMidi }) {
     return `${index === 0 || !points[index - 1] ? 'M' : 'L'}${x.toFixed(1)},${y.toFixed(1)}`;
   }).filter(Boolean).join(' ');
   const targetY = yForMidi(targetMidi);
-  const scaleNotes = [PITCH_MAX_MIDI, 62, 50, PITCH_MIN_MIDI];
-  return <svg className="pitch-trace" viewBox={`0 0 ${width} ${height}`} role="img" aria-label="Pitch history graph">
-    {scaleNotes.map((midi) => <g key={midi}><line x1={plotLeft} x2={plotRight} y1={yForMidi(midi)} y2={yForMidi(midi)} className="trace-grid" /><text x="12" y={yForMidi(midi) + 5} className="trace-label">{midiToNote(midi)}</text></g>)}
+  const scaleNotes = Array.from({ length: (max - min) + 1 }, (_, index) => max - index);
+  return <svg className="pitch-trace" width={width} height={height} viewBox={`0 0 ${width} ${height}`} role="img" aria-label="Pitch history graph">
+    {scaleNotes.map((midi) => {
+      const isSharp = NOTE_NAMES[midi % 12].includes('♯');
+      return <g key={midi}><line x1={plotLeft} x2={plotRight} y1={yForMidi(midi)} y2={yForMidi(midi)} className={`trace-grid ${isSharp ? 'is-sharp' : 'is-natural'}`} /><text x="12" y={yForMidi(midi) + 5} className={`trace-label ${isSharp ? 'is-sharp' : ''}`}>{midiToNote(midi)}</text></g>;
+    })}
     {targetY >= plotTop && targetY <= plotBottom && <line x1={plotLeft} x2={plotRight} y1={targetY} y2={targetY} className="trace-target" />}
     <path d={path} className="trace-line" />
   </svg>;
@@ -119,10 +128,12 @@ export default function VocalPractice({ language = 'zh' }) {
   const [targetMidi, setTargetMidi] = useState(60);
   const [error, setError] = useState('');
   const [activeMidi, setActiveMidi] = useState(null);
-  const [completed, setCompleted] = useState(() => localStorage.getItem('vocal-practice-last') === new Date().toISOString().slice(0, 10));
-  const [streak, setStreak] = useState(() => Number(localStorage.getItem('vocal-practice-streak') || 0));
+  const [voiceType, setVoiceType] = useState(() => localStorage.getItem('vocal-practice-voice-type') === 'female' ? 'female' : 'male');
+  const [lowestFrequency, setLowestFrequency] = useState(null);
+  const [highestFrequency, setHighestFrequency] = useState(null);
   const audioContextRef = useRef(null); const streamRef = useRef(null); const frameRef = useRef(null); const oscillatorRef = useRef(null);
-  const recentFrequenciesRef = useRef([]); const quietFramesRef = useRef(0);
+  const recentFrequenciesRef = useRef([]); const quietFramesRef = useRef(0); const voiceRangeRef = useRef(VOICE_RANGES[voiceType]);
+  const voiceRange = VOICE_RANGES[voiceType];
 
   const currentMidiFloat = frequency ? frequencyToMidi(frequency) : null;
   const displayedFrequency = frequency || lastFrequency;
@@ -130,6 +141,16 @@ export default function VocalPractice({ language = 'zh' }) {
   const nearestMidi = displayedMidiFloat === null ? null : Math.round(displayedMidiFloat);
   const cents = currentMidiFloat === null ? null : Math.round((currentMidiFloat - nearestMidi) * 100);
   const status = cents === null ? t.quiet : Math.abs(cents) <= 10 ? t.inTune : cents < 0 ? t.low : t.high;
+
+  const selectVoiceType = (nextType) => {
+    if (nextType === voiceType) return;
+    const nextRange = VOICE_RANGES[nextType];
+    voiceRangeRef.current = nextRange;
+    localStorage.setItem('vocal-practice-voice-type', nextType);
+    setVoiceType(nextType); setLowestFrequency(null); setHighestFrequency(null);
+    setFrequency(null); setLastFrequency(null); setPitchPoints(Array(625).fill(null));
+    recentFrequenciesRef.current = []; quietFramesRef.current = 0;
+  };
 
   const stopListening = useCallback(() => {
     cancelAnimationFrame(frameRef.current);
@@ -163,7 +184,8 @@ export default function VocalPractice({ language = 'zh' }) {
         lastDetection = time;
         analyser.getFloatTimeDomainData(buffer);
         const detected = detectPitchYin(buffer, context.sampleRate, differenceBuffer);
-        const inRange = detected && detected >= midiToFrequency(PITCH_MIN_MIDI) && detected <= midiToFrequency(PITCH_MAX_MIDI) ? detected : null;
+        const activeRange = voiceRangeRef.current;
+        const inRange = detected && detected >= midiToFrequency(activeRange.minMidi) && detected <= midiToFrequency(activeRange.maxMidi) ? detected : null;
         if (inRange) {
           quietFramesRef.current = 0;
           recentFrequenciesRef.current = [...recentFrequenciesRef.current.slice(-4), inRange];
@@ -175,6 +197,10 @@ export default function VocalPractice({ language = 'zh' }) {
         const validFrequency = inRange && sorted.length ? sorted[Math.floor(sorted.length / 2)] : null;
         setFrequency(validFrequency);
         if (validFrequency) setLastFrequency(validFrequency);
+        if (validFrequency && sorted.length >= 3) {
+          setLowestFrequency((previous) => previous === null || validFrequency < previous ? validFrequency : previous);
+          setHighestFrequency((previous) => previous === null || validFrequency > previous ? validFrequency : previous);
+        }
         const midi = validFrequency ? frequencyToMidi(validFrequency) : null;
         setPitchPoints((previous) => [...previous.slice(1), midi]);
         frameRef.current = requestAnimationFrame(detect);
@@ -208,11 +234,6 @@ export default function VocalPractice({ language = 'zh' }) {
     setActiveMidi(midi); setTargetMidi(midi);
   }, [stopNote]);
 
-  const playReferenceNote = useCallback(async (midi) => {
-    await startNote(midi);
-    window.setTimeout(() => stopNote(midi), 900);
-  }, [startNote, stopNote]);
-
   useEffect(() => {
     const onKeyDown = (event) => {
       const index = KEYBOARD_KEYS.indexOf(event.key.toLowerCase());
@@ -227,14 +248,6 @@ export default function VocalPractice({ language = 'zh' }) {
     return () => { window.removeEventListener('keydown', onKeyDown); window.removeEventListener('keyup', onKeyUp); window.removeEventListener('blur', onBlur); };
   }, [startNote, stopNote]);
 
-  const finishPractice = () => {
-    if (completed) return;
-    const today = new Date(); const yesterday = new Date(today); yesterday.setDate(today.getDate() - 1);
-    const last = localStorage.getItem('vocal-practice-last'); const nextStreak = last === yesterday.toISOString().slice(0, 10) ? streak + 1 : 1;
-    localStorage.setItem('vocal-practice-last', today.toISOString().slice(0, 10)); localStorage.setItem('vocal-practice-streak', String(nextStreak));
-    setStreak(nextStreak); setCompleted(true);
-  };
-
   const keys = useMemo(() => PIANO_NOTES.map((midi, index) => ({ midi, label: midiToNote(midi), shortcut: KEYBOARD_KEYS[index], black: NOTE_NAMES[midi % 12].includes('♯') })), []);
 
   return <section className="vocal-lab min-h-screen px-4 pb-20 pt-24 text-slate-950 sm:px-6">
@@ -244,7 +257,7 @@ export default function VocalPractice({ language = 'zh' }) {
         <div className="mic-orbit" aria-hidden><span>♪</span><i /><b /></div>
       </header>
 
-      <div className="mt-8 grid gap-6 lg:grid-cols-[1.45fr_.75fr]">
+      <div className="mt-8">
         <section className="vocal-card pitch-console">
           <div className="flex flex-wrap items-center justify-between gap-3"><div><p className="vocal-label">{t.current}</p><p className="mt-1 text-sm font-extrabold text-slate-500">{isListening ? `● ${t.listening}` : t.idle}</p></div><button className={`mic-button ${isListening ? 'is-live' : ''}`} onClick={isListening ? stopListening : startListening}>{isListening ? t.stop : t.start}</button></div>
           <div className="pitch-readout">
@@ -252,14 +265,18 @@ export default function VocalPractice({ language = 'zh' }) {
             <div className={`tune-badge ${cents !== null && Math.abs(cents) <= 10 ? 'perfect' : ''}`}><strong>{status}</strong><span>{cents === null ? '—' : `${cents > 0 ? '+' : ''}${cents} ${t.cents}`}</span></div>
           </div>
           <div className="tune-meter" aria-label={`${t.accuracy}: ${status}`}><span className="meter-flat">♭</span><div className="meter-track"><i className="meter-center" /><b style={{ left: `${cents === null ? 50 : Math.max(3, Math.min(97, 50 + cents / 2))}%` }} /></div><span className="meter-sharp">♯</span></div>
-          <div className="target-row"><span>{t.target}</span><button onClick={() => playReferenceNote(targetMidi)}>▶ {midiToNote(targetMidi)}</button><small>{t.frequency}: {(440 * (2 ** ((targetMidi - 69) / 12))).toFixed(1)} Hz</small></div>
+          <div className="voice-range-panel">
+            <div className="range-panel-heading"><div><p className="vocal-label">{t.vocalRange}</p><p>{t.rangeHint}</p></div><div className="voice-toggle" role="group" aria-label={t.voiceType}><span>{t.voiceType}</span><button type="button" className={voiceType === 'male' ? 'active' : ''} aria-pressed={voiceType === 'male'} onClick={() => selectVoiceType('male')}>{t.male}</button><button type="button" className={voiceType === 'female' ? 'active' : ''} aria-pressed={voiceType === 'female'} onClick={() => selectVoiceType('female')}>{t.female}</button></div></div>
+            <div className="range-values">
+              <article><span>{t.lowest}</span><strong>{lowestFrequency ? midiToNote(Math.round(frequencyToMidi(lowestFrequency))) : '—'}</strong><small>{lowestFrequency ? `${lowestFrequency.toFixed(1)} Hz` : t.notRecorded}</small><button type="button" onClick={() => setLowestFrequency(null)} disabled={!lowestFrequency}>{t.resetLowest}</button></article>
+              <article><span>{t.highest}</span><strong>{highestFrequency ? midiToNote(Math.round(frequencyToMidi(highestFrequency))) : '—'}</strong><small>{highestFrequency ? `${highestFrequency.toFixed(1)} Hz` : t.notRecorded}</small><button type="button" onClick={() => setHighestFrequency(null)} disabled={!highestFrequency}>{t.resetHighest}</button></article>
+            </div>
+          </div>
           {error && <p className="mic-error" role="alert">{error}</p>}<p className="privacy-note">◉ {t.micHint}</p>
         </section>
-
-        <aside className="vocal-card routine-card"><div className="flex items-start justify-between gap-4"><div><p className="vocal-label">{t.routine}</p><p className="mt-2 text-sm font-bold leading-6 text-slate-500">{t.routineHint}</p></div><div className="streak"><strong>{streak}</strong><span>{t.days}<br />{t.streak}</span></div></div><ol>{t.steps.map((step, index) => <li key={step}><span>{index + 1}</span>{step}</li>)}</ol><button className={`finish-button ${completed ? 'is-complete' : ''}`} onClick={finishPractice} disabled={completed}>{completed ? `✓ ${t.completed}` : t.done}</button></aside>
       </div>
 
-      <section className="vocal-card mt-6 overflow-hidden"><div className="trace-heading"><div><p className="vocal-label">{t.trace}</p><p>{t.traceHint}</p></div><span>{nearestMidi === null ? midiToNote(targetMidi) : midiToNote(nearestMidi)}</span></div><PitchTrace points={pitchPoints} targetMidi={targetMidi} /></section>
+      <section className="vocal-card mt-6"><div className="trace-heading"><div><p className="vocal-label">{t.trace}</p><p>{t.traceHint} {midiToNote(voiceRange.minMidi)}—{midiToNote(voiceRange.maxMidi)}</p></div><span>{t[voiceType]} · {midiToNote(voiceRange.minMidi)}—{midiToNote(voiceRange.maxMidi)}</span></div><div className="pitch-trace-scroll"><PitchTrace points={pitchPoints} targetMidi={targetMidi} minMidi={voiceRange.minMidi} maxMidi={voiceRange.maxMidi} /></div></section>
 
       <section className="vocal-card mt-6"><div className="keyboard-heading"><div><p className="vocal-label">{t.keyboard}</p><p>{t.keyboardHint}</p></div><div className="target-pill">A2—E4 · {t.target} {midiToNote(targetMidi)}</div></div><div className="piano-scroll"><div className="piano">{keys.filter((key) => !key.black).map((key) => <button key={key.midi} className={`white-key ${activeMidi === key.midi ? 'active' : ''}`} onPointerDown={(event) => { event.preventDefault(); event.currentTarget.setPointerCapture?.(event.pointerId); startNote(key.midi); }} onPointerUp={() => stopNote(key.midi)} onPointerCancel={() => stopNote(key.midi)} aria-label={key.label}><span>{key.label}<small>{key.shortcut.toUpperCase()}</small></span></button>)}{keys.filter((key) => key.black).map((key) => { const whiteBefore = PIANO_NOTES.slice(0, PIANO_NOTES.indexOf(key.midi)).filter((m) => !NOTE_NAMES[m % 12].includes('♯')).length; return <button key={key.midi} style={{ left: `${whiteBefore * 72 - 20}px` }} className={`black-key ${activeMidi === key.midi ? 'active' : ''}`} onPointerDown={(event) => { event.preventDefault(); event.currentTarget.setPointerCapture?.(event.pointerId); startNote(key.midi); }} onPointerUp={() => stopNote(key.midi)} onPointerCancel={() => stopNote(key.midi)} aria-label={key.label}><span>{key.label}<small>{key.shortcut.toUpperCase()}</small></span></button>; })}</div></div></section>
     </div>
