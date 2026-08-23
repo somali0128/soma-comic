@@ -106,3 +106,44 @@ export const recordDreamFragment = (save, fragmentId) => {
     },
   };
 };
+
+export const recordDreamPosition = (save, sceneId, position) => {
+  const normalized = normalizeDreamSave(save);
+  if (typeof sceneId !== 'string' || sceneId.length === 0) return normalized;
+  if (!Number.isFinite(position?.x) || !Number.isFinite(position?.y)) return normalized;
+
+  return {
+    ...normalized,
+    player: {
+      ...normalized.player,
+      currentSceneId: sceneId,
+      position: { x: position.x, y: position.y },
+    },
+    world: {
+      ...normalized.world,
+      discoveredSceneIds: normalized.world.discoveredSceneIds.includes(sceneId)
+        ? normalized.world.discoveredSceneIds
+        : [...normalized.world.discoveredSceneIds, sceneId],
+    },
+  };
+};
+
+export const recordDreamTutorialStep = (save, stepId) => {
+  const normalized = normalizeDreamSave(save);
+  if (typeof stepId !== 'string' || stepId.length === 0) return normalized;
+  if (normalized.tutorial.completedStepIds.includes(stepId)) return normalized;
+
+  return {
+    ...normalized,
+    tutorial: {
+      ...normalized.tutorial,
+      completedStepIds: [...normalized.tutorial.completedStepIds, stepId],
+    },
+  };
+};
+
+export const resetDreamSave = (storage = getBrowserStorage()) => {
+  const freshSave = createDreamSave();
+  saveDreamSave(freshSave, storage);
+  return freshSave;
+};

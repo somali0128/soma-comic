@@ -63,7 +63,7 @@ Every schema change requires a migration before release. Unknown content IDs sho
 
 ## Milestones
 
-### M0 — Playable prototype (current)
+### M0 — Playable prototype (complete)
 
 - one meadow image;
 - one player, NPC, dialogue, and collectible;
@@ -79,6 +79,8 @@ Every schema change requires a migration before release. Unknown content IDs sho
 - tutorial plus a free-exploration loop in one region;
 - three NPCs and three fragments;
 - desktop usability, bilingual content, and basic accessibility.
+
+Current branch status: the CI gate, versioned local save and confirmed reset, data-driven content, one-time tutorial, three NPCs, three fragments, bilingual interface, and persistent exact-position resume are implemented. The controlled Create React App migration decision remains open and should be handled separately from this content update.
 
 ### M2 — Production map pipeline
 

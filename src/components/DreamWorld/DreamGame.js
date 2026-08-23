@@ -11,31 +11,67 @@ const WORLD_HEIGHT = 1024;
 const DreamGame = ({
   collectedFragmentIds = [],
   copy,
+  fragments,
+  initialPosition,
+  npcPresentations,
+  npcs,
   onFragment,
   onInteraction,
+  onPositionChange,
   onReady,
+  scene,
 }) => {
   const mountRef = useRef(null);
   const gameRef = useRef(null);
-  const initialCollectedFragmentIdsRef = useRef(collectedFragmentIds);
   const controlsRef = useRef({ up: false, down: false, left: false, right: false, interact: false });
-  const callbacksRef = useRef({ onFragment, onInteraction, onReady });
+  const runtimeRef = useRef({
+    collectedFragmentIds,
+    copy,
+    fragments,
+    initialPosition,
+    npcPresentations,
+    npcs,
+    scene,
+  });
+  const callbacksRef = useRef({ onFragment, onInteraction, onPositionChange, onReady });
 
   useEffect(() => {
-    callbacksRef.current = { onFragment, onInteraction, onReady };
-  }, [onFragment, onInteraction, onReady]);
+    runtimeRef.current = {
+      collectedFragmentIds,
+      copy,
+      fragments,
+      initialPosition,
+      npcPresentations,
+      npcs,
+      scene,
+    };
+  }, [collectedFragmentIds, copy, fragments, initialPosition, npcPresentations, npcs, scene]);
+
+  useEffect(() => {
+    callbacksRef.current = { onFragment, onInteraction, onPositionChange, onReady };
+  }, [onFragment, onInteraction, onPositionChange, onReady]);
+
+  useEffect(() => {
+    const activeScene = gameRef.current?.scene?.getScene(scene.id);
+    activeScene?.updateNpcPresentations?.(npcPresentations);
+  }, [npcPresentations, scene.id]);
 
   useEffect(() => {
     if (!mountRef.current || gameRef.current) return undefined;
 
     const controls = controlsRef;
+    const runtime = runtimeRef;
     const callbacks = callbacksRef;
+    const initialScene = runtime.current.scene;
 
-    class ThresholdMeadowScene extends Phaser.Scene {
+    class DreamRegionScene extends Phaser.Scene {
       constructor() {
-        super({ key: 'threshold-meadow' });
+        super({ key: initialScene.id });
         this.lastDirection = 'down';
-        this.fragmentCollected = initialCollectedFragmentIdsRef.current.includes('first-light');
+        this.lastPositionEmit = 0;
+        this.wasMoving = false;
+        this.npcObjects = new Map();
+        this.fragmentObjects = new Map();
       }
 
       preload() {
@@ -47,6 +83,11 @@ const DreamGame = ({
       }
 
       create() {
+        const sceneConfig = runtime.current.scene;
+        const savedPosition = runtime.current.initialPosition;
+        const spawnX = Number.isFinite(savedPosition?.x) ? savedPosition.x : sceneConfig.spawn.x;
+        const spawnY = Number.isFinite(savedPosition?.y) ? savedPosition.y : sceneConfig.spawn.y;
+
         this.add.image(0, 0, 'threshold-meadow').setOrigin(0);
         this.physics.world.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
         this.cameras.main.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
@@ -54,37 +95,18 @@ const DreamGame = ({
         this.cameras.main.setRoundPixels(true);
 
         this.createAnimations();
-
-        this.player = this.physics.add.sprite(700, 535, 'dream-walker', 1);
+        this.player = this.physics.add.sprite(
+          Phaser.Math.Clamp(spawnX, 80, WORLD_WIDTH - 80),
+          Phaser.Math.Clamp(spawnY, 80, WORLD_HEIGHT - 80),
+          'dream-walker',
+          1
+        );
         this.player.setScale(0.18).setDepth(20).setCollideWorldBounds(true);
         this.player.body.setSize(100, 78).setOffset(121, 286);
 
-        this.createObstacles();
-        this.createFragment();
-
-        this.npc = this.physics.add.staticSprite(905, 500, 'dream-walker', 1);
-        this.npc.setScale(0.17).setTint(0xf2c0db).setDepth(19);
-        this.npc.body.setSize(108, 84).setOffset(116, 280);
-        this.npc.refreshBody();
-        this.physics.add.collider(this.player, this.npc);
-
-        this.add.text(this.npc.x, this.npc.y - 62, copy.npcLabel, {
-          fontFamily: 'monospace',
-          fontSize: '15px',
-          fontStyle: 'bold',
-          color: '#fff6d8',
-          backgroundColor: '#161633cc',
-          padding: { x: 7, y: 4 },
-        }).setOrigin(0.5).setDepth(40);
-
-        this.interactionPrompt = this.add.text(this.npc.x, this.npc.y - 100, copy.talkPrompt, {
-          fontFamily: 'monospace',
-          fontSize: '15px',
-          fontStyle: 'bold',
-          color: '#18162f',
-          backgroundColor: '#fff4b8',
-          padding: { x: 9, y: 6 },
-        }).setOrigin(0.5).setDepth(40).setVisible(false);
+        this.createObstacles(sceneConfig.obstacles);
+        this.createNpcs(runtime.current.npcs, runtime.current.npcPresentations);
+        this.createFragments(runtime.current.fragments, runtime.current.collectedFragmentIds);
 
         this.cursors = this.input.keyboard.createCursorKeys();
         this.keys = this.input.keyboard.addKeys('W,A,S,D,E,SPACE');
@@ -103,14 +125,12 @@ const DreamGame = ({
       }
 
       createAnimations() {
-        const definitions = [
+        [
           ['walk-down', [0, 1, 2, 1]],
           ['walk-left', [3, 4, 5, 4]],
           ['walk-right', [6, 7, 8, 7]],
           ['walk-up', [9, 10, 11, 10]],
-        ];
-
-        definitions.forEach(([key, frames]) => {
+        ].forEach(([key, frames]) => {
           this.anims.create({
             key,
             frames: this.anims.generateFrameNumbers('dream-walker', { frames }),
@@ -120,21 +140,7 @@ const DreamGame = ({
         });
       }
 
-      createObstacles() {
-        const obstacles = [
-          [445, 245, 350, 245],
-          [1025, 170, 370, 250],
-          [770, 780, 425, 205],
-          [45, 560, 90, 780],
-          [1495, 560, 82, 780],
-          [765, 28, 1530, 56],
-          [765, 1000, 1530, 48],
-          [135, 365, 170, 190],
-          [1385, 310, 210, 230],
-          [1325, 735, 260, 240],
-          [190, 875, 300, 230],
-        ];
-
+      createObstacles(obstacles = []) {
         obstacles.forEach(([x, y, width, height]) => {
           const zone = this.add.zone(x, y, width, height);
           this.physics.add.existing(zone, true);
@@ -142,44 +148,145 @@ const DreamGame = ({
         });
       }
 
-      createFragment() {
-        if (this.fragmentCollected) return;
+      createNpcs(npcDefinitions = [], presentations = {}) {
+        npcDefinitions.forEach((definition) => {
+          const presentation = presentations[definition.id] || { name: definition.id };
+          const sprite = this.physics.add.staticSprite(
+            definition.x,
+            definition.y,
+            'dream-walker',
+            definition.frame ?? 1
+          );
+          sprite.setScale(0.17).setTint(definition.tint).setDepth(19);
+          sprite.body.setSize(108, 84).setOffset(116, 280);
+          sprite.refreshBody();
+          this.physics.add.collider(this.player, sprite);
+
+          const label = this.add.text(definition.x, definition.y - 62, presentation.name, {
+            fontFamily: 'monospace',
+            fontSize: '15px',
+            fontStyle: 'bold',
+            color: '#fff6d8',
+            backgroundColor: '#161633cc',
+            padding: { x: 7, y: 4 },
+          }).setOrigin(0.5).setDepth(40);
+
+          const prompt = this.add.text(definition.x, definition.y - 100, runtime.current.copy.talkPrompt, {
+            fontFamily: 'monospace',
+            fontSize: '15px',
+            fontStyle: 'bold',
+            color: '#18162f',
+            backgroundColor: '#fff4b8',
+            padding: { x: 9, y: 6 },
+          }).setOrigin(0.5).setDepth(40).setVisible(false);
+
+          this.npcObjects.set(definition.id, { definition, label, prompt, sprite });
+        });
+      }
+
+      updateNpcPresentations(presentations = {}) {
+        this.npcObjects.forEach((entry, npcId) => {
+          const presentation = presentations[npcId];
+          if (presentation?.name) entry.label.setText(presentation.name);
+        });
+      }
+
+      createFragmentTexture(fragment) {
+        const textureKey = `dream-fragment-${fragment.id}`;
+        if (this.textures.exists(textureKey)) return textureKey;
 
         const shape = this.make.graphics({ x: 0, y: 0, add: false });
-        shape.fillStyle(0x9ef8ff, 0.35);
+        shape.fillStyle(fragment.color, 0.3);
         shape.fillCircle(14, 14, 14);
-        shape.fillStyle(0xe7ffff, 1);
+        shape.fillStyle(0xf4ffff, 1);
         shape.fillTriangle(14, 0, 27, 14, 1, 14);
-        shape.fillStyle(0x5ce4f1, 1);
+        shape.fillStyle(fragment.color, 1);
         shape.fillTriangle(1, 14, 27, 14, 14, 28);
-        shape.generateTexture('dream-fragment', 28, 28);
+        shape.generateTexture(textureKey, 28, 28);
         shape.destroy();
+        return textureKey;
+      }
 
-        this.fragmentGlow = this.add.circle(1165, 505, 24, 0x83efff, 0.2).setDepth(8);
-        this.fragment = this.physics.add.image(1165, 505, 'dream-fragment').setDepth(9);
-        this.fragment.body.setAllowGravity(false);
-        this.tweens.add({
-          targets: [this.fragment, this.fragmentGlow],
-          y: '-=10',
-          alpha: { from: 0.6, to: 1 },
-          duration: 950,
-          yoyo: true,
-          repeat: -1,
-          ease: 'Sine.easeInOut',
+      createFragments(fragmentDefinitions = [], collectedIds = []) {
+        fragmentDefinitions.forEach((fragment) => {
+          if (collectedIds.includes(fragment.id)) return;
+
+          const textureKey = this.createFragmentTexture(fragment);
+          const glow = this.add.circle(fragment.x, fragment.y, 24, fragment.color, 0.2).setDepth(8);
+          const sprite = this.physics.add.image(fragment.x, fragment.y, textureKey).setDepth(9);
+          sprite.body.setAllowGravity(false);
+          this.tweens.add({
+            targets: [sprite, glow],
+            y: '-=10',
+            alpha: { from: 0.6, to: 1 },
+            duration: 950,
+            yoyo: true,
+            repeat: -1,
+            ease: 'Sine.easeInOut',
+          });
+
+          this.fragmentObjects.set(fragment.id, { definition: fragment, glow, sprite });
+        });
+      }
+
+      collectFragment(fragmentId) {
+        const entry = this.fragmentObjects.get(fragmentId);
+        if (!entry) return;
+        entry.sprite.disableBody(true, true);
+        entry.glow.destroy();
+        this.fragmentObjects.delete(fragmentId);
+        this.cameras.main.flash(220, 126, 236, 255);
+        callbacks.current.onFragment?.(fragmentId);
+      }
+
+      findNearbyNpc() {
+        let nearbyNpcId = null;
+        let nearestDistance = Infinity;
+
+        this.npcObjects.forEach((entry, npcId) => {
+          const distance = Phaser.Math.Distance.Between(
+            this.player.x,
+            this.player.y,
+            entry.sprite.x,
+            entry.sprite.y
+          );
+          if (distance < 125 && distance < nearestDistance) {
+            nearbyNpcId = npcId;
+            nearestDistance = distance;
+          }
         });
 
+        this.npcObjects.forEach((entry, npcId) => {
+          entry.prompt.setVisible(npcId === nearbyNpcId);
+        });
+        return nearbyNpcId;
       }
 
-      collectFragment() {
-        if (this.fragmentCollected) return;
-        this.fragmentCollected = true;
-        this.fragment.disableBody(true, true);
-        this.fragmentGlow.destroy();
-        this.cameras.main.flash(220, 126, 236, 255);
-        callbacks.current.onFragment?.('first-light');
+      checkFragments() {
+        let nearbyFragmentId = null;
+        this.fragmentObjects.forEach((entry, fragmentId) => {
+          if (nearbyFragmentId) return;
+          const distance = Phaser.Math.Distance.Between(
+            this.player.x,
+            this.player.y,
+            entry.sprite.x,
+            entry.sprite.y
+          );
+          if (distance < 64) nearbyFragmentId = fragmentId;
+        });
+        if (nearbyFragmentId) this.collectFragment(nearbyFragmentId);
       }
 
-      update() {
+      emitPosition(time, force = false) {
+        if (!this.player || (!force && time - this.lastPositionEmit < 600)) return;
+        this.lastPositionEmit = time;
+        callbacks.current.onPositionChange?.(initialScene.id, {
+          x: Math.round(this.player.x * 10) / 10,
+          y: Math.round(this.player.y * 10) / 10,
+        });
+      }
+
+      update(time) {
         if (!this.player) return;
 
         const input = controls.current;
@@ -187,55 +294,44 @@ const DreamGame = ({
         const right = this.cursors.right.isDown || this.keys.D.isDown || input.right;
         const up = this.cursors.up.isDown || this.keys.W.isDown || input.up;
         const down = this.cursors.down.isDown || this.keys.S.isDown || input.down;
-
         let velocityX = Number(right) - Number(left);
         let velocityY = Number(down) - Number(up);
-        const speed = 185;
 
         if (velocityX && velocityY) {
           velocityX *= 0.7071;
           velocityY *= 0.7071;
         }
 
-        this.player.setVelocity(velocityX * speed, velocityY * speed);
+        const isMoving = Boolean(velocityX || velocityY);
+        this.player.setVelocity(velocityX * 185, velocityY * 185);
 
-        if (velocityX || velocityY) {
+        if (isMoving) {
           if (Math.abs(velocityX) > Math.abs(velocityY)) {
             this.lastDirection = velocityX < 0 ? 'left' : 'right';
           } else {
             this.lastDirection = velocityY < 0 ? 'up' : 'down';
           }
           this.player.anims.play(`walk-${this.lastDirection}`, true);
+          this.emitPosition(time);
         } else {
           const idleFrames = { down: 1, left: 4, right: 7, up: 10 };
           this.player.setVelocity(0, 0).anims.stop();
           this.player.setFrame(idleFrames[this.lastDirection]);
+          if (this.wasMoving) this.emitPosition(time, true);
         }
+        this.wasMoving = isMoving;
 
-        const nearNpc = Phaser.Math.Distance.Between(
-          this.player.x,
-          this.player.y,
-          this.npc.x,
-          this.npc.y
-        ) < 125;
-        this.interactionPrompt.setVisible(nearNpc);
-
-        const nearFragment = !this.fragmentCollected && Phaser.Math.Distance.Between(
-          this.player.x,
-          this.player.y,
-          this.fragment.x,
-          this.fragment.y
-        ) < 64;
-        if (nearFragment) this.collectFragment();
+        const nearbyNpcId = this.findNearbyNpc();
+        this.checkFragments();
 
         const keyboardInteraction = Phaser.Input.Keyboard.JustDown(this.keys.E)
           || Phaser.Input.Keyboard.JustDown(this.keys.SPACE);
         const touchInteraction = input.interact;
         input.interact = false;
 
-        if (nearNpc && (keyboardInteraction || touchInteraction)) {
+        if (nearbyNpcId && (keyboardInteraction || touchInteraction)) {
           this.player.setVelocity(0, 0);
-          callbacks.current.onInteraction?.('gatekeeper');
+          callbacks.current.onInteraction?.(nearbyNpcId);
         }
       }
     }
@@ -256,14 +352,14 @@ const DreamGame = ({
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH,
       },
-      scene: [ThresholdMeadowScene],
+      scene: [DreamRegionScene],
     });
 
     return () => {
       gameRef.current?.destroy(true);
       gameRef.current = null;
     };
-  }, [copy.npcLabel, copy.talkPrompt]);
+  }, []);
 
   const setControl = (direction, active) => {
     controlsRef.current[direction] = active;

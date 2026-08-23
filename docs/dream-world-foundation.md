@@ -1,14 +1,17 @@
 # Dream World foundation
 
-This branch prepares the first playable foundation for a long-running, desktop-first 2D open-world project. The first scene runs as an embedded Phaser prototype instead of a static concept preview. The scalable world structure and milestones are defined in [dream-world-roadmap.md](./dream-world-roadmap.md).
+This branch prepares the first durable playable slice for a long-running, desktop-first 2D open-world project. The northeast lakeside scene runs as an embedded Phaser experience instead of a static concept preview. The scalable world structure and milestones are defined in [dream-world-roadmap.md](./dream-world-roadmap.md).
 
 ## First playable milestone
 
-- One compact top-down playable map
+- One compact top-down northeast lakeside map
 - One visitor avatar with arrow-key, WASD, and touch movement
-- One NPC with proximity-based dialogue (expand to three to five)
-- One collectible dream fragment (expand to three)
+- Three NPCs with proximity-based dialogue: Maomao, Friend 1, and Friend 2
+- Three collectible dream fragments that reveal Maomao's identity
+- A one-time beginner quest covering movement, conversation, and collection
+- Exact-position resume after refresh or return
 - A versioned archive stored in the browser
+- An explicit, confirmed reset that clears all Dream World progress
 - A clear exit back to the main site
 
 ## Proposed technical boundary
@@ -21,11 +24,11 @@ This branch prepares the first playable foundation for a long-running, desktop-f
 
 ## Content model
 
-The starter data file intentionally separates scenes, NPCs, and fragments by stable IDs. Future dialogue should follow the same pattern instead of being embedded directly inside React components or game scenes.
+The starter data files separate scenes, NPCs, fragments, bilingual presentation, and unlock rules by stable IDs. Maomao's display name is revealed only after all three fragments are collected. Friend 1 and Friend 2 intentionally keep placeholder identities until later clues are added. Future dialogue should follow the same data-driven pattern instead of being embedded directly inside React components or game scenes.
 
 ## Decisions intentionally deferred
 
 - Tile size and master color palette
-- Original character and environment sprites
+- Production tileset and expanded character sprite direction
 - Cloud save and account requirements beyond local browser storage
 - Music, ambient audio, and sound licensing

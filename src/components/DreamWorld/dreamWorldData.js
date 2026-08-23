@@ -1,100 +1,108 @@
+export const DREAM_TUTORIAL_STEPS = {
+  MOVE: 'tutorial-move',
+  TALK: 'tutorial-talk',
+  COLLECT: 'tutorial-collect',
+};
+
+export const DREAM_TUTORIAL_STEP_IDS = Object.values(DREAM_TUTORIAL_STEPS);
+
 export const dreamWorldFoundation = {
   id: 'soma-dream-world',
-  version: 2,
+  version: 3,
+  startRegion: 'northeast-lake',
   startScene: 'threshold-meadow',
+  regions: [
+    {
+      id: 'northeast-lake',
+      sceneIds: ['threshold-meadow'],
+    },
+  ],
   scenes: [
     {
       id: 'threshold-meadow',
-      status: 'playable-prototype',
-      npcIds: ['gatekeeper'],
-      fragmentIds: ['first-light'],
+      regionId: 'northeast-lake',
+      status: 'durable-vertical-slice',
+      spawn: { id: 'meadow-entry', x: 700, y: 535 },
+      npcIds: ['maomao', 'friend-1', 'friend-2'],
+      fragmentIds: ['lakeside-fishing', 'wife-loves-water', 'maomao-is-wife'],
+      obstacles: [
+        [445, 245, 350, 245],
+        [1025, 170, 370, 250],
+        [770, 780, 425, 205],
+        [45, 560, 90, 780],
+        [1495, 560, 82, 780],
+        [765, 28, 1530, 56],
+        [765, 1000, 1530, 48],
+        [135, 365, 170, 190],
+        [1385, 310, 210, 230],
+        [1325, 735, 260, 240],
+        [190, 875, 300, 230],
+      ],
     },
   ],
   npcs: [
     {
-      id: 'gatekeeper',
+      id: 'maomao',
       sceneId: 'threshold-meadow',
-      dialogueId: 'gatekeeper-intro',
+      x: 905,
+      y: 500,
+      frame: 1,
+      tint: 0xf2c0db,
+      nameUnlock: { requiresAllFragments: true },
+    },
+    {
+      id: 'friend-1',
+      sceneId: 'threshold-meadow',
+      x: 455,
+      y: 600,
+      frame: 1,
+      tint: 0xb9ddff,
+      nameUnlock: { futureClue: 'friend-1-name' },
+    },
+    {
+      id: 'friend-2',
+      sceneId: 'threshold-meadow',
+      x: 1155,
+      y: 650,
+      frame: 1,
+      tint: 0xd9c4ff,
+      nameUnlock: { futureClue: 'friend-2-name' },
     },
   ],
   fragments: [
     {
-      id: 'first-light',
+      id: 'lakeside-fishing',
       sceneId: 'threshold-meadow',
-      status: 'collectible',
+      x: 505,
+      y: 690,
+      color: 0x9ef8ff,
+    },
+    {
+      id: 'wife-loves-water',
+      sceneId: 'threshold-meadow',
+      x: 1165,
+      y: 505,
+      color: 0xffd7a1,
+    },
+    {
+      id: 'maomao-is-wife',
+      sceneId: 'threshold-meadow',
+      x: 1080,
+      y: 735,
+      color: 0xf8a8e6,
     },
   ],
 };
 
-export const dreamWorldCopy = {
-  zh: {
-    pageNavigationLabel: '梦境世界导航',
-    eyebrow: 'SOMA DREAM ARCHIVE · 001',
-    title: '梦境入口',
-    intro: '第一处可进入的记忆已经稳定。沿着月光小径探索，找到守门人和散落的梦境碎片。',
-    sceneLabel: '起点草地',
-    npcLabel: '守门人',
-    talkPrompt: 'E 交谈',
-    dialogue: '你终于到了。这里不是梦的开始，只是你还能记得的最早入口。池塘右侧有一片正在发光的记忆，去触碰它吧。',
-    closeDialogue: '关闭对话',
-    questLabel: '当前任务',
-    questTitle: '第一束微光',
-    questBody: '探索草地，在池塘另一侧找到发光的梦境碎片。',
-    questComplete: '碎片已经回到档案。这个梦境还有更多出口尚未显现。',
-    fragmentProgress: '梦境碎片收集进度',
-    fragments: '梦境碎片',
-    controlsTitle: '控制方式',
-    move: '方向移动',
-    moveAlt: '备用移动',
-    interact: '交谈',
-    systemLabel: '梦境系统',
-    engine: '运行引擎',
-    sceneCount: '已稳定场景',
-    npcCount: '可交谈人物',
-    online: '梦境稳定',
-    loading: '正在入梦',
-    back: '退出梦境',
-    footnote: '原创像素地图与角色 · 当前为第一阶段可玩原型',
-    gameLabel: '可操作的梦境世界游戏区域',
-    touchControlsLabel: '屏幕移动控制',
-    moveUp: '向上移动',
-    moveDown: '向下移动',
-    moveLeft: '向左移动',
-    moveRight: '向右移动',
-  },
-  en: {
-    pageNavigationLabel: 'Dream World navigation',
-    eyebrow: 'SOMA DREAM ARCHIVE · 001',
-    title: 'Dream Passage',
-    intro: 'The first accessible memory has stabilized. Follow the moonlit path to find the gatekeeper and a displaced dream fragment.',
-    sceneLabel: 'Threshold Meadow',
-    npcLabel: 'Gatekeeper',
-    talkPrompt: 'E TALK',
-    dialogue: 'You finally made it. This is not where the dream began—only the earliest entrance you can still remember. A memory is glowing beyond the pond. Go touch it.',
-    closeDialogue: 'Close dialogue',
-    questLabel: 'Current quest',
-    questTitle: 'The First Light',
-    questBody: 'Explore the meadow and find the glowing dream fragment beyond the pond.',
-    questComplete: 'The fragment has returned to the archive. More exits are still waiting to appear.',
-    fragmentProgress: 'Dream fragment collection progress',
-    fragments: 'fragments',
-    controlsTitle: 'Controls',
-    move: 'Move',
-    moveAlt: 'Alternate movement',
-    interact: 'Talk',
-    systemLabel: 'Dream system',
-    engine: 'Runtime',
-    sceneCount: 'Stable scenes',
-    npcCount: 'Speaking figures',
-    online: 'Dream stable',
-    loading: 'Entering dream',
-    back: 'Exit dream',
-    footnote: 'Original pixel map and character · first playable prototype',
-    gameLabel: 'Interactive Dream World game area',
-    touchControlsLabel: 'On-screen movement controls',
-    moveUp: 'Move up',
-    moveDown: 'Move down',
-    moveLeft: 'Move left',
-    moveRight: 'Move right',
-  },
-};
+export const getDreamScene = (sceneId = dreamWorldFoundation.startScene) => (
+  dreamWorldFoundation.scenes.find((scene) => scene.id === sceneId)
+  || dreamWorldFoundation.scenes[0]
+);
+
+export const getSceneNpcs = (sceneId) => (
+  dreamWorldFoundation.npcs.filter((npc) => npc.sceneId === sceneId)
+);
+
+export const getSceneFragments = (sceneId) => (
+  dreamWorldFoundation.fragments.filter((fragment) => fragment.sceneId === sceneId)
+);

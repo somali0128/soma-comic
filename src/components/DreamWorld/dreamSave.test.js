@@ -4,6 +4,9 @@ import {
   loadDreamSave,
   normalizeDreamSave,
   recordDreamFragment,
+  recordDreamPosition,
+  recordDreamTutorialStep,
+  resetDreamSave,
   saveDreamSave,
 } from './dreamSave';
 
@@ -49,5 +52,37 @@ describe('Dream World save data', () => {
     expect(duplicate.world.collectedFragmentIds).toEqual(['first-light']);
     expect(saveDreamSave(duplicate)).toBe(true);
     expect(loadDreamSave()).toEqual(duplicate);
+  });
+
+  test('records the exact player position and discovers the scene', () => {
+    const positioned = recordDreamPosition(createDreamSave(), 'northeast-shore', {
+      x: 812.5,
+      y: 466,
+    });
+
+    expect(positioned.player.currentSceneId).toBe('northeast-shore');
+    expect(positioned.player.position).toEqual({ x: 812.5, y: 466 });
+    expect(positioned.world.discoveredSceneIds).toContain('northeast-shore');
+  });
+
+  test('records each tutorial step only once', () => {
+    const moved = recordDreamTutorialStep(createDreamSave(), 'tutorial-move');
+    const duplicate = recordDreamTutorialStep(moved, 'tutorial-move');
+
+    expect(duplicate.tutorial.completedStepIds).toEqual(['tutorial-move']);
+  });
+
+  test('resets every Dream World namespace', () => {
+    const progressed = recordDreamTutorialStep(
+      recordDreamFragment(
+        recordDreamPosition(createDreamSave(), 'threshold-meadow', { x: 900, y: 500 }),
+        'maomao-is-wife'
+      ),
+      'tutorial-move'
+    );
+    saveDreamSave(progressed);
+
+    expect(resetDreamSave()).toEqual(createDreamSave());
+    expect(loadDreamSave()).toEqual(createDreamSave());
   });
 });

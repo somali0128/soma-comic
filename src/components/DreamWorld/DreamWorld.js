@@ -1,29 +1,116 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import DreamGame from './DreamGame';
-import { dreamWorldCopy, dreamWorldFoundation } from './dreamWorldData';
-import { loadDreamSave, recordDreamFragment, saveDreamSave } from './dreamSave';
+import {
+  DREAM_TUTORIAL_STEPS,
+  DREAM_TUTORIAL_STEP_IDS,
+  dreamWorldFoundation,
+  getDreamScene,
+  getSceneFragments,
+  getSceneNpcs,
+} from './dreamWorldData';
+import {
+  dreamWorldCopy,
+  dreamWorldStory,
+  getNpcPresentation,
+} from './dreamWorldContent';
+import {
+  loadDreamSave,
+  recordDreamFragment,
+  recordDreamPosition,
+  recordDreamTutorialStep,
+  resetDreamSave,
+  saveDreamSave,
+} from './dreamSave';
 import './DreamWorld.css';
 
 const DreamWorld = ({ language = 'zh' }) => {
   const copy = dreamWorldCopy[language] || dreamWorldCopy.zh;
+  const story = dreamWorldStory[language] || dreamWorldStory.zh;
   const [isReady, setIsReady] = useState(false);
-  const [dialogueOpen, setDialogueOpen] = useState(false);
   const [archive, setArchive] = useState(loadDreamSave);
-  const scene = dreamWorldFoundation.scenes[0];
-  const sceneFragmentIds = scene.fragmentIds || [];
+  const [activeOverlay, setActiveOverlay] = useState(null);
+  const [resetOpen, setResetOpen] = useState(false);
+  const [gameRevision, setGameRevision] = useState(0);
+  const scene = getDreamScene(archive.player.currentSceneId);
+  const sceneNpcs = getSceneNpcs(scene.id);
+  const sceneFragments = getSceneFragments(scene.id);
   const collectedFragmentIds = archive.world.collectedFragmentIds;
-  const fragmentCount = sceneFragmentIds.filter((fragmentId) => (
-    collectedFragmentIds.includes(fragmentId)
-  )).length;
+  const completedTutorialStepIds = archive.tutorial.completedStepIds;
+  const fragmentCount = sceneFragments.filter(({ id }) => collectedFragmentIds.includes(id)).length;
+  const allFragmentsCollected = sceneFragments.length > 0 && fragmentCount === sceneFragments.length;
+  const tutorialComplete = DREAM_TUTORIAL_STEP_IDS.every((stepId) => (
+    completedTutorialStepIds.includes(stepId)
+  ));
+  const npcPresentations = Object.fromEntries(sceneNpcs.map((npc) => [
+    npc.id,
+    getNpcPresentation(language, npc.id, allFragmentsCollected),
+  ]));
 
   useEffect(() => {
     saveDreamSave(archive);
   }, [archive]);
 
-  const handleFragment = (fragmentId) => {
-    setArchive((currentArchive) => recordDreamFragment(currentArchive, fragmentId));
+  const recordTutorialStep = (save, stepId) => (
+    recordDreamTutorialStep(save, stepId)
+  );
+
+  const handlePositionChange = (sceneId, position) => {
+    setArchive((currentArchive) => recordTutorialStep(
+      recordDreamPosition(currentArchive, sceneId, position),
+      DREAM_TUTORIAL_STEPS.MOVE
+    ));
   };
+
+  const handleInteraction = (npcId) => {
+    setArchive((currentArchive) => recordTutorialStep(
+      currentArchive,
+      DREAM_TUTORIAL_STEPS.TALK
+    ));
+    setActiveOverlay({ type: 'npc', id: npcId });
+  };
+
+  const handleFragment = (fragmentId) => {
+    setArchive((currentArchive) => recordTutorialStep(
+      recordDreamFragment(currentArchive, fragmentId),
+      DREAM_TUTORIAL_STEPS.COLLECT
+    ));
+    setActiveOverlay({ type: 'fragment', id: fragmentId });
+  };
+
+  const handleReset = () => {
+    setArchive(resetDreamSave());
+    setActiveOverlay(null);
+    setResetOpen(false);
+    setIsReady(false);
+    setGameRevision((revision) => revision + 1);
+  };
+
+  const overlayContent = (() => {
+    if (!activeOverlay) return null;
+    if (activeOverlay.type === 'npc') {
+      const presentation = npcPresentations[activeOverlay.id];
+      return presentation ? {
+        eyebrow: presentation.name,
+        title: presentation.name,
+        body: presentation.dialogue,
+      } : null;
+    }
+
+    const fragment = story.fragments[activeOverlay.id];
+    return fragment ? {
+      eyebrow: copy.memoryLabel,
+      title: fragment.title,
+      body: fragment.memory,
+      unlock: allFragmentsCollected ? copy.identityUnlocked : null,
+    } : null;
+  })();
+
+  const tutorialItems = [
+    [DREAM_TUTORIAL_STEPS.MOVE, copy.tutorialSteps.move],
+    [DREAM_TUTORIAL_STEPS.TALK, copy.tutorialSteps.talk],
+    [DREAM_TUTORIAL_STEPS.COLLECT, copy.tutorialSteps.collect],
+  ];
 
   return (
     <section className="dream-world">
@@ -52,33 +139,43 @@ const DreamWorld = ({ language = 'zh' }) => {
                 <span className="dream-console__signal" aria-hidden="true" />
                 <strong id="dream-game-title">{copy.sceneLabel}</strong>
               </div>
-              <span>{scene.id}</span>
+              <span>{scene.regionId} / {scene.id}</span>
             </div>
 
             <DreamGame
-              key={language}
+              key={`${language}-${gameRevision}`}
               copy={copy}
+              scene={scene}
+              npcs={sceneNpcs}
+              fragments={sceneFragments}
+              npcPresentations={npcPresentations}
               collectedFragmentIds={collectedFragmentIds}
+              initialPosition={archive.player.position}
               onReady={() => setIsReady(true)}
-              onInteraction={() => setDialogueOpen(true)}
+              onInteraction={handleInteraction}
               onFragment={handleFragment}
+              onPositionChange={handlePositionChange}
             />
 
             <div
-              className={`dream-dialogue${dialogueOpen ? ' is-open' : ''}`}
-              aria-hidden={!dialogueOpen}
+              className={`dream-dialogue${overlayContent ? ' is-open' : ''}${activeOverlay?.type === 'fragment' ? ' dream-dialogue--memory' : ''}`}
+              aria-hidden={!overlayContent}
               aria-live="polite"
             >
-              <div className="dream-dialogue__portrait" aria-hidden="true">?</div>
+              <div className="dream-dialogue__portrait" aria-hidden="true">
+                {activeOverlay?.type === 'fragment' ? '✦' : '?'}
+              </div>
               <div>
-                <strong>{copy.npcLabel}</strong>
-                <p>{copy.dialogue}</p>
+                <span className="dream-dialogue__eyebrow">{overlayContent?.eyebrow}</span>
+                <strong>{overlayContent?.title}</strong>
+                <p>{overlayContent?.body}</p>
+                {overlayContent?.unlock && <em>{overlayContent.unlock}</em>}
               </div>
               <button
                 type="button"
-                tabIndex={dialogueOpen ? 0 : -1}
-                onClick={() => setDialogueOpen(false)}
-                aria-label={copy.closeDialogue}
+                tabIndex={overlayContent ? 0 : -1}
+                onClick={() => setActiveOverlay(null)}
+                aria-label={copy.closeOverlay}
               >×</button>
             </div>
           </section>
@@ -87,11 +184,44 @@ const DreamWorld = ({ language = 'zh' }) => {
             <section className="dream-panel dream-panel--quest">
               <p className="dream-panel__label">{copy.questLabel}</p>
               <h2>{copy.questTitle}</h2>
-              <p>{fragmentCount ? copy.questComplete : copy.questBody}</p>
+              <p>{allFragmentsCollected ? copy.questComplete : copy.questBody}</p>
               <div className="dream-progress" aria-label={copy.fragmentProgress}>
-                <span style={{ width: fragmentCount ? '100%' : '12%' }} />
+                <span style={{ width: `${Math.max(8, (fragmentCount / sceneFragments.length) * 100)}%` }} />
               </div>
-              <strong>{fragmentCount} / {sceneFragmentIds.length} {copy.fragments}</strong>
+              <strong>{fragmentCount} / {sceneFragments.length} {copy.fragments}</strong>
+            </section>
+
+            <section className={`dream-panel dream-panel--tutorial${tutorialComplete ? ' is-complete' : ''}`}>
+              <p className="dream-panel__label">{copy.tutorialLabel}</p>
+              <h2>{tutorialComplete ? copy.tutorialCompleteTitle : copy.tutorialTitle}</h2>
+              {tutorialComplete ? (
+                <p>{copy.tutorialCompleteBody}</p>
+              ) : (
+                <ul className="dream-tutorial-list">
+                  {tutorialItems.map(([stepId, label]) => {
+                    const completed = completedTutorialStepIds.includes(stepId);
+                    return <li key={stepId} className={completed ? 'is-complete' : ''}><span>{completed ? '✓' : '○'}</span>{label}</li>;
+                  })}
+                </ul>
+              )}
+            </section>
+
+            <section className="dream-panel dream-panel--archive">
+              <p className="dream-panel__label">{copy.archiveLabel}</p>
+              <ol>
+                {sceneFragments.map((fragment) => {
+                  const found = collectedFragmentIds.includes(fragment.id);
+                  return (
+                    <li key={fragment.id} className={found ? 'is-found' : ''}>
+                      <span>{found ? '✦' : '◇'}</span>
+                      <div>
+                        <strong>{found ? story.fragments[fragment.id].title : copy.undiscoveredFragment}</strong>
+                        {found && <p>{story.fragments[fragment.id].memory}</p>}
+                      </div>
+                    </li>
+                  );
+                })}
+              </ol>
             </section>
 
             <section className="dream-panel">
@@ -107,13 +237,30 @@ const DreamWorld = ({ language = 'zh' }) => {
               <p className="dream-panel__label">{copy.systemLabel}</p>
               <div><span>{copy.engine}</span><strong>Phaser 4</strong></div>
               <div><span>{copy.sceneCount}</span><strong>{dreamWorldFoundation.scenes.length}</strong></div>
-              <div><span>{copy.npcCount}</span><strong>{dreamWorldFoundation.npcs.length}</strong></div>
+              <div><span>{copy.npcCount}</span><strong>{sceneNpcs.length}</strong></div>
+              <button type="button" className="dream-reset-button" onClick={() => setResetOpen(true)}>{copy.reset}</button>
             </section>
           </aside>
         </div>
 
         <p className="dream-world__footnote">{copy.footnote}</p>
       </div>
+
+      {resetOpen && (
+        <div className="dream-reset-modal" role="presentation" onMouseDown={(event) => {
+          if (event.target === event.currentTarget) setResetOpen(false);
+        }}>
+          <div role="dialog" aria-modal="true" aria-labelledby="dream-reset-title" className="dream-reset-modal__dialog">
+            <span aria-hidden="true">⌁</span>
+            <h2 id="dream-reset-title">{copy.resetTitle}</h2>
+            <p>{copy.resetBody}</p>
+            <div>
+              <button type="button" onClick={() => setResetOpen(false)}>{copy.resetCancel}</button>
+              <button type="button" className="is-danger" onClick={handleReset}>{copy.resetConfirm}</button>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 };

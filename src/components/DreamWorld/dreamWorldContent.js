@@ -1,0 +1,191 @@
+export const dreamWorldCopy = {
+  zh: {
+    pageNavigationLabel: '梦境世界导航',
+    eyebrow: 'SOMA DREAM ARCHIVE · 东北区域',
+    title: '东北湖畔',
+    intro: '这片月夜森林位于梦境的东北角。湖泊、钓鱼的人与尚未复原的名字，共同组成第一段可以自由探索的真实残念。',
+    sceneLabel: '东北湖畔 · 起点草地',
+    talkPrompt: 'E 交谈',
+    closeOverlay: '关闭内容',
+    questLabel: '梦境残念',
+    questTitle: '湖边的三个碎片',
+    questBody: '三个碎片可以按任意顺序拾取。全部复原后，湖边陌生人的名字会重新出现。',
+    questComplete: '三个残念已经拼合。湖边的陌生人终于重新拥有了名字：毛毛。',
+    fragmentProgress: '梦境碎片收集进度',
+    fragments: '梦境碎片',
+    controlsTitle: '控制方式',
+    move: '方向移动',
+    moveAlt: '备用移动',
+    interact: '交谈',
+    systemLabel: '梦境系统',
+    engine: '运行引擎',
+    sceneCount: '已稳定场景',
+    npcCount: '关键人物',
+    online: '梦境稳定',
+    loading: '正在入梦',
+    back: '退出梦境',
+    footnote: '当前场景：梦境东北角的湖泊 · 真实记忆与可体验残念共同存在',
+    gameLabel: '可操作的东北湖畔梦境游戏区域',
+    touchControlsLabel: '屏幕移动控制',
+    moveUp: '向上移动',
+    moveDown: '向下移动',
+    moveLeft: '向左移动',
+    moveRight: '向右移动',
+    tutorialLabel: '一次性新手任务',
+    tutorialTitle: '学会在残念中行走',
+    tutorialCompleteTitle: '新手任务完成',
+    tutorialCompleteBody: '你已经可以自由探索东北湖畔。这里不会再次强制显示新手任务。',
+    tutorialSteps: {
+      move: '移动人物',
+      talk: '与任意人物交谈',
+      collect: '拾取一个梦境碎片',
+    },
+    memoryLabel: '梦境碎片已复原',
+    identityUnlocked: '身份线索已完成：湖边的陌生人是毛毛。',
+    archiveLabel: '残念档案',
+    undiscoveredFragment: '尚未复原',
+    reset: '重置梦境档案',
+    resetTitle: '确认重置全部梦境内容？',
+    resetBody: '这会清除人物位置、三个碎片、新手任务和所有梦境进度。此操作无法撤销。',
+    resetCancel: '保留进度',
+    resetConfirm: '确认全部重置',
+  },
+  en: {
+    pageNavigationLabel: 'Dream World navigation',
+    eyebrow: 'SOMA DREAM ARCHIVE · NORTHEAST REGION',
+    title: 'Northeast Lakeside',
+    intro: 'This moonlit forest sits in the northeast corner of the dream. Its lake, the people who fish there, and names not yet restored form the first memory you can explore freely.',
+    sceneLabel: 'Northeast Lakeside · Threshold Meadow',
+    talkPrompt: 'E TALK',
+    closeOverlay: 'Close content',
+    questLabel: 'Dream remnants',
+    questTitle: 'Three Fragments by the Lake',
+    questBody: 'Collect the three fragments in any order. Restoring all of them will return a name to the stranger by the lake.',
+    questComplete: 'The three remnants have joined. The stranger by the lake has a name again: Maomao.',
+    fragmentProgress: 'Dream fragment collection progress',
+    fragments: 'fragments',
+    controlsTitle: 'Controls',
+    move: 'Move',
+    moveAlt: 'Alternate movement',
+    interact: 'Talk',
+    systemLabel: 'Dream system',
+    engine: 'Runtime',
+    sceneCount: 'Stable scenes',
+    npcCount: 'Key figures',
+    online: 'Dream stable',
+    loading: 'Entering dream',
+    back: 'Exit dream',
+    footnote: 'Current scene: the lake in the dream’s northeast corner · remembered truth and explorable remnants coexist',
+    gameLabel: 'Interactive Northeast Lakeside dream area',
+    touchControlsLabel: 'On-screen movement controls',
+    moveUp: 'Move up',
+    moveDown: 'Move down',
+    moveLeft: 'Move left',
+    moveRight: 'Move right',
+    tutorialLabel: 'One-time tutorial quest',
+    tutorialTitle: 'Learn to Walk Through Remnants',
+    tutorialCompleteTitle: 'Tutorial complete',
+    tutorialCompleteBody: 'You can now explore Northeast Lakeside freely. The tutorial will not be forced again.',
+    tutorialSteps: {
+      move: 'Move the character',
+      talk: 'Speak with any figure',
+      collect: 'Collect one dream fragment',
+    },
+    memoryLabel: 'Dream fragment restored',
+    identityUnlocked: 'Identity clue complete: the stranger by the lake is Maomao.',
+    archiveLabel: 'Remnant archive',
+    undiscoveredFragment: 'Not yet restored',
+    reset: 'Reset Dream Archive',
+    resetTitle: 'Reset all Dream World content?',
+    resetBody: 'This clears the player position, all three fragments, tutorial progress, and every Dream World flag. This cannot be undone.',
+    resetCancel: 'Keep progress',
+    resetConfirm: 'Reset everything',
+  },
+};
+
+export const dreamWorldStory = {
+  zh: {
+    npcs: {
+      maomao: {
+        lockedName: '湖边的陌生人',
+        unlockedName: '毛毛',
+        lockedDialogue: '“先不要问我的名字。湖边散落的光比我更接近答案。等你把它们拼起来，再回来看看我。”',
+        unlockedDialogue: '“你终于想起来了。我是毛毛，也是你的妻子。你记得我们在湖边钓鱼，也记得我一直喜欢海和湖。”',
+      },
+      'friend-1': {
+        lockedName: '好友 1',
+        unlockedName: '好友 1',
+        lockedDialogue: '“梦会先留下关系，再慢慢归还名字。现在你只需要知道，我是你的朋友。”',
+        unlockedDialogue: '“属于我的名字还藏在后面的线索里。等你走到那里，我们再重新认识一次。”',
+      },
+      'friend-2': {
+        lockedName: '好友 2',
+        unlockedName: '好友 2',
+        lockedDialogue: '“这里是梦境东北角的湖。眼前的景色有真实记忆，也有你可以亲自经历的残念。”',
+        unlockedDialogue: '“属于我的名字还没有被找回，但这不会阻止我们一起探索这个梦。”',
+      },
+    },
+    fragments: {
+      'lakeside-fishing': {
+        title: '湖边的鱼线',
+        memory: '我和她坐在湖边钓鱼。水面很安静，鱼线落进了梦里。',
+      },
+      'wife-loves-water': {
+        title: '海与湖的方向',
+        memory: '我的妻子喜欢钓鱼，也喜欢海和湖。看见水的时候，我会想起她。',
+      },
+      'maomao-is-wife': {
+        title: '被藏起来的名字',
+        memory: '毛毛是我的妻子。',
+      },
+    },
+  },
+  en: {
+    npcs: {
+      maomao: {
+        lockedName: 'Stranger by the Lake',
+        unlockedName: 'Maomao',
+        lockedDialogue: '“Do not ask for my name yet. The lights scattered by the lake are closer to the answer. Put them together, then come back to me.”',
+        unlockedDialogue: '“You finally remembered. I am Maomao, and I am your wife. You remember us fishing by the lake, and you remember that I have always loved the sea and lakes.”',
+      },
+      'friend-1': {
+        lockedName: 'Friend 1',
+        unlockedName: 'Friend 1',
+        lockedDialogue: '“Dreams leave relationships behind before they return names. For now, you only need to know that I am your friend.”',
+        unlockedDialogue: '“My name is still hidden in clues further ahead. When you reach them, we can meet again.”',
+      },
+      'friend-2': {
+        lockedName: 'Friend 2',
+        unlockedName: 'Friend 2',
+        lockedDialogue: '“This is the lake in the northeast corner of the dream. Some of what you see is remembered truth; some is a remnant you can experience for yourself.”',
+        unlockedDialogue: '“My name has not returned yet, but that will not stop us from exploring this dream together.”',
+      },
+    },
+    fragments: {
+      'lakeside-fishing': {
+        title: 'The Fishing Line by the Lake',
+        memory: 'She and I sat by the lake and fished. The water was quiet, and the line fell into the dream.',
+      },
+      'wife-loves-water': {
+        title: 'The Direction of Sea and Lake',
+        memory: 'My wife loves fishing, and she loves the sea and lakes. When I see water, I remember her.',
+      },
+      'maomao-is-wife': {
+        title: 'The Hidden Name',
+        memory: 'Maomao is my wife.',
+      },
+    },
+  },
+};
+
+export const getNpcPresentation = (language, npcId, allFragmentsCollected) => {
+  const locale = dreamWorldStory[language] || dreamWorldStory.zh;
+  const npc = locale.npcs[npcId];
+  if (!npc) return { name: npcId, dialogue: '' };
+
+  const identityUnlocked = npcId === 'maomao' && allFragmentsCollected;
+  return {
+    name: identityUnlocked ? npc.unlockedName : npc.lockedName,
+    dialogue: identityUnlocked ? npc.unlockedDialogue : npc.lockedDialogue,
+  };
+};
