@@ -1,15 +1,29 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import DreamGame from './DreamGame';
 import { dreamWorldCopy, dreamWorldFoundation } from './dreamWorldData';
+import { loadDreamSave, recordDreamFragment, saveDreamSave } from './dreamSave';
 import './DreamWorld.css';
 
 const DreamWorld = ({ language = 'zh' }) => {
   const copy = dreamWorldCopy[language] || dreamWorldCopy.zh;
   const [isReady, setIsReady] = useState(false);
   const [dialogueOpen, setDialogueOpen] = useState(false);
-  const [fragmentCount, setFragmentCount] = useState(0);
+  const [archive, setArchive] = useState(loadDreamSave);
   const scene = dreamWorldFoundation.scenes[0];
+  const sceneFragmentIds = scene.fragmentIds || [];
+  const collectedFragmentIds = archive.world.collectedFragmentIds;
+  const fragmentCount = sceneFragmentIds.filter((fragmentId) => (
+    collectedFragmentIds.includes(fragmentId)
+  )).length;
+
+  useEffect(() => {
+    saveDreamSave(archive);
+  }, [archive]);
+
+  const handleFragment = (fragmentId) => {
+    setArchive((currentArchive) => recordDreamFragment(currentArchive, fragmentId));
+  };
 
   return (
     <section className="dream-world">
@@ -44,9 +58,10 @@ const DreamWorld = ({ language = 'zh' }) => {
             <DreamGame
               key={language}
               copy={copy}
+              collectedFragmentIds={collectedFragmentIds}
               onReady={() => setIsReady(true)}
               onInteraction={() => setDialogueOpen(true)}
-              onFragment={() => setFragmentCount(1)}
+              onFragment={handleFragment}
             />
 
             <div
@@ -76,7 +91,7 @@ const DreamWorld = ({ language = 'zh' }) => {
               <div className="dream-progress" aria-label={copy.fragmentProgress}>
                 <span style={{ width: fragmentCount ? '100%' : '12%' }} />
               </div>
-              <strong>{fragmentCount} / 1 {copy.fragments}</strong>
+              <strong>{fragmentCount} / {sceneFragmentIds.length} {copy.fragments}</strong>
             </section>
 
             <section className="dream-panel">

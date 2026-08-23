@@ -8,9 +8,16 @@ const GAME_HEIGHT = 640;
 const WORLD_WIDTH = 1536;
 const WORLD_HEIGHT = 1024;
 
-const DreamGame = ({ copy, onFragment, onInteraction, onReady }) => {
+const DreamGame = ({
+  collectedFragmentIds = [],
+  copy,
+  onFragment,
+  onInteraction,
+  onReady,
+}) => {
   const mountRef = useRef(null);
   const gameRef = useRef(null);
+  const initialCollectedFragmentIdsRef = useRef(collectedFragmentIds);
   const controlsRef = useRef({ up: false, down: false, left: false, right: false, interact: false });
   const callbacksRef = useRef({ onFragment, onInteraction, onReady });
 
@@ -28,7 +35,7 @@ const DreamGame = ({ copy, onFragment, onInteraction, onReady }) => {
       constructor() {
         super({ key: 'threshold-meadow' });
         this.lastDirection = 'down';
-        this.fragmentCollected = false;
+        this.fragmentCollected = initialCollectedFragmentIdsRef.current.includes('first-light');
       }
 
       preload() {
@@ -136,6 +143,8 @@ const DreamGame = ({ copy, onFragment, onInteraction, onReady }) => {
       }
 
       createFragment() {
+        if (this.fragmentCollected) return;
+
         const shape = this.make.graphics({ x: 0, y: 0, add: false });
         shape.fillStyle(0x9ef8ff, 0.35);
         shape.fillCircle(14, 14, 14);

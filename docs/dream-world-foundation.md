@@ -1,6 +1,6 @@
 # Dream World foundation
 
-This branch prepares a small, isolated foundation for a future 2D pixel RPG experience. The first scene now runs as an embedded Phaser prototype instead of a static concept preview.
+This branch prepares the first playable foundation for a long-running, desktop-first 2D open-world project. The first scene runs as an embedded Phaser prototype instead of a static concept preview. The scalable world structure and milestones are defined in [dream-world-roadmap.md](./dream-world-roadmap.md).
 
 ## First playable milestone
 
@@ -8,7 +8,7 @@ This branch prepares a small, isolated foundation for a future 2D pixel RPG expe
 - One visitor avatar with arrow-key, WASD, and touch movement
 - One NPC with proximity-based dialogue (expand to three to five)
 - One collectible dream fragment (expand to three)
-- A lightweight archive stored in the browser
+- A versioned archive stored in the browser
 - A clear exit back to the main site
 
 ## Proposed technical boundary
@@ -27,5 +27,5 @@ The starter data file intentionally separates scenes, NPCs, and fragments by sta
 
 - Tile size and master color palette
 - Original character and environment sprites
-- Save-game schema beyond local browser storage
+- Cloud save and account requirements beyond local browser storage
 - Music, ambient audio, and sound licensing
