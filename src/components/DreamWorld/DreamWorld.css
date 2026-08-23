@@ -1,58 +1,95 @@
 .dream-world {
-  --dream-ink: #17152b;
-  --dream-night: #161633;
-  --dream-purple: #6154a6;
-  --dream-lilac: #b9a8e8;
-  --dream-paper: #f4ecdc;
+  --dream-ink: #11142d;
+  --dream-night: #0b0d22;
+  --dream-panel: #171a38;
+  --dream-line: #4a4d78;
+  --dream-lilac: #b7a5ff;
+  --dream-cyan: #83efff;
+  --dream-cream: #fff6d8;
   min-height: 100vh;
   position: relative;
   overflow: hidden;
-  color: var(--dream-ink);
-  background: linear-gradient(#171630 0 36%, #302b59 100%);
+  color: #f7f1ff;
+  background:
+    radial-gradient(circle at 50% -10%, rgba(109, 92, 180, 0.28), transparent 42%),
+    linear-gradient(180deg, #10122d, #08091a 78%);
   font-family: "Courier New", monospace;
 }
 
-.dream-world__stars {
+.dream-world__noise {
   position: absolute;
   inset: 0;
-  opacity: 0.8;
-  background-image:
-    radial-gradient(circle at 12% 12%, #fff 0 1px, transparent 2px),
-    radial-gradient(circle at 32% 18%, #d9ceff 0 1px, transparent 2px),
-    radial-gradient(circle at 71% 10%, #fff 0 1px, transparent 2px),
-    radial-gradient(circle at 88% 23%, #d9ceff 0 1px, transparent 2px);
-  background-size: 180px 140px;
+  opacity: 0.2;
   pointer-events: none;
+  background-image:
+    radial-gradient(circle at 10% 20%, #fff 0 1px, transparent 1.5px),
+    radial-gradient(circle at 72% 13%, #b8abff 0 1px, transparent 1.5px),
+    radial-gradient(circle at 34% 72%, #7cecff 0 1px, transparent 1.5px);
+  background-size: 190px 170px, 240px 210px, 280px 260px;
 }
 
 .dream-world__content {
   position: relative;
-  width: min(1120px, calc(100% - 32px));
+  width: min(1320px, calc(100% - 32px));
   margin: 0 auto;
-  padding: 48px 0 96px;
+  padding: 30px 0 84px;
 }
+
+.dream-world__topbar,
+.dream-world__header,
+.dream-console__bar,
+.dream-world__status,
+.dream-console__bar > div {
+  display: flex;
+  align-items: center;
+}
+
+.dream-world__topbar { justify-content: space-between; }
 
 .dream-world__back {
-  display: inline-block;
-  color: #f4ecdc;
-  font-size: 13px;
-  font-weight: 800;
+  color: #d8d2f3;
+  font-size: 12px;
+  font-weight: 900;
   letter-spacing: 0.08em;
   text-decoration: none;
+  text-transform: uppercase;
 }
 
-.dream-world__back:hover { color: #fff; }
+.dream-world__back:hover { color: white; }
+
+.dream-world__status {
+  gap: 8px;
+  padding: 7px 11px;
+  border: 1px solid #4c4f78;
+  color: #aaa7c2;
+  background: rgba(12, 14, 35, 0.75);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.dream-world__status span {
+  width: 7px;
+  height: 7px;
+  background: #8f91a6;
+  box-shadow: 0 0 0 2px rgba(143, 145, 166, 0.14);
+}
+
+.dream-world__status.is-online { color: #baf8dc; border-color: #33745b; }
+.dream-world__status.is-online span { background: #62e0a5; box-shadow: 0 0 8px #62e0a5; }
 
 .dream-world__header {
-  max-width: 760px;
-  margin: 64px 0 36px;
-  color: white;
+  justify-content: space-between;
+  gap: 48px;
+  margin: 44px 0 26px;
 }
 
-.dream-world__eyebrow {
-  margin: 0 0 14px;
-  color: #d9ceff;
-  font-size: 12px;
+.dream-world__eyebrow,
+.dream-panel__label {
+  margin: 0 0 9px;
+  color: var(--dream-cyan);
+  font-size: 10px;
   font-weight: 900;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -60,242 +97,215 @@
 
 .dream-world__header h1 {
   margin: 0;
-  font-family: "Courier New", monospace;
-  font-size: clamp(42px, 8vw, 82px);
-  line-height: 0.92;
-  letter-spacing: -0.08em;
-  text-shadow: 5px 5px 0 #574a93;
-}
-
-.dream-world__header > p:last-child {
-  max-width: 680px;
-  margin: 26px 0 0;
-  color: #e8e2f7;
-  font-family: system-ui, sans-serif;
-  font-size: 17px;
-  font-weight: 650;
-  line-height: 1.8;
-}
-
-.dream-world__grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1.7fr) minmax(260px, 0.8fr);
-  gap: 22px;
-}
-
-.dream-preview,
-.dream-card,
-.dream-archive {
-  border: 4px solid var(--dream-ink);
-  background: var(--dream-paper);
-  box-shadow: 8px 8px 0 rgba(8, 7, 24, 0.55);
-}
-
-.dream-preview__bar {
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 12px 16px;
-  border-bottom: 4px solid var(--dream-ink);
-  background: #d8c9a9;
-  font-size: 11px;
-  font-weight: 900;
-  text-transform: uppercase;
-}
-
-.dream-preview__map {
-  position: relative;
-  min-height: 390px;
-  overflow: hidden;
-  image-rendering: pixelated;
-  background-color: #8faf70;
-  background-image:
-    linear-gradient(90deg, rgba(65, 95, 62, 0.18) 1px, transparent 1px),
-    linear-gradient(rgba(65, 95, 62, 0.18) 1px, transparent 1px),
-    repeating-linear-gradient(45deg, transparent 0 22px, rgba(244, 236, 191, 0.16) 23px 25px);
-  background-size: 32px 32px, 32px 32px, 64px 64px;
-}
-
-.pixel-tree {
-  position: absolute;
-  width: 64px;
-  height: 58px;
-  border: 6px solid #25233a;
-  background: #3f7050;
-  box-shadow: inset -12px -10px 0 #2e5843, inset 10px 10px 0 #72a762;
-}
-
-.pixel-tree::after {
-  content: "";
-  position: absolute;
-  left: 23px;
-  bottom: -32px;
-  width: 14px;
-  height: 28px;
-  border: 5px solid #25233a;
-  border-top: 0;
-  background: #76553d;
-}
-
-.pixel-tree--one { top: 40px; left: 11%; }
-.pixel-tree--two { right: 9%; bottom: 90px; transform: scale(0.8); }
-
-.pixel-pond {
-  position: absolute;
-  left: 9%;
-  bottom: 34px;
-  width: 190px;
-  height: 68px;
-  border: 6px solid #30405d;
-  background: repeating-linear-gradient(0deg, #5a91a6 0 10px, #77b6bd 10px 18px);
-  border-radius: 50%;
-}
-
-.pixel-character {
-  position: absolute;
-  width: 26px;
-  height: 38px;
-  border: 5px solid #25233a;
-  background: #d9c1a3;
-  box-shadow: inset 0 -17px 0 #584a98;
-}
-
-.pixel-character::before {
-  content: "";
-  position: absolute;
-  left: 2px;
-  top: -10px;
-  width: 12px;
-  height: 7px;
-  background: #30293d;
-}
-
-.pixel-character--player { left: 48%; top: 57%; }
-.pixel-character--npc { left: 67%; top: 35%; box-shadow: inset 0 -17px 0 #8b543f; }
-
-.pixel-label {
-  position: absolute;
-  padding: 3px 5px;
   color: white;
-  background: rgba(23, 21, 43, 0.82);
-  font-size: 9px;
-  font-weight: 900;
+  font: 900 clamp(34px, 5vw, 62px) / 0.95 "Courier New", monospace;
+  letter-spacing: -0.08em;
+  text-shadow: 4px 4px 0 #493f83;
 }
 
-.pixel-label--player { left: calc(48% - 8px); top: calc(57% + 48px); }
-.pixel-label--npc { left: calc(67% - 9px); top: calc(35% + 48px); }
-
-.dream-preview__dialogue {
-  min-height: 86px;
+.dream-world__header > p {
+  max-width: 610px;
   margin: 0;
-  padding: 20px 22px;
-  border-top: 4px solid var(--dream-ink);
-  background: #fffaf0;
-  font-family: system-ui, sans-serif;
-  font-size: 15px;
-  font-weight: 750;
-  line-height: 1.7;
-}
-
-.dream-world__sidebar {
-  display: grid;
-  align-content: start;
-  gap: 22px;
-}
-
-.dream-card { padding: 24px; }
-.dream-card--notice { background: #cbc0ee; }
-.dream-card__light {
-  display: block;
-  width: 18px;
-  height: 18px;
-  margin-bottom: 22px;
-  background: #fff7bc;
-  box-shadow: 0 0 0 5px #7061ad, 0 0 0 9px var(--dream-ink);
-  animation: dream-pulse 2.4s steps(2, end) infinite;
-}
-
-.dream-card h2,
-.dream-archive h2 {
-  margin: 0 0 12px;
-  font-size: 20px;
-  line-height: 1.3;
-}
-
-.dream-card p,
-.dream-archive p {
-  margin: 0;
+  color: #c8c5dc;
   font-family: system-ui, sans-serif;
   font-size: 14px;
   font-weight: 650;
-  line-height: 1.7;
+  line-height: 1.75;
 }
 
-.dream-card button {
-  width: 100%;
-  margin-top: 22px;
-  padding: 12px;
-  border: 3px solid var(--dream-ink);
-  color: #686177;
-  background: #ded8e5;
-  font: 900 12px "Courier New", monospace;
-  cursor: not-allowed;
-}
-
-.dream-card ul {
+.dream-console {
   display: grid;
-  gap: 12px;
-  margin: 16px 0 0;
-  padding: 0;
-  list-style: none;
+  grid-template-columns: minmax(0, 1fr) 282px;
+  gap: 16px;
+  padding: 10px;
+  border: 1px solid #555984;
+  background: rgba(7, 9, 25, 0.88);
+  box-shadow: 0 22px 65px rgba(0, 0, 0, 0.52), 0 0 0 1px #090b1d;
 }
 
-.dream-card li {
+.dream-console__game {
+  min-width: 0;
   position: relative;
-  padding-left: 22px;
-  font-family: system-ui, sans-serif;
-  font-size: 13px;
-  font-weight: 750;
+  overflow: hidden;
+  border: 2px solid #636793;
+  background: #0d1027;
 }
 
-.dream-card li::before { content: "□"; position: absolute; left: 0; font-family: monospace; }
+.dream-console__bar {
+  min-height: 40px;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 0 14px;
+  border-bottom: 2px solid #555984;
+  color: #e8e3ff;
+  background: #171a38;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
 
-.dream-archive {
+.dream-console__bar > div { gap: 9px; }
+.dream-console__bar > span { color: #777b9f; }
+.dream-console__signal { width: 7px; height: 7px; background: var(--dream-cyan); box-shadow: 0 0 9px var(--dream-cyan); }
+
+.dream-game {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  background: #11142d;
+  touch-action: none;
+}
+
+.dream-game__mount,
+.dream-game__mount canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.dream-game__mount canvas {
+  display: block;
+  image-rendering: pixelated;
+}
+
+.dream-game__controls {
+  position: absolute;
+  inset: auto 14px 14px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+.dream-dpad {
   display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  gap: 22px;
-  margin-top: 22px;
-  padding: 24px;
+  grid-template-columns: repeat(3, 42px);
+  grid-template-rows: repeat(2, 42px);
+  gap: 4px;
 }
 
-.dream-archive > div:first-child { color: var(--dream-purple); font-size: 38px; }
-.dream-archive dl { display: flex; gap: 8px; margin: 0; }
-.dream-archive dl div { min-width: 74px; padding: 10px; border: 3px solid var(--dream-ink); text-align: center; }
-.dream-archive dt { font-size: 9px; font-weight: 900; text-transform: uppercase; }
-.dream-archive dd { margin: 4px 0 0; font-size: 22px; font-weight: 900; }
+.dream-dpad button,
+.dream-action {
+  border: 2px solid rgba(255, 255, 255, 0.72);
+  color: white;
+  background: rgba(12, 14, 35, 0.76);
+  box-shadow: 3px 3px 0 rgba(7, 8, 20, 0.72);
+  font: 900 14px "Courier New", monospace;
+  pointer-events: auto;
+  touch-action: none;
+  user-select: none;
+}
 
-@keyframes dream-pulse { 50% { filter: brightness(1.25); transform: scale(1.12); } }
+.dream-dpad button:active,
+.dream-action:active { color: #14162f; background: var(--dream-cyan); transform: translate(2px, 2px); box-shadow: none; }
+.dream-dpad__up { grid-column: 2; }
+.dream-dpad__left { grid-column: 1; grid-row: 2; }
+.dream-dpad__right { grid-column: 3; grid-row: 2; }
+.dream-dpad__down { grid-column: 2; grid-row: 2; }
+
+.dream-action {
+  display: grid;
+  place-items: center;
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+.dream-action span { display: block; font-size: 24px; line-height: 1; }
+
+.dream-dialogue {
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+  left: 18px;
+  display: grid;
+  grid-template-columns: 52px 1fr auto;
+  align-items: center;
+  gap: 14px;
+  padding: 14px;
+  border: 3px solid #161833;
+  color: #18162f;
+  background: #fff7df;
+  box-shadow: 0 0 0 3px #b6a7e7, 7px 7px 0 rgba(9, 10, 26, 0.65);
+  opacity: 0;
+  transform: translateY(24px);
+  pointer-events: none;
+  transition: opacity 160ms ease, transform 160ms ease;
+  z-index: 10;
+}
+
+.dream-dialogue.is-open { opacity: 1; transform: translateY(0); pointer-events: auto; }
+.dream-dialogue__portrait { display: grid; place-items: center; width: 48px; height: 48px; border: 3px solid #201e3d; color: #fff7df; background: #55488b; font-size: 24px; font-weight: 900; }
+.dream-dialogue strong { display: block; margin-bottom: 4px; font-size: 12px; text-transform: uppercase; }
+.dream-dialogue p { margin: 0; font-family: system-ui, sans-serif; font-size: 13px; font-weight: 700; line-height: 1.55; }
+.dream-dialogue button { align-self: start; border: 0; color: #393553; background: transparent; font-size: 26px; line-height: 1; cursor: pointer; }
+
+.dream-console__sidebar { display: grid; align-content: start; gap: 10px; }
+
+.dream-panel {
+  padding: 18px;
+  border: 1px solid #444873;
+  color: #d9d6e9;
+  background: var(--dream-panel);
+}
+
+.dream-panel--quest { border-color: #6b5da9; background: linear-gradient(150deg, #28234d, #171a38 68%); }
+.dream-panel h2 { margin: 0 0 10px; color: white; font-size: 18px; line-height: 1.25; }
+.dream-panel > p:not(.dream-panel__label) { margin: 0; color: #bbb8cf; font-family: system-ui, sans-serif; font-size: 12px; font-weight: 650; line-height: 1.6; }
+.dream-panel--quest > strong { display: block; margin-top: 8px; color: #d8d2ff; font-size: 10px; text-align: right; text-transform: uppercase; }
+
+.dream-progress { height: 7px; margin-top: 17px; overflow: hidden; border: 1px solid #5f6191; background: #0c0e25; }
+.dream-progress span { display: block; height: 100%; background: linear-gradient(90deg, #7d6ada, #83efff); transition: width 300ms ease; }
+
+.dream-controls-list { display: grid; gap: 9px; margin: 12px 0 0; }
+.dream-controls-list div,
+.dream-panel--system > div { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.dream-controls-list dt { min-width: 88px; padding: 6px; border: 1px solid #5c608b; color: white; background: #0f122c; font-size: 9px; font-weight: 900; text-align: center; }
+.dream-controls-list dd { margin: 0; color: #a9a7bc; font-family: system-ui, sans-serif; font-size: 11px; font-weight: 700; text-align: right; }
+
+.dream-panel--system { display: grid; gap: 10px; }
+.dream-panel--system > div { padding-top: 9px; border-top: 1px solid #303458; color: #aaa8be; font-size: 10px; }
+.dream-panel--system strong { color: #e7e3f5; }
+
+.dream-world__footnote { margin: 15px 0 0; color: #73768f; font-size: 9px; font-weight: 900; letter-spacing: 0.1em; text-align: center; text-transform: uppercase; }
+
+@media (min-width: 961px) {
+  .dream-game__controls { opacity: 0.38; transition: opacity 160ms ease; }
+  .dream-game:hover .dream-game__controls { opacity: 0.9; }
+}
+
+@media (max-width: 980px) {
+  .dream-console { grid-template-columns: 1fr; }
+  .dream-console__sidebar { grid-template-columns: repeat(3, 1fr); }
+  .dream-world__header { align-items: flex-end; }
+}
+
+@media (max-width: 720px) {
+  .dream-world__content { width: min(100% - 16px, 1320px); padding-top: 18px; }
+  .dream-world__header { align-items: flex-start; flex-direction: column; gap: 18px; margin-top: 30px; }
+  .dream-world__header > p { font-size: 13px; }
+  .dream-console { padding: 5px; }
+  .dream-console__sidebar { grid-template-columns: 1fr; }
+  .dream-console__bar > span { display: none; }
+  .dream-dialogue { right: 9px; bottom: 9px; left: 9px; grid-template-columns: 1fr auto; padding: 11px; }
+  .dream-dialogue__portrait { display: none; }
+  .dream-dialogue p { font-size: 11px; }
+  .dream-dpad { grid-template-columns: repeat(3, 36px); grid-template-rows: repeat(2, 36px); }
+  .dream-action { width: 62px; height: 62px; }
+  .dream-action span { font-size: 19px; }
+}
+
+@media (max-width: 440px) {
+  .dream-world__status { padding: 6px 8px; font-size: 8px; }
+  .dream-game__controls { inset: auto 8px 8px; }
+  .dream-dpad { grid-template-columns: repeat(3, 32px); grid-template-rows: repeat(2, 32px); gap: 3px; }
+  .dream-dpad button { font-size: 11px; }
+  .dream-action { width: 54px; height: 54px; }
+}
 
 @media (prefers-reduced-motion: reduce) {
-  .dream-card__light { animation: none; }
-}
-
-@media (max-width: 800px) {
-  .dream-world__grid { grid-template-columns: 1fr; }
-  .dream-preview__map { min-height: 330px; }
-  .dream-archive { grid-template-columns: auto 1fr; }
-  .dream-archive dl { grid-column: 1 / -1; width: 100%; }
-  .dream-archive dl div { flex: 1; min-width: 0; }
-}
-
-@media (max-width: 480px) {
-  .dream-world__content { width: min(100% - 20px, 1120px); padding-top: 28px; }
-  .dream-world__header { margin-top: 44px; }
-  .dream-world__header h1 { letter-spacing: -0.09em; }
-  .dream-preview__bar { align-items: flex-start; flex-direction: column; gap: 5px; }
-  .pixel-tree--two { right: 1%; }
-  .pixel-character--player { left: 43%; }
-  .pixel-label--player { left: calc(43% - 8px); }
-  .dream-archive { padding: 18px; }
+  .dream-dialogue,
+  .dream-progress span { transition: none; }
 }

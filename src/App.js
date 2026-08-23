@@ -13,13 +13,13 @@ import OrderMenu from './components/OrderMenu';
 import Tools from './components/Tools/Tools';
 import LotteryTool from './components/LotteryTool/LotteryTool';
 import VocalPractice from './components/VocalPractice/VocalPractice';
-import DreamWorld from './components/DreamWorld/DreamWorld';
 import NotFound from './404';
 import zh from './locales/zh';
 import en from './locales/en';
 import './App.css';
 
 const supportedLanguages = ['zh', 'en'];
+const DreamWorld = React.lazy(() => import('./components/DreamWorld/DreamWorld'));
 
 const getPreferredLanguage = () => {
   const savedLanguage = localStorage.getItem('language');
@@ -85,7 +85,21 @@ function AppContent() {
           <Route path="/tools" element={<Tools t={translations} />} />
           <Route path="/lottery" element={<LotteryTool key={currentLanguage} language={currentLanguage} />} />
           <Route path="/vocal-practice" element={<VocalPractice language={currentLanguage} />} />
-          <Route path="/dream-world" element={<DreamWorld language={currentLanguage} />} />
+          <Route
+            path="/dream-world"
+            element={
+              <React.Suspense
+                fallback={
+                  <div className="dream-route-loading" role="status">
+                    <span aria-hidden="true" />
+                    {currentLanguage === 'zh' ? '正在进入梦境…' : 'Entering the dream…'}
+                  </div>
+                }
+              >
+                <DreamWorld language={currentLanguage} />
+              </React.Suspense>
+            }
+          />
           <Route path="/order-menu" element={<OrderMenu />} />
           <Route path="/social" element={<Navigate to="/tools" replace />} />
           <Route path="*" element={<NotFound />} />
