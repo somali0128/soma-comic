@@ -12,3 +12,31 @@
 .main-content--no-nav {
   padding-top: 0;
 }
+
+.dream-route-loading {
+  display: flex;
+  min-height: 70vh;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: #d8d2f3;
+  background: #0b0d22;
+  font: 800 13px "Courier New", monospace;
+  letter-spacing: 0.08em;
+}
+
+.dream-route-loading span {
+  width: 10px;
+  height: 10px;
+  background: #83efff;
+  box-shadow: 0 0 12px #83efff;
+  animation: dream-route-pulse 900ms steps(2, end) infinite;
+}
+
+@keyframes dream-route-pulse {
+  50% { opacity: 0.35; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dream-route-loading span { animation: none; }
+}

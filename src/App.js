@@ -19,6 +19,7 @@ import en from './locales/en';
 import './App.css';
 
 const supportedLanguages = ['zh', 'en'];
+const DreamWorld = React.lazy(() => import('./components/DreamWorld/DreamWorld'));
 
 const getPreferredLanguage = () => {
   const savedLanguage = localStorage.getItem('language');
@@ -84,6 +85,21 @@ function AppContent() {
           <Route path="/tools" element={<Tools t={translations} />} />
           <Route path="/lottery" element={<LotteryTool key={currentLanguage} language={currentLanguage} />} />
           <Route path="/vocal-practice" element={<VocalPractice language={currentLanguage} />} />
+          <Route
+            path="/dream-world"
+            element={
+              <React.Suspense
+                fallback={
+                  <div className="dream-route-loading" role="status">
+                    <span aria-hidden="true" />
+                    {currentLanguage === 'zh' ? '正在进入梦境…' : 'Entering the dream…'}
+                  </div>
+                }
+              >
+                <DreamWorld language={currentLanguage} />
+              </React.Suspense>
+            }
+          />
           <Route path="/order-menu" element={<OrderMenu />} />
           <Route path="/social" element={<Navigate to="/tools" replace />} />
           <Route path="*" element={<NotFound />} />

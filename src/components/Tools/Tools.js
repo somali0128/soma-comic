@@ -27,6 +27,13 @@ const Tools = ({ t }) => {
       description: isZh ? '把“今天吃什么”变成一个轻松的点菜流程，收集想法、确认菜品。' : 'Turn the daily “what should we eat?” question into a lightweight family ordering flow.',
       details: isZh ? ['菜单分类与筛选', '点菜清单', '手机端优先'] : ['Menu categories and filters', 'Shared order list', 'Mobile-first experience'],
     },
+    {
+      id: 'dream-world', icon: '✦', accent: 'bg-violet-100', to: '/dream-world',
+      title: isZh ? '梦境世界' : 'Dream World',
+      status: isZh ? '像素叙事实验 · 准备中' : 'Pixel narrative · in preparation',
+      description: isZh ? '把记得的梦拼成一张可以探索的地图，让访客通过角色、NPC 与梦境碎片了解这个世界。' : 'A walkable world assembled from remembered dreams, told through characters, NPCs, and collectible fragments.',
+      details: isZh ? ['2D 像素探索', 'NPC 对话', '梦境碎片图鉴'] : ['2D pixel exploration', 'NPC conversations', 'Dream fragment archive'],
+    },
   ];
 
   const projects = [
@@ -45,7 +52,7 @@ const Tools = ({ t }) => {
             <p className="stickman-enter-delay-2 mt-5 max-w-2xl text-base font-bold leading-7 text-slate-700">{subtitle}</p>
           </div>
           <div className="rounded-md border-[3px] border-slate-950 bg-primary-600 p-5 text-white shadow-[6px_6px_0_#071b34]">
-            <p className="font-display text-4xl font-black">03</p>
+            <p className="font-display text-4xl font-black">{String(tools.length).padStart(2, '0')}</p>
             <p className="mt-1 text-sm font-extrabold">{isZh ? '个可直接使用的站内工具' : 'tools you can use right here'}</p>
           </div>
         </header>
