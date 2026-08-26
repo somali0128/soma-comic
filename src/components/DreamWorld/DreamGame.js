@@ -9,13 +9,16 @@ const WORLD_WIDTH = 1536;
 const WORLD_HEIGHT = 1024;
 
 const DreamGame = ({
+  caughtFishingIds = [],
   collectedFragmentIds = [],
   copy,
+  fishingSpots = [],
   fragments,
   initialPosition,
   npcPresentations,
   npcs,
   onFragment,
+  onFishingCatch,
   onInteraction,
   onPositionChange,
   onReady,
@@ -25,31 +28,35 @@ const DreamGame = ({
   const gameRef = useRef(null);
   const controlsRef = useRef({ up: false, down: false, left: false, right: false, interact: false });
   const runtimeRef = useRef({
+    caughtFishingIds,
     collectedFragmentIds,
     copy,
+    fishingSpots,
     fragments,
     initialPosition,
     npcPresentations,
     npcs,
     scene,
   });
-  const callbacksRef = useRef({ onFragment, onInteraction, onPositionChange, onReady });
+  const callbacksRef = useRef({ onFragment, onFishingCatch, onInteraction, onPositionChange, onReady });
 
   useEffect(() => {
     runtimeRef.current = {
+      caughtFishingIds,
       collectedFragmentIds,
       copy,
+      fishingSpots,
       fragments,
       initialPosition,
       npcPresentations,
       npcs,
       scene,
     };
-  }, [collectedFragmentIds, copy, fragments, initialPosition, npcPresentations, npcs, scene]);
+  }, [caughtFishingIds, collectedFragmentIds, copy, fishingSpots, fragments, initialPosition, npcPresentations, npcs, scene]);
 
   useEffect(() => {
-    callbacksRef.current = { onFragment, onInteraction, onPositionChange, onReady };
-  }, [onFragment, onInteraction, onPositionChange, onReady]);
+    callbacksRef.current = { onFragment, onFishingCatch, onInteraction, onPositionChange, onReady };
+  }, [onFragment, onFishingCatch, onInteraction, onPositionChange, onReady]);
 
   useEffect(() => {
     const activeScene = gameRef.current?.scene?.getScene(scene.id);
@@ -72,6 +79,8 @@ const DreamGame = ({
         this.wasMoving = false;
         this.npcObjects = new Map();
         this.fragmentObjects = new Map();
+        this.fishingSpotObjects = new Map();
+        this.activeFishing = null;
       }
 
       preload() {
@@ -107,6 +116,7 @@ const DreamGame = ({
         this.createObstacles(sceneConfig.obstacles);
         this.createNpcs(runtime.current.npcs, runtime.current.npcPresentations);
         this.createFragments(runtime.current.fragments, runtime.current.collectedFragmentIds);
+        this.createFishingSpots(runtime.current.fishingSpots);
 
         this.cursors = this.input.keyboard.createCursorKeys();
         this.keys = this.input.keyboard.addKeys('W,A,S,D,E,SPACE');
@@ -239,6 +249,175 @@ const DreamGame = ({
         callbacks.current.onFragment?.(fragmentId);
       }
 
+      createFishingSpots(spotDefinitions = []) {
+        spotDefinitions.forEach((definition) => {
+          const ripple = this.add.ellipse(
+            definition.bobberX,
+            definition.bobberY,
+            36,
+            15,
+            0x83efff,
+            0.08
+          ).setStrokeStyle(2, 0x83efff, 0.75).setDepth(7);
+          this.tweens.add({
+            targets: ripple,
+            scaleX: 1.5,
+            scaleY: 1.5,
+            alpha: { from: 0.75, to: 0.18 },
+            duration: 1450,
+            repeat: -1,
+            ease: 'Sine.easeOut',
+          });
+
+          const marker = this.add.text(definition.x, definition.y - 26, '⌁', {
+            fontFamily: 'monospace',
+            fontSize: '25px',
+            fontStyle: 'bold',
+            color: '#aef8ff',
+            backgroundColor: '#10233aaa',
+            padding: { x: 6, y: 2 },
+          }).setOrigin(0.5).setDepth(35);
+          this.tweens.add({
+            targets: marker,
+            y: '-=5',
+            duration: 1000,
+            yoyo: true,
+            repeat: -1,
+            ease: 'Sine.easeInOut',
+          });
+
+          const prompt = this.add.text(definition.x, definition.y - 74, runtime.current.copy.fishPrompt, {
+            fontFamily: 'monospace',
+            fontSize: '15px',
+            fontStyle: 'bold',
+            color: '#102235',
+            backgroundColor: '#aef8ff',
+            padding: { x: 9, y: 6 },
+          }).setOrigin(0.5).setDepth(40).setVisible(false);
+
+          this.fishingSpotObjects.set(definition.id, { definition, marker, prompt, ripple });
+        });
+      }
+
+      findNearbyFishingSpot() {
+        let nearbySpotId = null;
+        let nearestDistance = Infinity;
+
+        this.fishingSpotObjects.forEach((entry, spotId) => {
+          const distance = Phaser.Math.Distance.Between(
+            this.player.x,
+            this.player.y,
+            entry.definition.x,
+            entry.definition.y
+          );
+          if (distance < 115 && distance < nearestDistance) {
+            nearbySpotId = spotId;
+            nearestDistance = distance;
+          }
+        });
+
+        this.fishingSpotObjects.forEach((entry, spotId) => {
+          entry.prompt.setVisible(!this.activeFishing && spotId === nearbySpotId);
+        });
+        return nearbySpotId;
+      }
+
+      startFishing(spotId) {
+        const spotEntry = this.fishingSpotObjects.get(spotId);
+        if (!spotEntry || this.activeFishing) return;
+
+        const { definition } = spotEntry;
+        this.player.setVelocity(0, 0).anims.stop();
+        this.lastDirection = definition.facing || 'left';
+        const idleFrames = { down: 1, left: 4, right: 7, up: 10 };
+        this.player.setFrame(idleFrames[this.lastDirection]);
+        this.emitPosition(this.time.now, true);
+
+        const line = this.add.graphics().setDepth(31);
+        line.lineStyle(2, 0xeefcff, 0.9);
+        line.beginPath();
+        line.moveTo(this.player.x, this.player.y - 20);
+        line.lineTo(definition.bobberX, definition.bobberY);
+        line.strokePath();
+
+        const bobber = this.add.circle(
+          definition.bobberX,
+          definition.bobberY,
+          6,
+          0xfff6d8,
+          1
+        ).setStrokeStyle(3, 0xef668d, 1).setDepth(32);
+        const statusText = this.add.text(definition.x, definition.y - 105, runtime.current.copy.fishingWaiting, {
+          fontFamily: 'monospace',
+          fontSize: '14px',
+          fontStyle: 'bold',
+          color: '#e9fdff',
+          backgroundColor: '#101a36e8',
+          padding: { x: 10, y: 7 },
+        }).setOrigin(0.5).setDepth(45);
+        const bobberTween = this.tweens.add({
+          targets: bobber,
+          y: '+=3',
+          duration: 550,
+          yoyo: true,
+          repeat: -1,
+          ease: 'Sine.easeInOut',
+        });
+
+        this.activeFishing = {
+          bobber,
+          bobberTween,
+          definition,
+          line,
+          phase: 'waiting',
+          statusText,
+        };
+        spotEntry.prompt.setVisible(false);
+
+        this.activeFishing.biteTimer = this.time.delayedCall(1500, () => {
+          if (!this.activeFishing || this.activeFishing.definition.id !== definition.id) return;
+          this.activeFishing.phase = 'bite';
+          this.activeFishing.statusText.setText(runtime.current.copy.fishingBite);
+          this.activeFishing.bobberTween.stop();
+          this.activeFishing.bobber.setFillStyle(0xef668d, 1);
+          this.tweens.add({
+            targets: this.activeFishing.bobber,
+            y: '+=9',
+            scale: { from: 1, to: 0.72 },
+            duration: 180,
+            yoyo: true,
+            repeat: -1,
+          });
+          this.cameras.main.shake(90, 0.002);
+        });
+      }
+
+      finishFishing() {
+        if (!this.activeFishing || this.activeFishing.phase !== 'bite') return;
+
+        const { definition } = this.activeFishing;
+        const caughtIds = runtime.current.caughtFishingIds || [];
+        const newCatchId = definition.catchIds.find((catchId) => !caughtIds.includes(catchId));
+        const catchId = newCatchId || definition.repeatCatchId;
+        const isRepeat = !newCatchId;
+
+        this.cameras.main.flash(240, 131, 239, 255);
+        this.cleanupFishing();
+        callbacks.current.onFishingCatch?.({ catchId, isRepeat, spotId: definition.id });
+      }
+
+      cleanupFishing() {
+        if (!this.activeFishing) return;
+        const { bobber, bobberTween, biteTimer, line, statusText } = this.activeFishing;
+        biteTimer?.remove(false);
+        bobberTween?.stop();
+        this.tweens.killTweensOf(bobber);
+        bobber.destroy();
+        line.destroy();
+        statusText.destroy();
+        this.activeFishing = null;
+      }
+
       findNearbyNpc() {
         let nearbyNpcId = null;
         let nearestDistance = Infinity;
@@ -290,6 +469,20 @@ const DreamGame = ({
         if (!this.player) return;
 
         const input = controls.current;
+        const keyboardInteraction = Phaser.Input.Keyboard.JustDown(this.keys.E)
+          || Phaser.Input.Keyboard.JustDown(this.keys.SPACE);
+        const touchInteraction = input.interact;
+        const interactionPressed = keyboardInteraction || touchInteraction;
+        input.interact = false;
+
+        if (this.activeFishing) {
+          this.player.setVelocity(0, 0).anims.stop();
+          this.npcObjects.forEach((entry) => entry.prompt.setVisible(false));
+          this.fishingSpotObjects.forEach((entry) => entry.prompt.setVisible(false));
+          if (this.activeFishing.phase === 'bite' && interactionPressed) this.finishFishing();
+          return;
+        }
+
         const left = this.cursors.left.isDown || this.keys.A.isDown || input.left;
         const right = this.cursors.right.isDown || this.keys.D.isDown || input.right;
         const up = this.cursors.up.isDown || this.keys.W.isDown || input.up;
@@ -322,14 +515,12 @@ const DreamGame = ({
         this.wasMoving = isMoving;
 
         const nearbyNpcId = this.findNearbyNpc();
+        const nearbyFishingSpotId = this.findNearbyFishingSpot();
         this.checkFragments();
 
-        const keyboardInteraction = Phaser.Input.Keyboard.JustDown(this.keys.E)
-          || Phaser.Input.Keyboard.JustDown(this.keys.SPACE);
-        const touchInteraction = input.interact;
-        input.interact = false;
-
-        if (nearbyNpcId && (keyboardInteraction || touchInteraction)) {
+        if (nearbyFishingSpotId && interactionPressed) {
+          this.startFishing(nearbyFishingSpotId);
+        } else if (nearbyNpcId && interactionPressed) {
           this.player.setVelocity(0, 0);
           callbacks.current.onInteraction?.(nearbyNpcId);
         }

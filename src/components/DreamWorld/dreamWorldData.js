@@ -8,7 +8,7 @@ export const DREAM_TUTORIAL_STEP_IDS = Object.values(DREAM_TUTORIAL_STEPS);
 
 export const dreamWorldFoundation = {
   id: 'soma-dream-world',
-  version: 3,
+  version: 4,
   startRegion: 'northeast-lake',
   startScene: 'threshold-meadow',
   regions: [
@@ -25,6 +25,7 @@ export const dreamWorldFoundation = {
       spawn: { id: 'meadow-entry', x: 700, y: 535 },
       npcIds: ['maomao', 'friend-1', 'friend-2'],
       fragmentIds: ['lakeside-fishing', 'wife-loves-water', 'maomao-is-wife'],
+      fishingSpotIds: ['moonlit-lake-bank'],
       obstacles: [
         [445, 245, 350, 245],
         [1025, 170, 370, 250],
@@ -92,6 +93,19 @@ export const dreamWorldFoundation = {
       color: 0xf8a8e6,
     },
   ],
+  fishingSpots: [
+    {
+      id: 'moonlit-lake-bank',
+      sceneId: 'threshold-meadow',
+      x: 1020,
+      y: 825,
+      bobberX: 948,
+      bobberY: 812,
+      facing: 'left',
+      catchIds: ['moon-on-the-line', 'silver-dream-fish', 'knotted-line'],
+      repeatCatchId: 'returning-ripple',
+    },
+  ],
 };
 
 export const getDreamScene = (sceneId = dreamWorldFoundation.startScene) => (
@@ -105,4 +119,8 @@ export const getSceneNpcs = (sceneId) => (
 
 export const getSceneFragments = (sceneId) => (
   dreamWorldFoundation.fragments.filter((fragment) => fragment.sceneId === sceneId)
+);
+
+export const getSceneFishingSpots = (sceneId) => (
+  dreamWorldFoundation.fishingSpots.filter((spot) => spot.sceneId === sceneId)
 );

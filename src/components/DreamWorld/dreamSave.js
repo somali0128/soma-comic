@@ -1,7 +1,8 @@
 import { dreamWorldFoundation } from './dreamWorldData';
 
 export const DREAM_SAVE_KEY = 'soma.dream-world.save';
-export const DREAM_SAVE_VERSION = 1;
+export const DREAM_SAVE_VERSION = 2;
+const SUPPORTED_DREAM_SAVE_VERSIONS = [1, DREAM_SAVE_VERSION];
 
 const uniqueStrings = (value) => (
   Array.isArray(value)
@@ -23,6 +24,7 @@ export const createDreamSave = () => ({
   world: {
     discoveredSceneIds: [dreamWorldFoundation.startScene],
     collectedFragmentIds: [],
+    caughtFishingIds: [],
     flags: {},
   },
   tutorial: {
@@ -33,7 +35,7 @@ export const createDreamSave = () => ({
 export const normalizeDreamSave = (value) => {
   const fallback = createDreamSave();
 
-  if (!value || value.version !== DREAM_SAVE_VERSION) return fallback;
+  if (!value || !SUPPORTED_DREAM_SAVE_VERSIONS.includes(value.version)) return fallback;
 
   const currentSceneId = typeof value.player?.currentSceneId === 'string'
     ? value.player.currentSceneId
@@ -55,6 +57,7 @@ export const normalizeDreamSave = (value) => {
         ? discoveredSceneIds
         : fallback.world.discoveredSceneIds,
       collectedFragmentIds: uniqueStrings(value.world?.collectedFragmentIds),
+      caughtFishingIds: uniqueStrings(value.world?.caughtFishingIds),
       flags: safeRecord(value.world?.flags),
     },
     tutorial: {
@@ -103,6 +106,20 @@ export const recordDreamFragment = (save, fragmentId) => {
     world: {
       ...normalized.world,
       collectedFragmentIds: [...normalized.world.collectedFragmentIds, fragmentId],
+    },
+  };
+};
+
+export const recordDreamFishingCatch = (save, catchId) => {
+  const normalized = normalizeDreamSave(save);
+  if (typeof catchId !== 'string' || catchId.length === 0) return normalized;
+  if (normalized.world.caughtFishingIds.includes(catchId)) return normalized;
+
+  return {
+    ...normalized,
+    world: {
+      ...normalized.world,
+      caughtFishingIds: [...normalized.world.caughtFishingIds, catchId],
     },
   };
 };
