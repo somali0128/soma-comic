@@ -228,8 +228,8 @@ const DreamGame = ({
           this.tweens.add({
             targets: [sprite, glow],
             y: '-=10',
-            alpha: { from: 0.6, to: 1 },
-            duration: 950,
+            alpha: { from: 0.45, to: 0.78 },
+            duration: 1200,
             yoyo: true,
             repeat: -1,
             ease: 'Sine.easeInOut',
@@ -245,8 +245,23 @@ const DreamGame = ({
         entry.sprite.disableBody(true, true);
         entry.glow.destroy();
         this.fragmentObjects.delete(fragmentId);
-        this.cameras.main.flash(220, 126, 236, 255);
+        this.createSoftPulse(entry.definition.x, entry.definition.y, entry.definition.color);
         callbacks.current.onFragment?.(fragmentId);
+      }
+
+      createSoftPulse(x, y, color = 0x83d7df) {
+        const pulse = this.add.ellipse(x, y, 34, 18, color, 0.08)
+          .setStrokeStyle(2, color, 0.28)
+          .setDepth(34);
+        this.tweens.add({
+          targets: pulse,
+          scaleX: 2.4,
+          scaleY: 2.4,
+          alpha: 0,
+          duration: 720,
+          ease: 'Sine.easeOut',
+          onComplete: () => pulse.destroy(),
+        });
       }
 
       createFishingSpots(spotDefinitions = []) {
@@ -257,14 +272,14 @@ const DreamGame = ({
             36,
             15,
             0x83efff,
-            0.08
-          ).setStrokeStyle(2, 0x83efff, 0.75).setDepth(7);
+            0.035
+          ).setStrokeStyle(2, 0x83d7df, 0.38).setDepth(7);
           this.tweens.add({
             targets: ripple,
-            scaleX: 1.5,
-            scaleY: 1.5,
-            alpha: { from: 0.75, to: 0.18 },
-            duration: 1450,
+            scaleX: 1.35,
+            scaleY: 1.35,
+            alpha: { from: 0.48, to: 0.1 },
+            duration: 1850,
             repeat: -1,
             ease: 'Sine.easeOut',
           });
@@ -273,14 +288,14 @@ const DreamGame = ({
             fontFamily: 'monospace',
             fontSize: '25px',
             fontStyle: 'bold',
-            color: '#aef8ff',
-            backgroundColor: '#10233aaa',
+            color: '#83cbd4',
+            backgroundColor: '#10233a88',
             padding: { x: 6, y: 2 },
           }).setOrigin(0.5).setDepth(35);
           this.tweens.add({
             targets: marker,
-            y: '-=5',
-            duration: 1000,
+            y: '-=3',
+            duration: 1400,
             yoyo: true,
             repeat: -1,
             ease: 'Sine.easeInOut',
@@ -344,9 +359,9 @@ const DreamGame = ({
           definition.bobberX,
           definition.bobberY,
           6,
-          0xfff6d8,
-          1
-        ).setStrokeStyle(3, 0xef668d, 1).setDepth(32);
+          0xe8edf0,
+          0.9
+        ).setStrokeStyle(2, 0xc77791, 0.82).setDepth(32);
         const statusText = this.add.text(definition.x, definition.y - 105, runtime.current.copy.fishingWaiting, {
           fontFamily: 'monospace',
           fontSize: '14px',
@@ -388,7 +403,7 @@ const DreamGame = ({
             yoyo: true,
             repeat: -1,
           });
-          this.cameras.main.shake(90, 0.002);
+          this.cameras.main.shake(70, 0.0007);
         });
       }
 
@@ -401,7 +416,7 @@ const DreamGame = ({
         const catchId = newCatchId || definition.repeatCatchId;
         const isRepeat = !newCatchId;
 
-        this.cameras.main.flash(240, 131, 239, 255);
+        this.createSoftPulse(definition.bobberX, definition.bobberY);
         this.cleanupFishing();
         callbacks.current.onFishingCatch?.({ catchId, isRepeat, spotId: definition.id });
       }
