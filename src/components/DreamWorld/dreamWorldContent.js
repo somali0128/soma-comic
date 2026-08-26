@@ -38,6 +38,9 @@ export const dreamWorldCopy = {
     tutorialTitle: '学会在残念中行走',
     tutorialCompleteTitle: '新手任务完成',
     tutorialCompleteBody: '你已经可以自由探索东北湖畔。这里不会再次强制显示新手任务。',
+    tutorialExpand: '展开',
+    tutorialCollapse: '收起',
+    tutorialProgress: '任务进度',
     tutorialSteps: {
       move: '移动人物',
       talk: '与任意人物交谈',
@@ -99,6 +102,9 @@ export const dreamWorldCopy = {
     tutorialTitle: 'Learn to Walk Through Remnants',
     tutorialCompleteTitle: 'Tutorial complete',
     tutorialCompleteBody: 'You can now explore Northeast Lakeside freely. The tutorial will not be forced again.',
+    tutorialExpand: 'Expand',
+    tutorialCollapse: 'Collapse',
+    tutorialProgress: 'Quest progress',
     tutorialSteps: {
       move: 'Move the character',
       talk: 'Speak with any figure',

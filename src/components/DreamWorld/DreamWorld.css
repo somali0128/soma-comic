@@ -264,6 +264,32 @@
 .dream-panel--quest > strong { display: block; margin-top: 8px; color: #d8d2ff; font-size: 10px; text-align: right; text-transform: uppercase; }
 .dream-panel--fishing > strong { display: block; margin-top: 8px; color: #a9eff5; font-size: 10px; text-align: right; }
 
+.dream-panel__collapsible-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.dream-panel__collapsible-header h2 { margin-bottom: 0; }
+.dream-panel__collapsible-header button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  flex: 0 0 auto;
+  padding: 6px 7px;
+  border: 1px solid #535980;
+  color: #c8c5da;
+  background: #10132e;
+  font: 900 9px "Courier New", monospace;
+  cursor: pointer;
+}
+.dream-panel__collapsible-header button:hover { color: white; border-color: #8f96c4; }
+.dream-panel__collapsible-header button span { color: var(--dream-cyan); font-size: 13px; line-height: 0.8; }
+.dream-tutorial-complete-copy,
+.dream-tutorial-summary { margin: 10px 0 0; color: #bbb8cf; font-family: system-ui, sans-serif; font-size: 11px; font-weight: 700; line-height: 1.5; }
+.dream-tutorial-summary { color: #8fd8c0; }
+
 .dream-progress { height: 7px; margin-top: 17px; overflow: hidden; border: 1px solid #5f6191; background: #0c0e25; }
 .dream-progress span { display: block; height: 100%; background: linear-gradient(90deg, #7d6ada, #83efff); transition: width 300ms ease; }
 .dream-progress--fishing span { background: linear-gradient(90deg, #3d8ba4, #a4f5e8); }

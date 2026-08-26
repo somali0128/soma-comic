@@ -50,6 +50,7 @@ const DreamWorld = ({ language = 'zh' }) => {
   const tutorialComplete = DREAM_TUTORIAL_STEP_IDS.every((stepId) => (
     completedTutorialStepIds.includes(stepId)
   ));
+  const [tutorialExpanded, setTutorialExpanded] = useState(() => !tutorialComplete);
   const npcPresentations = Object.fromEntries(sceneNpcs.map((npc) => [
     npc.id,
     getNpcPresentation(language, npc.id, allFragmentsCollected),
@@ -58,6 +59,10 @@ const DreamWorld = ({ language = 'zh' }) => {
   useEffect(() => {
     saveDreamSave(archive);
   }, [archive]);
+
+  useEffect(() => {
+    if (tutorialComplete) setTutorialExpanded(false);
+  }, [tutorialComplete]);
 
   const recordTutorialStep = (save, stepId) => (
     recordDreamTutorialStep(save, stepId)
@@ -98,6 +103,7 @@ const DreamWorld = ({ language = 'zh' }) => {
     setActiveOverlay(null);
     setResetOpen(false);
     setIsReady(false);
+    setTutorialExpanded(true);
     setGameRevision((revision) => revision + 1);
   };
 
@@ -240,17 +246,38 @@ const DreamWorld = ({ language = 'zh' }) => {
             </section>
 
             <section className={`dream-panel dream-panel--tutorial${tutorialComplete ? ' is-complete' : ''}`}>
-              <p className="dream-panel__label">{copy.tutorialLabel}</p>
-              <h2>{tutorialComplete ? copy.tutorialCompleteTitle : copy.tutorialTitle}</h2>
-              {tutorialComplete ? (
-                <p>{copy.tutorialCompleteBody}</p>
+              <div className="dream-panel__collapsible-header">
+                <div>
+                  <p className="dream-panel__label">{copy.tutorialLabel}</p>
+                  <h2>{tutorialComplete ? copy.tutorialCompleteTitle : copy.tutorialTitle}</h2>
+                </div>
+                <button
+                  type="button"
+                  aria-expanded={tutorialExpanded}
+                  aria-controls="dream-tutorial-content"
+                  onClick={() => setTutorialExpanded((expanded) => !expanded)}
+                >
+                  {tutorialExpanded ? copy.tutorialCollapse : copy.tutorialExpand}
+                  <span aria-hidden="true">{tutorialExpanded ? '−' : '+'}</span>
+                </button>
+              </div>
+              {tutorialExpanded ? (
+                <div id="dream-tutorial-content">
+                  {tutorialComplete ? (
+                    <p className="dream-tutorial-complete-copy">{copy.tutorialCompleteBody}</p>
+                  ) : (
+                    <ul className="dream-tutorial-list">
+                      {tutorialItems.map(([stepId, label]) => {
+                        const completed = completedTutorialStepIds.includes(stepId);
+                        return <li key={stepId} className={completed ? 'is-complete' : ''}><span>{completed ? '✓' : '○'}</span>{label}</li>;
+                      })}
+                    </ul>
+                  )}
+                </div>
               ) : (
-                <ul className="dream-tutorial-list">
-                  {tutorialItems.map(([stepId, label]) => {
-                    const completed = completedTutorialStepIds.includes(stepId);
-                    return <li key={stepId} className={completed ? 'is-complete' : ''}><span>{completed ? '✓' : '○'}</span>{label}</li>;
-                  })}
-                </ul>
+                <p className="dream-tutorial-summary">
+                  {copy.tutorialProgress}: {completedTutorialStepIds.length} / {DREAM_TUTORIAL_STEP_IDS.length}
+                </p>
               )}
             </section>
 
