@@ -5,6 +5,7 @@ const en = {
     tools: 'My Tools',
     orderMenu: 'Order Menu',
     projects: 'Projects',
+    dreamArchive: 'Dream Archive',
   },
   placeholder: {
     comingSoon: 'This page is under construction. Check back soon.',

@@ -246,6 +246,7 @@ const DreamGame = ({
         entry.glow.destroy();
         this.fragmentObjects.delete(fragmentId);
         this.createSoftPulse(entry.definition.x, entry.definition.y, entry.definition.color);
+        this.createSoftCameraFlash(126, 216, 226, 0.1, 340);
         callbacks.current.onFragment?.(fragmentId);
       }
 
@@ -262,6 +263,11 @@ const DreamGame = ({
           ease: 'Sine.easeOut',
           onComplete: () => pulse.destroy(),
         });
+      }
+
+      createSoftCameraFlash(red, green, blue, alpha = 0.08, duration = 360) {
+        this.cameras.main.flashEffect.alpha = alpha;
+        this.cameras.main.flash(duration, red, green, blue, true);
       }
 
       createFishingSpots(spotDefinitions = []) {
@@ -417,6 +423,7 @@ const DreamGame = ({
         const isRepeat = !newCatchId;
 
         this.createSoftPulse(definition.bobberX, definition.bobberY);
+        this.createSoftCameraFlash(115, 185, 196, 0.075, 380);
         this.cleanupFishing();
         callbacks.current.onFishingCatch?.({ catchId, isRepeat, spotId: definition.id });
       }
