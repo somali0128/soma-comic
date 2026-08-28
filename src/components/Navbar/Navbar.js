@@ -34,6 +34,10 @@ const Navbar = ({ currentLanguage, onLanguageChange, t }) => {
               {currentLanguage === 'zh' ? '声乐练习' : 'Vocal Lab'}
               <span className="absolute bottom-0 left-0 w-0 h-[3px] rounded-full bg-primary-500 transition-all duration-200 group-hover:w-full"></span>
             </Link>
+            <Link to="/dream-world" className="relative font-display font-black text-slate-700 transition-colors duration-200 hover:text-primary-700 group">
+              {t.nav.dreamArchive}
+              <span className="absolute bottom-0 left-0 w-0 h-[3px] rounded-full bg-primary-500 transition-all duration-200 group-hover:w-full"></span>
+            </Link>
             <a href="/tools#projects" className="relative font-display font-black text-slate-700 transition-colors duration-200 hover:text-primary-700 group">
               {t.nav.projects}
               <span className="absolute bottom-0 left-0 w-0 h-[3px] rounded-full bg-primary-500 transition-all duration-200 group-hover:w-full"></span>
@@ -67,6 +71,9 @@ const Navbar = ({ currentLanguage, onLanguageChange, t }) => {
             </Link>
             <Link to="/vocal-practice" className="block rounded-md border-2 border-transparent px-4 py-3 font-display font-black text-slate-700 transition-colors duration-200 hover:border-slate-950 hover:bg-white hover:text-primary-700" onClick={closeMenu}>
               {currentLanguage === 'zh' ? '声乐练习' : 'Vocal Lab'}
+            </Link>
+            <Link to="/dream-world" className="block rounded-md border-2 border-transparent px-4 py-3 font-display font-black text-slate-700 transition-colors duration-200 hover:border-slate-950 hover:bg-white hover:text-primary-700" onClick={closeMenu}>
+              {t.nav.dreamArchive}
             </Link>
             <a href="/tools#projects" className="block rounded-md border-2 border-transparent px-4 py-3 font-display font-black text-slate-700 transition-colors duration-200 hover:border-slate-950 hover:bg-white hover:text-primary-700" onClick={closeMenu}>
               {t.nav.projects}

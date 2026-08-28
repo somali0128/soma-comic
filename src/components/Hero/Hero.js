@@ -48,6 +48,9 @@ const Hero = ({ currentLanguage, onLanguageChange, t }) => {
                 <Link className="transition hover:text-primary-700" to="/tools">
                   {t.nav.tools}
                 </Link>
+                <Link className="transition hover:text-primary-700" to="/dream-world">
+                  {t.nav.dreamArchive}
+                </Link>
               </nav>
               <LanguageSwitch
                 currentLanguage={currentLanguage}

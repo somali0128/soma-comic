@@ -3,6 +3,7 @@ import {
   createDreamSave,
   loadDreamSave,
   normalizeDreamSave,
+  recordDreamFishingCatch,
   recordDreamFragment,
   recordDreamPosition,
   recordDreamTutorialStep,
@@ -21,6 +22,7 @@ describe('Dream World save data', () => {
     expect(save.player.currentSceneId).toBe('threshold-meadow');
     expect(save.world.discoveredSceneIds).toEqual(['threshold-meadow']);
     expect(save.world.collectedFragmentIds).toEqual([]);
+    expect(save.world.caughtFishingIds).toEqual([]);
   });
 
   test('falls back safely when stored JSON is corrupt', () => {
@@ -35,12 +37,14 @@ describe('Dream World save data', () => {
       world: {
         discoveredSceneIds: ['threshold-meadow', 'threshold-meadow', null],
         collectedFragmentIds: ['first-light', 'first-light', 7],
+        caughtFishingIds: ['moon-on-the-line', 'moon-on-the-line', false],
         flags: null,
       },
     });
 
     expect(save.world.discoveredSceneIds).toEqual(['threshold-meadow']);
     expect(save.world.collectedFragmentIds).toEqual(['first-light']);
+    expect(save.world.caughtFishingIds).toEqual(['moon-on-the-line']);
     expect(save.world.flags).toEqual({});
   });
 
@@ -72,13 +76,44 @@ describe('Dream World save data', () => {
     expect(duplicate.tutorial.completedStepIds).toEqual(['tutorial-move']);
   });
 
+  test('migrates version 1 saves without losing existing progress', () => {
+    const legacy = {
+      ...createDreamSave(),
+      version: 1,
+      world: {
+        discoveredSceneIds: ['threshold-meadow'],
+        collectedFragmentIds: ['lakeside-fishing'],
+        flags: { remembered: true },
+      },
+    };
+
+    const migrated = normalizeDreamSave(legacy);
+
+    expect(migrated.version).toBe(2);
+    expect(migrated.world.collectedFragmentIds).toEqual(['lakeside-fishing']);
+    expect(migrated.world.caughtFishingIds).toEqual([]);
+    expect(migrated.world.flags).toEqual({ remembered: true });
+  });
+
+  test('records each fishing catch once and persists it', () => {
+    const caught = recordDreamFishingCatch(createDreamSave(), 'moon-on-the-line');
+    const duplicate = recordDreamFishingCatch(caught, 'moon-on-the-line');
+
+    expect(duplicate.world.caughtFishingIds).toEqual(['moon-on-the-line']);
+    expect(saveDreamSave(duplicate)).toBe(true);
+    expect(loadDreamSave().world.caughtFishingIds).toEqual(['moon-on-the-line']);
+  });
+
   test('resets every Dream World namespace', () => {
-    const progressed = recordDreamTutorialStep(
-      recordDreamFragment(
-        recordDreamPosition(createDreamSave(), 'threshold-meadow', { x: 900, y: 500 }),
-        'maomao-is-wife'
+    const progressed = recordDreamFishingCatch(
+      recordDreamTutorialStep(
+        recordDreamFragment(
+          recordDreamPosition(createDreamSave(), 'threshold-meadow', { x: 900, y: 500 }),
+          'maomao-is-wife'
+        ),
+        'tutorial-move'
       ),
-      'tutorial-move'
+      'moon-on-the-line'
     );
     saveDreamSave(progressed);
 

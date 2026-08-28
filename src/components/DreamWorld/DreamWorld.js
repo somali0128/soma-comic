@@ -6,6 +6,7 @@ import {
   DREAM_TUTORIAL_STEP_IDS,
   dreamWorldFoundation,
   getDreamScene,
+  getSceneFishingSpots,
   getSceneFragments,
   getSceneNpcs,
 } from './dreamWorldData';
@@ -16,6 +17,7 @@ import {
 } from './dreamWorldContent';
 import {
   loadDreamSave,
+  recordDreamFishingCatch,
   recordDreamFragment,
   recordDreamPosition,
   recordDreamTutorialStep,
@@ -35,13 +37,20 @@ const DreamWorld = ({ language = 'zh' }) => {
   const scene = getDreamScene(archive.player.currentSceneId);
   const sceneNpcs = getSceneNpcs(scene.id);
   const sceneFragments = getSceneFragments(scene.id);
+  const sceneFishingSpots = getSceneFishingSpots(scene.id);
   const collectedFragmentIds = archive.world.collectedFragmentIds;
+  const caughtFishingIds = archive.world.caughtFishingIds;
+  const sceneFishingCatchIds = sceneFishingSpots.flatMap((spot) => spot.catchIds);
+  const fishingCatchCount = sceneFishingCatchIds.filter((id) => caughtFishingIds.includes(id)).length;
+  const allFishingCatchesFound = sceneFishingCatchIds.length > 0
+    && fishingCatchCount === sceneFishingCatchIds.length;
   const completedTutorialStepIds = archive.tutorial.completedStepIds;
   const fragmentCount = sceneFragments.filter(({ id }) => collectedFragmentIds.includes(id)).length;
   const allFragmentsCollected = sceneFragments.length > 0 && fragmentCount === sceneFragments.length;
   const tutorialComplete = DREAM_TUTORIAL_STEP_IDS.every((stepId) => (
     completedTutorialStepIds.includes(stepId)
   ));
+  const [tutorialExpanded, setTutorialExpanded] = useState(() => !tutorialComplete);
   const npcPresentations = Object.fromEntries(sceneNpcs.map((npc) => [
     npc.id,
     getNpcPresentation(language, npc.id, allFragmentsCollected),
@@ -50,6 +59,10 @@ const DreamWorld = ({ language = 'zh' }) => {
   useEffect(() => {
     saveDreamSave(archive);
   }, [archive]);
+
+  useEffect(() => {
+    if (tutorialComplete) setTutorialExpanded(false);
+  }, [tutorialComplete]);
 
   const recordTutorialStep = (save, stepId) => (
     recordDreamTutorialStep(save, stepId)
@@ -78,11 +91,19 @@ const DreamWorld = ({ language = 'zh' }) => {
     setActiveOverlay({ type: 'fragment', id: fragmentId });
   };
 
+  const handleFishingCatch = ({ catchId, isRepeat }) => {
+    if (!isRepeat) {
+      setArchive((currentArchive) => recordDreamFishingCatch(currentArchive, catchId));
+    }
+    setActiveOverlay({ type: 'fishing', id: catchId });
+  };
+
   const handleReset = () => {
     setArchive(resetDreamSave());
     setActiveOverlay(null);
     setResetOpen(false);
     setIsReady(false);
+    setTutorialExpanded(true);
     setGameRevision((revision) => revision + 1);
   };
 
@@ -94,6 +115,15 @@ const DreamWorld = ({ language = 'zh' }) => {
         eyebrow: presentation.name,
         title: presentation.name,
         body: presentation.dialogue,
+      } : null;
+    }
+
+    if (activeOverlay.type === 'fishing') {
+      const fishingCatch = story.fishingCatches[activeOverlay.id];
+      return fishingCatch ? {
+        eyebrow: copy.fishingCatchLabel,
+        title: fishingCatch.title,
+        body: fishingCatch.memory,
       } : null;
     }
 
@@ -148,22 +178,25 @@ const DreamWorld = ({ language = 'zh' }) => {
               scene={scene}
               npcs={sceneNpcs}
               fragments={sceneFragments}
+              fishingSpots={sceneFishingSpots}
               npcPresentations={npcPresentations}
               collectedFragmentIds={collectedFragmentIds}
+              caughtFishingIds={caughtFishingIds}
               initialPosition={archive.player.position}
               onReady={() => setIsReady(true)}
               onInteraction={handleInteraction}
               onFragment={handleFragment}
+              onFishingCatch={handleFishingCatch}
               onPositionChange={handlePositionChange}
             />
 
             <div
-              className={`dream-dialogue${overlayContent ? ' is-open' : ''}${activeOverlay?.type === 'fragment' ? ' dream-dialogue--memory' : ''}`}
+              className={`dream-dialogue${overlayContent ? ' is-open' : ''}${activeOverlay?.type === 'fragment' || activeOverlay?.type === 'fishing' ? ' dream-dialogue--memory' : ''}`}
               aria-hidden={!overlayContent}
               aria-live="polite"
             >
               <div className="dream-dialogue__portrait" aria-hidden="true">
-                {activeOverlay?.type === 'fragment' ? '✦' : '?'}
+                {activeOverlay?.type === 'fragment' ? '✦' : activeOverlay?.type === 'fishing' ? '≈' : '?'}
               </div>
               <div>
                 <span className="dream-dialogue__eyebrow">{overlayContent?.eyebrow}</span>
@@ -180,7 +213,11 @@ const DreamWorld = ({ language = 'zh' }) => {
             </div>
           </section>
 
-          <aside className="dream-console__sidebar">
+          <aside
+            className="dream-console__sidebar"
+            aria-label={copy.infoPanelLabel}
+            tabIndex="0"
+          >
             <section className="dream-panel dream-panel--quest">
               <p className="dream-panel__label">{copy.questLabel}</p>
               <h2>{copy.questTitle}</h2>
@@ -191,18 +228,60 @@ const DreamWorld = ({ language = 'zh' }) => {
               <strong>{fragmentCount} / {sceneFragments.length} {copy.fragments}</strong>
             </section>
 
+            <section className={`dream-panel dream-panel--fishing${allFishingCatchesFound ? ' is-complete' : ''}`}>
+              <p className="dream-panel__label">{copy.fishingLabel}</p>
+              <h2>{copy.fishingTitle}</h2>
+              <p>{allFishingCatchesFound ? copy.fishingComplete : copy.fishingBody}</p>
+              <div className="dream-progress dream-progress--fishing" aria-label={copy.fishingProgress}>
+                <span style={{ width: `${Math.max(8, (fishingCatchCount / sceneFishingCatchIds.length) * 100)}%` }} />
+              </div>
+              <strong>{fishingCatchCount} / {sceneFishingCatchIds.length}</strong>
+              <ol className="dream-fishing-list">
+                {sceneFishingCatchIds.map((catchId) => {
+                  const found = caughtFishingIds.includes(catchId);
+                  return (
+                    <li key={catchId} className={found ? 'is-found' : ''}>
+                      <span>{found ? '≈' : '·'}</span>
+                      <strong>{found ? story.fishingCatches[catchId].title : copy.undiscoveredCatch}</strong>
+                    </li>
+                  );
+                })}
+              </ol>
+            </section>
+
             <section className={`dream-panel dream-panel--tutorial${tutorialComplete ? ' is-complete' : ''}`}>
-              <p className="dream-panel__label">{copy.tutorialLabel}</p>
-              <h2>{tutorialComplete ? copy.tutorialCompleteTitle : copy.tutorialTitle}</h2>
-              {tutorialComplete ? (
-                <p>{copy.tutorialCompleteBody}</p>
+              <div className="dream-panel__collapsible-header">
+                <div>
+                  <p className="dream-panel__label">{copy.tutorialLabel}</p>
+                  <h2>{tutorialComplete ? copy.tutorialCompleteTitle : copy.tutorialTitle}</h2>
+                </div>
+                <button
+                  type="button"
+                  aria-expanded={tutorialExpanded}
+                  aria-controls="dream-tutorial-content"
+                  onClick={() => setTutorialExpanded((expanded) => !expanded)}
+                >
+                  {tutorialExpanded ? copy.tutorialCollapse : copy.tutorialExpand}
+                  <span aria-hidden="true">{tutorialExpanded ? '−' : '+'}</span>
+                </button>
+              </div>
+              {tutorialExpanded ? (
+                <div id="dream-tutorial-content">
+                  {tutorialComplete ? (
+                    <p className="dream-tutorial-complete-copy">{copy.tutorialCompleteBody}</p>
+                  ) : (
+                    <ul className="dream-tutorial-list">
+                      {tutorialItems.map(([stepId, label]) => {
+                        const completed = completedTutorialStepIds.includes(stepId);
+                        return <li key={stepId} className={completed ? 'is-complete' : ''}><span>{completed ? '✓' : '○'}</span>{label}</li>;
+                      })}
+                    </ul>
+                  )}
+                </div>
               ) : (
-                <ul className="dream-tutorial-list">
-                  {tutorialItems.map(([stepId, label]) => {
-                    const completed = completedTutorialStepIds.includes(stepId);
-                    return <li key={stepId} className={completed ? 'is-complete' : ''}><span>{completed ? '✓' : '○'}</span>{label}</li>;
-                  })}
-                </ul>
+                <p className="dream-tutorial-summary">
+                  {copy.tutorialProgress}: {completedTutorialStepIds.length} / {DREAM_TUTORIAL_STEP_IDS.length}
+                </p>
               )}
             </section>
 

@@ -246,7 +246,18 @@
 .dream-dialogue em { display: block; margin-top: 8px; color: #62509b; font-family: system-ui, sans-serif; font-size: 11px; font-style: normal; font-weight: 800; }
 .dream-dialogue button { align-self: start; border: 0; color: #393553; background: transparent; font-size: 26px; line-height: 1; cursor: pointer; }
 
-.dream-console__sidebar { display: grid; align-content: start; gap: 10px; }
+.dream-console__sidebar {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  scrollbar-color: #5f6493 #0c0e25;
+  scrollbar-width: thin;
+}
+
+.dream-console__sidebar::-webkit-scrollbar { width: 8px; }
+.dream-console__sidebar::-webkit-scrollbar-track { background: #0c0e25; }
+.dream-console__sidebar::-webkit-scrollbar-thumb { border: 2px solid #0c0e25; background: #5f6493; }
+.dream-console__sidebar:focus-visible { outline: 2px solid var(--dream-cyan); outline-offset: 2px; }
 
 .dream-panel {
   padding: 18px;
@@ -256,13 +267,66 @@
 }
 
 .dream-panel--quest { border-color: #6b5da9; background: linear-gradient(150deg, #28234d, #171a38 68%); }
+.dream-panel--fishing { border-color: #326d85; background: linear-gradient(150deg, #12374a, #171a38 72%); }
+.dream-panel--fishing.is-complete { border-color: #57a8aa; }
 .dream-panel--tutorial.is-complete { border-color: #33745b; background: linear-gradient(150deg, #163c35, #171a38 72%); }
 .dream-panel h2 { margin: 0 0 10px; color: white; font-size: 18px; line-height: 1.25; }
 .dream-panel > p:not(.dream-panel__label) { margin: 0; color: #bbb8cf; font-family: system-ui, sans-serif; font-size: 12px; font-weight: 650; line-height: 1.6; }
 .dream-panel--quest > strong { display: block; margin-top: 8px; color: #d8d2ff; font-size: 10px; text-align: right; text-transform: uppercase; }
+.dream-panel--fishing > strong { display: block; margin-top: 8px; color: #a9eff5; font-size: 10px; text-align: right; }
+
+.dream-panel__collapsible-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.dream-panel__collapsible-header h2 { margin-bottom: 0; }
+.dream-panel__collapsible-header button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  flex: 0 0 auto;
+  padding: 6px 7px;
+  border: 1px solid #535980;
+  color: #c8c5da;
+  background: #10132e;
+  font: 900 9px "Courier New", monospace;
+  cursor: pointer;
+}
+.dream-panel__collapsible-header button:hover { color: white; border-color: #8f96c4; }
+.dream-panel__collapsible-header button span { color: var(--dream-cyan); font-size: 13px; line-height: 0.8; }
+.dream-tutorial-complete-copy,
+.dream-tutorial-summary { margin: 10px 0 0; color: #bbb8cf; font-family: system-ui, sans-serif; font-size: 11px; font-weight: 700; line-height: 1.5; }
+.dream-tutorial-summary { color: #8fd8c0; }
 
 .dream-progress { height: 7px; margin-top: 17px; overflow: hidden; border: 1px solid #5f6191; background: #0c0e25; }
 .dream-progress span { display: block; height: 100%; background: linear-gradient(90deg, #7d6ada, #83efff); transition: width 300ms ease; }
+.dream-progress--fishing span { background: linear-gradient(90deg, #3d8ba4, #a4f5e8); }
+
+.dream-fishing-list {
+  display: grid;
+  gap: 6px;
+  margin: 13px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dream-fishing-list li {
+  display: grid;
+  grid-template-columns: 18px 1fr;
+  gap: 7px;
+  padding-top: 7px;
+  border-top: 1px solid rgba(100, 184, 194, 0.2);
+  color: #6d8e9c;
+  font-size: 10px;
+}
+
+.dream-fishing-list li > span { color: #5792a0; font-size: 15px; line-height: 1; }
+.dream-fishing-list li strong { color: #7897a4; }
+.dream-fishing-list li.is-found > span { color: #a4f5e8; text-shadow: 0 0 8px #83efff; }
+.dream-fishing-list li.is-found strong { color: #d8fbf7; }
 
 .dream-tutorial-list,
 .dream-panel--archive ol {
@@ -351,6 +415,34 @@
 @media (min-width: 961px) {
   .dream-game__controls { opacity: 0.38; transition: opacity 160ms ease; }
   .dream-game:hover .dream-game__controls { opacity: 0.9; }
+}
+
+@media (min-width: 981px) {
+  .dream-console {
+    height: min(708px, calc(66.667vw - 193px));
+    align-items: stretch;
+  }
+
+  .dream-console__game {
+    display: flex;
+    min-height: 0;
+    flex-direction: column;
+  }
+
+  .dream-game {
+    min-height: 0;
+    flex: 1 1 auto;
+    aspect-ratio: auto;
+  }
+
+  .dream-console__sidebar {
+    height: 100%;
+    min-height: 0;
+    padding-right: 4px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
+  }
 }
 
 @media (max-width: 980px) {

@@ -5,6 +5,7 @@ const zh = {
     tools: '我的工具',
     orderMenu: '我要点菜',
     projects: '作品集',
+    dreamArchive: '梦境档案',
   },
   placeholder: {
     comingSoon: '页面建设中，敬请期待。',
