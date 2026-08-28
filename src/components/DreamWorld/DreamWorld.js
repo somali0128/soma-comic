@@ -213,7 +213,11 @@ const DreamWorld = ({ language = 'zh' }) => {
             </div>
           </section>
 
-          <aside className="dream-console__sidebar">
+          <aside
+            className="dream-console__sidebar"
+            aria-label={copy.infoPanelLabel}
+            tabIndex="0"
+          >
             <section className="dream-panel dream-panel--quest">
               <p className="dream-panel__label">{copy.questLabel}</p>
               <h2>{copy.questTitle}</h2>

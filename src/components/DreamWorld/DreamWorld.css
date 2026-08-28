@@ -246,7 +246,18 @@
 .dream-dialogue em { display: block; margin-top: 8px; color: #62509b; font-family: system-ui, sans-serif; font-size: 11px; font-style: normal; font-weight: 800; }
 .dream-dialogue button { align-self: start; border: 0; color: #393553; background: transparent; font-size: 26px; line-height: 1; cursor: pointer; }
 
-.dream-console__sidebar { display: grid; align-content: start; gap: 10px; }
+.dream-console__sidebar {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  scrollbar-color: #5f6493 #0c0e25;
+  scrollbar-width: thin;
+}
+
+.dream-console__sidebar::-webkit-scrollbar { width: 8px; }
+.dream-console__sidebar::-webkit-scrollbar-track { background: #0c0e25; }
+.dream-console__sidebar::-webkit-scrollbar-thumb { border: 2px solid #0c0e25; background: #5f6493; }
+.dream-console__sidebar:focus-visible { outline: 2px solid var(--dream-cyan); outline-offset: 2px; }
 
 .dream-panel {
   padding: 18px;
@@ -404,6 +415,34 @@
 @media (min-width: 961px) {
   .dream-game__controls { opacity: 0.38; transition: opacity 160ms ease; }
   .dream-game:hover .dream-game__controls { opacity: 0.9; }
+}
+
+@media (min-width: 981px) {
+  .dream-console {
+    height: min(708px, calc(66.667vw - 193px));
+    align-items: stretch;
+  }
+
+  .dream-console__game {
+    display: flex;
+    min-height: 0;
+    flex-direction: column;
+  }
+
+  .dream-game {
+    min-height: 0;
+    flex: 1 1 auto;
+    aspect-ratio: auto;
+  }
+
+  .dream-console__sidebar {
+    height: 100%;
+    min-height: 0;
+    padding-right: 4px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
+  }
 }
 
 @media (max-width: 980px) {

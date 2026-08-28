@@ -1,6 +1,7 @@
 export const dreamWorldCopy = {
   zh: {
     pageNavigationLabel: '梦境世界导航',
+    infoPanelLabel: '梦境说明与档案',
     eyebrow: 'SOMA DREAM ARCHIVE · 东北区域',
     title: '东北湖畔',
     intro: '这片月夜森林位于梦境的东北角。湖泊、钓鱼的人与尚未复原的名字，共同组成第一段可以自由探索的真实残念。',
@@ -65,6 +66,7 @@ export const dreamWorldCopy = {
   },
   en: {
     pageNavigationLabel: 'Dream World navigation',
+    infoPanelLabel: 'Dream information and archive',
     eyebrow: 'SOMA DREAM ARCHIVE · NORTHEAST REGION',
     title: 'Northeast Lakeside',
     intro: 'This moonlit forest sits in the northeast corner of the dream. Its lake, the people who fish there, and names not yet restored form the first memory you can explore freely.',
