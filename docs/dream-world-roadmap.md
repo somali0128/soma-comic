@@ -73,14 +73,14 @@ Every schema change requires a migration before release. Unknown content IDs sho
 ### M1 — Durable vertical slice
 
 - CI build and test gate;
-- an explicit decision on modernizing the legacy Create React App toolchain;
+- migration from the legacy Create React App toolchain to Vite and Vitest;
 - versioned local save and reset path;
 - data-driven NPCs, fragments, dialogue, and quest state;
 - tutorial plus a free-exploration loop in one region;
 - three NPCs and three fragments;
 - desktop usability, bilingual content, and basic accessibility.
 
-Current branch status: the CI gate, versioned local save and confirmed reset, data-driven content, one-time tutorial, three NPCs, three fragments, bilingual interface, and persistent exact-position resume are implemented. The controlled Create React App migration decision remains open and should be handled separately from this content update.
+Current branch status: M1 is complete. The CI gate, versioned local save and confirmed reset, data-driven content, one-time tutorial, three NPCs, three fragments, bilingual interface, persistent exact-position resume, and the controlled Vite/Vitest migration are implemented.
 
 ### M2 — Production map pipeline
 
@@ -109,4 +109,4 @@ Current branch status: the CI gate, versioned local save and confirmed reset, da
 
 The next playable milestone is complete when a new player can finish the tutorial, freely explore the first region, speak to three NPCs in either language, collect three fragments in any order, refresh the browser without losing progress, and intentionally reset the archive.
 
-The current dependency tree still contains legacy Create React App packages and install-time security warnings. Do not apply a forced audit fix. Evaluate a controlled toolchain migration behind the test and build gate before the game codebase grows substantially.
+The legacy Create React App build and test packages have been removed. Vite now produces the existing `build/` deployment output, Vitest runs the save-data regression suite, and the dependency audit is clean without a forced audit fix. The next milestone is M2: the production map pipeline.
