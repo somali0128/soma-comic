@@ -63,13 +63,13 @@ dotnet run
 npm start
 ```
 
-前端应用将在 http://localhost:3000 运行
+前端应用将在 http://localhost:5173 运行
 
 ### 4. 配置环境变量
 
 在项目根目录创建 `.env` 文件：
 ```
-REACT_APP_API_URL=http://localhost:5000/api
+VITE_API_URL=http://localhost:5000/api
 ```
 
 ## 功能特性
@@ -133,4 +133,4 @@ REACT_APP_API_URL=http://localhost:5000/api
 
 3. **CORS错误**
    - 确保后端API的CORS配置正确
-   - 检查前端请求的URL是否正确 
+   - 检查前端请求的URL是否正确
