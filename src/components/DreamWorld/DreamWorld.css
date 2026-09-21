@@ -230,14 +230,19 @@
   color: #18162f;
   background: #fff7df;
   box-shadow: 0 0 0 3px #b6a7e7, 7px 7px 0 rgba(9, 10, 26, 0.65);
-  opacity: 0;
-  transform: translateY(24px);
-  pointer-events: none;
-  transition: opacity 160ms ease, transform 160ms ease;
   z-index: 10;
 }
 
-.dream-dialogue.is-open { opacity: 1; transform: translateY(0); pointer-events: auto; }
+.dream-dialogue.is-open { animation: dream-dialogue-enter 340ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+.dream-dialogue.is-closing { animation: dream-dialogue-exit 260ms cubic-bezier(0.4, 0, 1, 1) both; pointer-events: none; }
+@keyframes dream-dialogue-enter {
+  from { opacity: 0; transform: translateY(48px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes dream-dialogue-exit {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(48px); }
+}
 .dream-dialogue--memory { background: #e9fbff; box-shadow: 0 0 0 3px #83efff, 7px 7px 0 rgba(9, 10, 26, 0.65); }
 .dream-dialogue__portrait { display: grid; place-items: center; width: 48px; height: 48px; border: 3px solid #201e3d; color: #fff7df; background: #55488b; font-size: 24px; font-weight: 900; }
 .dream-dialogue__eyebrow { display: block; margin-bottom: 3px; color: #625c86; font-size: 9px; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase; }
@@ -245,6 +250,12 @@
 .dream-dialogue p { margin: 0; font-family: system-ui, sans-serif; font-size: 13px; font-weight: 700; line-height: 1.55; }
 .dream-dialogue em { display: block; margin-top: 8px; color: #62509b; font-family: system-ui, sans-serif; font-size: 11px; font-style: normal; font-weight: 800; }
 .dream-dialogue button { align-self: start; border: 0; color: #393553; background: transparent; font-size: 26px; line-height: 1; cursor: pointer; }
+.dream-dialogue__text { min-width: 0; }
+.dream-dialogue__advance { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 12px; }
+.dream-dialogue__advance > span { font: 12px/1.4 monospace; color: #6b6380; }
+.dream-dialogue__advance button { align-self: center; display: flex; align-items: center; gap: 7px; font: 700 13px/1.5 system-ui, sans-serif; }
+.dream-dialogue__advance kbd { padding: 2px 6px; border: 1px solid #8b809a; border-radius: 3px; font: 700 12px/1.2 monospace; }
+.dream-dialogue button:focus-visible { outline: 2px solid #65528e; outline-offset: 3px; }
 
 .dream-console__sidebar {
   display: grid;
@@ -477,6 +488,16 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .dream-dialogue.is-open,
+  .dream-dialogue.is-closing { animation: none; }
   .dream-dialogue,
   .dream-progress span { transition: none; }
 }
+
+.dream-route-list { list-style: none; margin: 14px 0; padding: 0; display: grid; gap: 9px; }
+.dream-route-list li { display: flex; align-items: center; gap: 10px; color: #e6e4c9; font: 650 13px/1.5 system-ui, sans-serif; }
+.dream-route-list span { display: grid; place-items: center; width: 28px; height: 28px; flex-shrink: 0; border: 1px solid #617d78; color: #bde1ce; background: #203b3b; }
+.dream-panel .dream-route-note { color: #c7bd91; font-size: 12px; }
+.dream-region-overview { margin-top: 16px; border-top: 1px solid #454967; padding-top: 12px; }
+.dream-region-overview summary { cursor: pointer; color: #a6d9d0; font: 650 12px/1.6 system-ui, sans-serif; }
+.dream-region-overview p { font-size: 12px; line-height: 1.8; margin-top: 10px; }

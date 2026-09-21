@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import DreamGame from './DreamGame';
+import DreamDialogue from './DreamDialogue';
 import {
   DREAM_TUTORIAL_STEPS,
   DREAM_TUTORIAL_STEP_IDS,
@@ -23,11 +24,12 @@ import {
   recordDreamTutorialStep,
   resetDreamSave,
   saveDreamSave,
+  travelDreamPortal,
 } from './dreamSave';
 import './DreamWorld.css';
 
 const DreamWorld = ({ language = 'zh' }) => {
-  const copy = dreamWorldCopy[language] || dreamWorldCopy.zh;
+  const baseCopy = dreamWorldCopy[language] || dreamWorldCopy.zh;
   const story = dreamWorldStory[language] || dreamWorldStory.zh;
   const [isReady, setIsReady] = useState(false);
   const [archive, setArchive] = useState(loadDreamSave);
@@ -35,6 +37,16 @@ const DreamWorld = ({ language = 'zh' }) => {
   const [resetOpen, setResetOpen] = useState(false);
   const [gameRevision, setGameRevision] = useState(0);
   const scene = getDreamScene(archive.player.currentSceneId);
+  const sceneName = scene.names[language] || scene.names.zh;
+  const copy = {
+    ...baseCopy,
+    title: sceneName,
+    sceneLabel: sceneName,
+    intro: scene.descriptions[language] || scene.descriptions.zh,
+    eyebrow: language === 'zh' ? 'SOMA DREAM ARCHIVE · 东部梦境' : 'SOMA DREAM ARCHIVE · EASTERN DREAM',
+    gameLabel: scene.id === 'threshold-meadow' ? baseCopy.gameLabel : `${sceneName} · ${language === 'zh' ? '梦境游戏区域' : 'Dream game area'}`,
+    footnote: language === 'zh' ? `当前区域：${sceneName} · 沿地面的箭头步行进入相邻区域` : `Current area: ${sceneName} · Walk onto an exit arrow to enter the next area`,
+  };
   const sceneNpcs = getSceneNpcs(scene.id);
   const sceneFragments = getSceneFragments(scene.id);
   const sceneFishingSpots = getSceneFishingSpots(scene.id);
@@ -107,6 +119,12 @@ const DreamWorld = ({ language = 'zh' }) => {
     setGameRevision((revision) => revision + 1);
   };
 
+  const handlePortal = (portalId) => {
+    setIsReady(false);
+    setActiveOverlay(null);
+    setArchive((current) => travelDreamPortal(current, portalId));
+  };
+
   const overlayContent = (() => {
     if (!activeOverlay) return null;
     if (activeOverlay.type === 'npc') {
@@ -173,8 +191,9 @@ const DreamWorld = ({ language = 'zh' }) => {
             </div>
 
             <DreamGame
-              key={`${language}-${gameRevision}`}
+              key={`${language}-${scene.id}-${gameRevision}`}
               copy={copy}
+              language={language}
               scene={scene}
               npcs={sceneNpcs}
               fragments={sceneFragments}
@@ -183,34 +202,24 @@ const DreamWorld = ({ language = 'zh' }) => {
               collectedFragmentIds={collectedFragmentIds}
               caughtFishingIds={caughtFishingIds}
               initialPosition={archive.player.position}
+              paused={Boolean(activeOverlay) || resetOpen}
               onReady={() => setIsReady(true)}
               onInteraction={handleInteraction}
               onFragment={handleFragment}
               onFishingCatch={handleFishingCatch}
               onPositionChange={handlePositionChange}
+              onPortal={handlePortal}
             />
 
-            <div
-              className={`dream-dialogue${overlayContent ? ' is-open' : ''}${activeOverlay?.type === 'fragment' || activeOverlay?.type === 'fishing' ? ' dream-dialogue--memory' : ''}`}
-              aria-hidden={!overlayContent}
-              aria-live="polite"
-            >
-              <div className="dream-dialogue__portrait" aria-hidden="true">
-                {activeOverlay?.type === 'fragment' ? '✦' : activeOverlay?.type === 'fishing' ? '≈' : '?'}
-              </div>
-              <div>
-                <span className="dream-dialogue__eyebrow">{overlayContent?.eyebrow}</span>
-                <strong>{overlayContent?.title}</strong>
-                <p>{overlayContent?.body}</p>
-                {overlayContent?.unlock && <em>{overlayContent.unlock}</em>}
-              </div>
-              <button
-                type="button"
-                tabIndex={overlayContent ? 0 : -1}
-                onClick={() => setActiveOverlay(null)}
-                aria-label={copy.closeOverlay}
-              >×</button>
-            </div>
+            {overlayContent && <DreamDialogue
+              key={`${language}-${activeOverlay.type}-${activeOverlay.id}`}
+              content={overlayContent}
+              type={activeOverlay.type}
+              language={language}
+              copy={copy}
+              disabled={resetOpen}
+              onClose={() => setActiveOverlay(null)}
+            />}
           </section>
 
           <aside
@@ -218,6 +227,27 @@ const DreamWorld = ({ language = 'zh' }) => {
             aria-label={copy.infoPanelLabel}
             tabIndex="0"
           >
+            <section className="dream-panel dream-panel--routes">
+              <p className="dream-panel__label">{language === 'zh' ? '区域路线' : 'AREA ROUTES'}</p>
+              <h2>{sceneName}</h2>
+              <p>{language === 'zh' ? '走到出口箭头即可进入下一片区域。' : 'Walk onto an exit arrow to travel to the next area.'}</p>
+              <ul className="dream-route-list">
+                {scene.portals.map((portal) => <li key={portal.id}>
+                  <span aria-hidden="true">{{ up: '↑', down: '↓', left: '←', right: '→' }[portal.direction]}</span>
+                  {portal.label[language] || portal.label.zh}
+                </li>)}
+              </ul>
+              {scene.id === 'threshold-meadow' && <p className="dream-route-note">{language === 'zh' ? '西侧无通路 · 只能向南离开湖泊' : 'No western passage · leave the lake to the south'}</p>}
+              {scene.theme === 'mall' && <p className="dream-route-note">{language === 'zh' ? '北墙封闭 · 室内细节等待回忆补全' : 'North wall closed · interior details await your memories'}</p>}
+              <details className="dream-region-overview">
+                <summary>{language === 'zh' ? '查看东部区域连接' : 'View eastern connections'}</summary>
+                <p>{language === 'zh' ? '湖泊 ↓ 小吃街 ↓ 西侧街道' : 'Lake ↓ Snack street ↓ West street'}</p>
+                <p>{language === 'zh' ? '西侧街道 ⇄ 商场 ⇄ 体育场' : 'West street ⇄ Mall ⇄ Stadium'}</p>
+                <p>{language === 'zh' ? '商场南门 ⇄ 南侧车道 ⇄ 西侧街道' : 'Mall south doors ⇄ South road ⇄ West street'}</p>
+                <p>{language === 'zh' ? '小吃街不直接连接商场北面。' : 'No direct entrance from the snack street to the mall’s north side.'}</p>
+              </details>
+            </section>
+            {sceneFragments.length > 0 && (
             <section className="dream-panel dream-panel--quest">
               <p className="dream-panel__label">{copy.questLabel}</p>
               <h2>{copy.questTitle}</h2>
@@ -227,7 +257,9 @@ const DreamWorld = ({ language = 'zh' }) => {
               </div>
               <strong>{fragmentCount} / {sceneFragments.length} {copy.fragments}</strong>
             </section>
+            )}
 
+            {sceneFishingSpots.length > 0 && (
             <section className={`dream-panel dream-panel--fishing${allFishingCatchesFound ? ' is-complete' : ''}`}>
               <p className="dream-panel__label">{copy.fishingLabel}</p>
               <h2>{copy.fishingTitle}</h2>
@@ -248,6 +280,7 @@ const DreamWorld = ({ language = 'zh' }) => {
                 })}
               </ol>
             </section>
+            )}
 
             <section className={`dream-panel dream-panel--tutorial${tutorialComplete ? ' is-complete' : ''}`}>
               <div className="dream-panel__collapsible-header">
@@ -288,7 +321,7 @@ const DreamWorld = ({ language = 'zh' }) => {
             <section className="dream-panel dream-panel--archive">
               <p className="dream-panel__label">{copy.archiveLabel}</p>
               <ol>
-                {sceneFragments.map((fragment) => {
+                {dreamWorldFoundation.fragments.map((fragment) => {
                   const found = collectedFragmentIds.includes(fragment.id);
                   return (
                     <li key={fragment.id} className={found ? 'is-found' : ''}>

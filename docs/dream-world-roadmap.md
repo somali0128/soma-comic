@@ -37,7 +37,7 @@ Transitions can later be hidden with gates, paths, fog, interiors, or background
 
 ## Art pipeline
 
-The current meadow background is a visual reference and prototype asset, not the final open-world map format. Production regions should use:
+The northeast lake now uses reusable detailed 48px pixel tiles on a 48px movement grid, with separate layered trees and rocks. The old meadow background remains only as a historical reference and is no longer loaded. See [the grid map guide](./dream-world-grid-map.md). Future production regions should use:
 
 - reusable tilesets and object sprites;
 - Tiled source files committed alongside exported JSON;
@@ -83,6 +83,8 @@ Every schema change requires a migration before release. Unknown content IDs sho
 Current branch status: M1 is complete. The CI gate, versioned local save and confirmed reset, data-driven content, one-time tutorial, three NPCs, three fragments, bilingual interface, persistent exact-position resume, and the controlled Vite/Vitest migration are implemented.
 
 ### M2 — Production map pipeline
+
+Current progress: reusable pixel tiles, six data-defined eastern regions, cardinal one-cell movement, terrain/NPC blocking, grid-aligned interactions, bidirectional scene entrances, persistent scene/position resume, and version 3 save migration are implemented. Maps are authored in JavaScript data; Tiled import and background streaming remain future work. See [eastern region notes](./dream-world-eastern-regions.md) for the recalled topology and deliberately deferred mall interior.
 
 - first Tiled-authored region;
 - reusable tileset and atlas conventions;

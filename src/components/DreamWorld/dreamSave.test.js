@@ -89,7 +89,7 @@ describe('Dream World save data', () => {
 
     const migrated = normalizeDreamSave(legacy);
 
-    expect(migrated.version).toBe(2);
+    expect(migrated.version).toBe(3);
     expect(migrated.world.collectedFragmentIds).toEqual(['lakeside-fishing']);
     expect(migrated.world.caughtFishingIds).toEqual([]);
     expect(migrated.world.flags).toEqual({ remembered: true });

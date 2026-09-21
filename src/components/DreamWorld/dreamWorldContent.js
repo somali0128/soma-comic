@@ -5,7 +5,7 @@ export const dreamWorldCopy = {
     eyebrow: 'SOMA DREAM ARCHIVE · 东北区域',
     title: '东北湖畔',
     intro: '这片月夜森林位于梦境的东北角。湖泊、钓鱼的人与尚未复原的名字，共同组成第一段可以自由探索的真实残念。',
-    sceneLabel: '东北湖畔 · 起点草地',
+    sceneLabel: '东北湖畔 · 月光林地',
     talkPrompt: 'E 交谈',
     closeOverlay: '关闭内容',
     questLabel: '梦境残念',
@@ -15,8 +15,8 @@ export const dreamWorldCopy = {
     fragmentProgress: '梦境碎片收集进度',
     fragments: '梦境碎片',
     controlsTitle: '控制方式',
-    move: '方向移动',
-    moveAlt: '备用移动',
+    move: '每次一格 · 长按连续行走',
+    moveAlt: '四向格子移动',
     interact: '互动',
     fishPrompt: 'E 垂钓',
     fishingWaiting: '鱼线落入湖中……',
@@ -30,6 +30,7 @@ export const dreamWorldCopy = {
     back: '退出梦境',
     footnote: '当前场景：梦境东北角的湖泊 · 真实记忆与可体验残念共同存在',
     gameLabel: '可操作的东北湖畔梦境游戏区域',
+    positionLabel: '格子位置',
     touchControlsLabel: '屏幕移动控制',
     moveUp: '向上移动',
     moveDown: '向下移动',
@@ -53,7 +54,7 @@ export const dreamWorldCopy = {
     undiscoveredFragment: '尚未复原',
     fishingLabel: '湖边活动',
     fishingTitle: '月光下垂钓',
-    fishingBody: '走到湖泊东岸闪动的涟漪旁，按 E 或互动键抛竿。浮漂下沉后，再按一次收杆。',
+    fishingBody: '沿小路走到湖泊东岸的木栈台，靠近涟漪标记，按 E 或互动键抛竿。浮漂下沉后，再按一次收杆。',
     fishingComplete: '湖中目前可以发现的三种残念都已钓起。你仍然可以继续在这里垂钓。',
     fishingProgress: '垂钓残念发现进度',
     fishingCatchLabel: '从湖中钓起的残念',
@@ -70,7 +71,7 @@ export const dreamWorldCopy = {
     eyebrow: 'SOMA DREAM ARCHIVE · NORTHEAST REGION',
     title: 'Northeast Lakeside',
     intro: 'This moonlit forest sits in the northeast corner of the dream. Its lake, the people who fish there, and names not yet restored form the first memory you can explore freely.',
-    sceneLabel: 'Northeast Lakeside · Threshold Meadow',
+    sceneLabel: 'Northeast Lakeside · Moonlit Woodland',
     talkPrompt: 'E TALK',
     closeOverlay: 'Close content',
     questLabel: 'Dream remnants',
@@ -80,8 +81,8 @@ export const dreamWorldCopy = {
     fragmentProgress: 'Dream fragment collection progress',
     fragments: 'fragments',
     controlsTitle: 'Controls',
-    move: 'Move',
-    moveAlt: 'Alternate movement',
+    move: 'One tile per step · hold to walk',
+    moveAlt: 'Four-direction tile movement',
     interact: 'Interact',
     fishPrompt: 'E FISH',
     fishingWaiting: 'The line settles into the lake…',
@@ -95,6 +96,7 @@ export const dreamWorldCopy = {
     back: 'Exit dream',
     footnote: 'Current scene: the lake in the dream’s northeast corner · remembered truth and explorable remnants coexist',
     gameLabel: 'Interactive Northeast Lakeside dream area',
+    positionLabel: 'Tile position',
     touchControlsLabel: 'On-screen movement controls',
     moveUp: 'Move up',
     moveDown: 'Move down',
@@ -118,7 +120,7 @@ export const dreamWorldCopy = {
     undiscoveredFragment: 'Not yet restored',
     fishingLabel: 'Lakeside activity',
     fishingTitle: 'Fishing by Moonlight',
-    fishingBody: 'Walk to the shimmering ripple on the lake’s east bank and press E or the interact button to cast. Press it again when the bobber dips.',
+    fishingBody: 'Follow the path to the wooden dock on the east bank. Near the ripple marker, press E or interact to cast. Press again when the bobber dips.',
     fishingComplete: 'You have caught all three remnants currently hidden in the lake. You can still fish here whenever you return.',
     fishingProgress: 'Fishing remnant discovery progress',
     fishingCatchLabel: 'Remnant caught from the lake',
@@ -243,6 +245,9 @@ export const dreamWorldStory = {
 };
 
 export const getNpcPresentation = (language, npcId, allFragmentsCollected) => {
+  if (npcId === 'blue-fox') return language === 'en'
+    ? { name: 'Little Blue Fox', dialogue: 'A little blue fox waits outside the herbal pharmacy. It raises its pointed ears and looks at you.' }
+    : { name: '蓝色小狐狸', dialogue: '中药房门口，一只蓝色的小狐狸抬起尖尖的耳朵，安静地望着你。' };
   const locale = dreamWorldStory[language] || dreamWorldStory.zh;
   const npc = locale.npcs[npcId];
   if (!npc) return { name: npcId, dialogue: '' };

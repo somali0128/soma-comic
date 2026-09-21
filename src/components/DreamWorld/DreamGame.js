@@ -1,12 +1,15 @@
 import React, { useEffect, useRef } from 'react';
 import Phaser from 'phaser';
-import meadowMap from './assets/threshold-meadow.png';
 import dreamWalker from './assets/dream-walker.png';
+import { renderDreamRegion } from './dreamRegionRenderer';
+import {
+  TILE_SIZE, cellToWorld, worldToCell,
+  cellDistance, nextGridCell, resolveGridPosition,
+} from './lakesideMap';
 
 const GAME_WIDTH = 960;
 const GAME_HEIGHT = 640;
-const WORLD_WIDTH = 1536;
-const WORLD_HEIGHT = 1024;
+const STEP_DURATION = 190;
 
 const DreamGame = ({
   caughtFishingIds = [],
@@ -22,10 +25,15 @@ const DreamGame = ({
   onInteraction,
   onPositionChange,
   onReady,
+  onPortal,
   scene,
+  language = 'zh',
+  paused = false,
 }) => {
   const mountRef = useRef(null);
   const gameRef = useRef(null);
+  const pausedRef = useRef(paused);
+  pausedRef.current = paused;
   const controlsRef = useRef({ up: false, down: false, left: false, right: false, interact: false });
   const runtimeRef = useRef({
     caughtFishingIds,
@@ -38,7 +46,7 @@ const DreamGame = ({
     npcs,
     scene,
   });
-  const callbacksRef = useRef({ onFragment, onFishingCatch, onInteraction, onPositionChange, onReady });
+  const callbacksRef = useRef({ onFragment, onFishingCatch, onInteraction, onPositionChange, onReady, onPortal });
 
   useEffect(() => {
     runtimeRef.current = {
@@ -55,8 +63,8 @@ const DreamGame = ({
   }, [caughtFishingIds, collectedFragmentIds, copy, fishingSpots, fragments, initialPosition, npcPresentations, npcs, scene]);
 
   useEffect(() => {
-    callbacksRef.current = { onFragment, onFishingCatch, onInteraction, onPositionChange, onReady };
-  }, [onFragment, onFishingCatch, onInteraction, onPositionChange, onReady]);
+    callbacksRef.current = { onFragment, onFishingCatch, onInteraction, onPositionChange, onReady, onPortal };
+  }, [onFragment, onFishingCatch, onInteraction, onPositionChange, onReady, onPortal]);
 
   useEffect(() => {
     const activeScene = gameRef.current?.scene?.getScene(scene.id);
@@ -76,7 +84,8 @@ const DreamGame = ({
         super({ key: initialScene.id });
         this.lastDirection = 'down';
         this.lastPositionEmit = 0;
-        this.wasMoving = false;
+        this.isStepping = false;
+        this.queuedDirection = null;
         this.npcObjects = new Map();
         this.fragmentObjects = new Map();
         this.fishingSpotObjects = new Map();
@@ -84,7 +93,6 @@ const DreamGame = ({
       }
 
       preload() {
-        this.load.image('threshold-meadow', meadowMap);
         this.load.spritesheet('dream-walker', dreamWalker, {
           frameWidth: 341,
           frameHeight: 384,
@@ -94,32 +102,47 @@ const DreamGame = ({
       create() {
         const sceneConfig = runtime.current.scene;
         const savedPosition = runtime.current.initialPosition;
-        const spawnX = Number.isFinite(savedPosition?.x) ? savedPosition.x : sceneConfig.spawn.x;
-        const spawnY = Number.isFinite(savedPosition?.y) ? savedPosition.y : sceneConfig.spawn.y;
+        this.occupiedCells = runtime.current.npcs.map(worldToCell);
+        const spawn = resolveGridPosition(savedPosition, sceneConfig.spawn, this.occupiedCells, sceneConfig.map);
+        this.gridCell = worldToCell(spawn);
 
-        this.add.image(0, 0, 'threshold-meadow').setOrigin(0);
-        this.physics.world.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
-        this.cameras.main.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
+        renderDreamRegion(this, sceneConfig, language);
+        const worldWidth = sceneConfig.map[0].length * TILE_SIZE;
+        const worldHeight = sceneConfig.map.length * TILE_SIZE;
+        this.physics.world.setBounds(0, 0, worldWidth, worldHeight);
+        this.cameras.main.setBounds(0, 0, worldWidth, worldHeight);
         this.cameras.main.setBackgroundColor('#12152f');
         this.cameras.main.setRoundPixels(true);
 
         this.createAnimations();
-        this.player = this.physics.add.sprite(
-          Phaser.Math.Clamp(spawnX, 80, WORLD_WIDTH - 80),
-          Phaser.Math.Clamp(spawnY, 80, WORLD_HEIGHT - 80),
+        this.player = this.add.sprite(
+          spawn.x,
+          spawn.y,
           'dream-walker',
           1
         );
-        this.player.setScale(0.18).setDepth(20).setCollideWorldBounds(true);
-        this.player.body.setSize(100, 78).setOffset(121, 286);
+        this.player.setScale(0.14).setOrigin(0.5, 0.75).setDepth(spawn.y + 16);
 
-        this.createObstacles(sceneConfig.obstacles);
         this.createNpcs(runtime.current.npcs, runtime.current.npcPresentations);
         this.createFragments(runtime.current.fragments, runtime.current.collectedFragmentIds);
         this.createFishingSpots(runtime.current.fishingSpots);
 
         this.cursors = this.input.keyboard.createCursorKeys();
         this.keys = this.input.keyboard.addKeys('W,A,S,D,E,SPACE');
+        this.input.keyboard.on('keydown', (event) => {
+          const direction = { ArrowUp: 'up', w: 'up', W: 'up', ArrowDown: 'down', s: 'down', S: 'down',
+            ArrowLeft: 'left', a: 'left', A: 'left', ArrowRight: 'right', d: 'right', D: 'right' }[event.key];
+          if (direction && !event.repeat && !pausedRef.current && !this.activeFishing) this.queuedDirection = direction;
+          if (['e', 'E', ' '].includes(event.key) && !event.repeat && !pausedRef.current
+            && (event.key !== ' ' || event.target?.tagName !== 'BUTTON')) controls.current.interact = true;
+        });
+        const clearInput = () => {
+          Object.keys(controls.current).forEach((key) => { controls.current[key] = false; });
+          this.queuedDirection = null;
+          this.input.keyboard.resetKeys();
+        };
+        this.game.events.on('blur', clearInput);
+        this.events.once('shutdown', () => this.game.events.off('blur', clearInput));
         this.input.keyboard.addCapture([
           Phaser.Input.Keyboard.KeyCodes.UP,
           Phaser.Input.Keyboard.KeyCodes.DOWN,
@@ -131,6 +154,7 @@ const DreamGame = ({
         this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
         this.cameras.main.setDeadzone(180, 120);
         this.cameras.main.fadeIn(700, 15, 15, 35);
+        this.updatePositionLabel();
         callbacks.current.onReady?.();
       }
 
@@ -150,27 +174,17 @@ const DreamGame = ({
         });
       }
 
-      createObstacles(obstacles = []) {
-        obstacles.forEach(([x, y, width, height]) => {
-          const zone = this.add.zone(x, y, width, height);
-          this.physics.add.existing(zone, true);
-          this.physics.add.collider(this.player, zone);
-        });
-      }
-
       createNpcs(npcDefinitions = [], presentations = {}) {
         npcDefinitions.forEach((definition) => {
           const presentation = presentations[definition.id] || { name: definition.id };
-          const sprite = this.physics.add.staticSprite(
+          const sprite = this.add.sprite(
             definition.x,
             definition.y,
-            'dream-walker',
-            definition.frame ?? 1
+            definition.sprite === 'blue-fox' ? 'lake-blue-fox' : 'dream-walker',
+            definition.sprite === 'blue-fox' ? undefined : definition.frame ?? 1
           );
-          sprite.setScale(0.17).setTint(definition.tint).setDepth(19);
-          sprite.body.setSize(108, 84).setOffset(116, 280);
-          sprite.refreshBody();
-          this.physics.add.collider(this.player, sprite);
+          sprite.setScale(definition.sprite === 'blue-fox' ? 1 : 0.14).setOrigin(0.5, 0.75).setDepth(definition.y + 16);
+          if (definition.tint) sprite.setTint(definition.tint);
 
           const label = this.add.text(definition.x, definition.y - 62, presentation.name, {
             fontFamily: 'monospace',
@@ -179,7 +193,7 @@ const DreamGame = ({
             color: '#fff6d8',
             backgroundColor: '#161633cc',
             padding: { x: 7, y: 4 },
-          }).setOrigin(0.5).setDepth(40);
+          }).setOrigin(0.5).setDepth(3000);
 
           const prompt = this.add.text(definition.x, definition.y - 100, runtime.current.copy.talkPrompt, {
             fontFamily: 'monospace',
@@ -188,7 +202,7 @@ const DreamGame = ({
             color: '#18162f',
             backgroundColor: '#fff4b8',
             padding: { x: 9, y: 6 },
-          }).setOrigin(0.5).setDepth(40).setVisible(false);
+          }).setOrigin(0.5).setDepth(3000).setVisible(false);
 
           this.npcObjects.set(definition.id, { definition, label, prompt, sprite });
         });
@@ -297,7 +311,7 @@ const DreamGame = ({
             color: '#83cbd4',
             backgroundColor: '#10233a88',
             padding: { x: 6, y: 2 },
-          }).setOrigin(0.5).setDepth(35);
+          }).setOrigin(0.5).setDepth(2999);
           this.tweens.add({
             targets: marker,
             y: '-=3',
@@ -314,7 +328,7 @@ const DreamGame = ({
             color: '#102235',
             backgroundColor: '#aef8ff',
             padding: { x: 9, y: 6 },
-          }).setOrigin(0.5).setDepth(40).setVisible(false);
+          }).setOrigin(0.5).setDepth(3000).setVisible(false);
 
           this.fishingSpotObjects.set(definition.id, { definition, marker, prompt, ripple });
         });
@@ -325,13 +339,8 @@ const DreamGame = ({
         let nearestDistance = Infinity;
 
         this.fishingSpotObjects.forEach((entry, spotId) => {
-          const distance = Phaser.Math.Distance.Between(
-            this.player.x,
-            this.player.y,
-            entry.definition.x,
-            entry.definition.y
-          );
-          if (distance < 115 && distance < nearestDistance) {
+          const distance = cellDistance(this.gridCell, worldToCell(entry.definition));
+          if (distance <= 1 && distance < nearestDistance) {
             nearbySpotId = spotId;
             nearestDistance = distance;
           }
@@ -348,13 +357,13 @@ const DreamGame = ({
         if (!spotEntry || this.activeFishing) return;
 
         const { definition } = spotEntry;
-        this.player.setVelocity(0, 0).anims.stop();
+        this.player.anims.stop();
         this.lastDirection = definition.facing || 'left';
         const idleFrames = { down: 1, left: 4, right: 7, up: 10 };
         this.player.setFrame(idleFrames[this.lastDirection]);
         this.emitPosition(this.time.now, true);
 
-        const line = this.add.graphics().setDepth(31);
+        const line = this.add.graphics().setDepth(2000);
         line.lineStyle(2, 0xeefcff, 0.9);
         line.beginPath();
         line.moveTo(this.player.x, this.player.y - 20);
@@ -367,7 +376,7 @@ const DreamGame = ({
           6,
           0xe8edf0,
           0.9
-        ).setStrokeStyle(2, 0xc77791, 0.82).setDepth(32);
+        ).setStrokeStyle(2, 0xc77791, 0.82).setDepth(2001);
         const statusText = this.add.text(definition.x, definition.y - 105, runtime.current.copy.fishingWaiting, {
           fontFamily: 'monospace',
           fontSize: '14px',
@@ -375,7 +384,7 @@ const DreamGame = ({
           color: '#e9fdff',
           backgroundColor: '#101a36e8',
           padding: { x: 10, y: 7 },
-        }).setOrigin(0.5).setDepth(45);
+        }).setOrigin(0.5).setDepth(3001);
         const bobberTween = this.tweens.add({
           targets: bobber,
           y: '+=3',
@@ -445,13 +454,8 @@ const DreamGame = ({
         let nearestDistance = Infinity;
 
         this.npcObjects.forEach((entry, npcId) => {
-          const distance = Phaser.Math.Distance.Between(
-            this.player.x,
-            this.player.y,
-            entry.sprite.x,
-            entry.sprite.y
-          );
-          if (distance < 125 && distance < nearestDistance) {
+          const distance = cellDistance(this.gridCell, worldToCell(entry.definition));
+          if (distance === 1 && distance < nearestDistance) {
             nearbyNpcId = npcId;
             nearestDistance = distance;
           }
@@ -467,13 +471,7 @@ const DreamGame = ({
         let nearbyFragmentId = null;
         this.fragmentObjects.forEach((entry, fragmentId) => {
           if (nearbyFragmentId) return;
-          const distance = Phaser.Math.Distance.Between(
-            this.player.x,
-            this.player.y,
-            entry.sprite.x,
-            entry.sprite.y
-          );
-          if (distance < 64) nearbyFragmentId = fragmentId;
+          if (cellDistance(this.gridCell, worldToCell(entry.definition)) === 0) nearbyFragmentId = fragmentId;
         });
         if (nearbyFragmentId) this.collectFragment(nearbyFragmentId);
       }
@@ -481,24 +479,67 @@ const DreamGame = ({
       emitPosition(time, force = false) {
         if (!this.player || (!force && time - this.lastPositionEmit < 600)) return;
         this.lastPositionEmit = time;
-        callbacks.current.onPositionChange?.(initialScene.id, {
-          x: Math.round(this.player.x * 10) / 10,
-          y: Math.round(this.player.y * 10) / 10,
+        this.updatePositionLabel();
+        callbacks.current.onPositionChange?.(initialScene.id, cellToWorld(this.gridCell.col, this.gridCell.row));
+      }
+
+      updatePositionLabel() {
+        mountRef.current?.setAttribute('aria-label',
+          `${runtime.current.copy.gameLabel} · ${runtime.current.copy.positionLabel} ${this.gridCell.col + 1}, ${this.gridCell.row + 1}`);
+      }
+
+      step(direction) {
+        this.lastDirection = direction;
+        const idleFrames = { down: 1, left: 4, right: 7, up: 10 };
+        const destination = nextGridCell(this.gridCell, direction, this.occupiedCells, initialScene.map);
+        if (!destination) {
+          this.player.anims.stop();
+          this.player.setFrame(idleFrames[direction]);
+          return;
+        }
+        this.isStepping = true;
+        this.player.anims.play(`walk-${direction}`, true);
+        this.tweens.add({
+          targets: this.player,
+          ...cellToWorld(destination.col, destination.row),
+          duration: STEP_DURATION,
+          ease: 'Linear',
+          onComplete: () => {
+            this.gridCell = destination;
+            this.isStepping = false;
+            this.player.anims.stop();
+            this.player.setFrame(idleFrames[direction]);
+            this.emitPosition(this.time.now, true);
+            this.checkFragments();
+            const portal = initialScene.portals.find(({ col, row }) => col === destination.col && row === destination.row);
+            if (portal) {
+              this.transitioning = true;
+              this.queuedDirection = null;
+              this.cameras.main.fadeOut(180, 15, 18, 27);
+              this.time.delayedCall(180, () => callbacks.current.onPortal?.(portal.id));
+            }
+          },
         });
       }
 
-      update(time) {
-        if (!this.player) return;
+      update() {
+        if (!this.player || this.transitioning) return;
+        this.player.setDepth(this.player.y + 16);
 
         const input = controls.current;
-        const keyboardInteraction = Phaser.Input.Keyboard.JustDown(this.keys.E)
-          || Phaser.Input.Keyboard.JustDown(this.keys.SPACE);
-        const touchInteraction = input.interact;
-        const interactionPressed = keyboardInteraction || touchInteraction;
+        const interactionPressed = input.interact;
         input.interact = false;
 
+        if (pausedRef.current) {
+          this.queuedDirection = null;
+          this.npcObjects.forEach((entry) => entry.prompt.setVisible(false));
+          this.fishingSpotObjects.forEach((entry) => entry.prompt.setVisible(false));
+          return;
+        }
+        if (this.isStepping) return;
+
         if (this.activeFishing) {
-          this.player.setVelocity(0, 0).anims.stop();
+          this.player.anims.stop();
           this.npcObjects.forEach((entry) => entry.prompt.setVisible(false));
           this.fishingSpotObjects.forEach((entry) => entry.prompt.setVisible(false));
           if (this.activeFishing.phase === 'bite' && interactionPressed) this.finishFishing();
@@ -509,42 +550,18 @@ const DreamGame = ({
         const right = this.cursors.right.isDown || this.keys.D.isDown || input.right;
         const up = this.cursors.up.isDown || this.keys.W.isDown || input.up;
         const down = this.cursors.down.isDown || this.keys.S.isDown || input.down;
-        let velocityX = Number(right) - Number(left);
-        let velocityY = Number(down) - Number(up);
-
-        if (velocityX && velocityY) {
-          velocityX *= 0.7071;
-          velocityY *= 0.7071;
-        }
-
-        const isMoving = Boolean(velocityX || velocityY);
-        this.player.setVelocity(velocityX * 185, velocityY * 185);
-
-        if (isMoving) {
-          if (Math.abs(velocityX) > Math.abs(velocityY)) {
-            this.lastDirection = velocityX < 0 ? 'left' : 'right';
-          } else {
-            this.lastDirection = velocityY < 0 ? 'up' : 'down';
-          }
-          this.player.anims.play(`walk-${this.lastDirection}`, true);
-          this.emitPosition(time);
-        } else {
-          const idleFrames = { down: 1, left: 4, right: 7, up: 10 };
-          this.player.setVelocity(0, 0).anims.stop();
-          this.player.setFrame(idleFrames[this.lastDirection]);
-          if (this.wasMoving) this.emitPosition(time, true);
-        }
-        this.wasMoving = isMoving;
-
         const nearbyNpcId = this.findNearbyNpc();
         const nearbyFishingSpotId = this.findNearbyFishingSpot();
-        this.checkFragments();
 
         if (nearbyFishingSpotId && interactionPressed) {
           this.startFishing(nearbyFishingSpotId);
         } else if (nearbyNpcId && interactionPressed) {
-          this.player.setVelocity(0, 0);
           callbacks.current.onInteraction?.(nearbyNpcId);
+        } else {
+          // One axis per step. A brief press is queued; holding repeats full cells.
+          const direction = this.queuedDirection || (left ? 'left' : right ? 'right' : up ? 'up' : down ? 'down' : null);
+          this.queuedDirection = null;
+          if (direction) this.step(direction);
         }
       }
     }
@@ -576,6 +593,10 @@ const DreamGame = ({
 
   const setControl = (direction, active) => {
     controlsRef.current[direction] = active;
+    if (active) {
+      const activeScene = gameRef.current?.scene?.getScene(scene.id);
+      if (activeScene && !pausedRef.current && !activeScene.activeFishing) activeScene.queuedDirection = direction;
+    }
   };
 
   const pressProps = (direction) => ({
@@ -583,6 +604,16 @@ const DreamGame = ({
     onPointerUp: () => setControl(direction, false),
     onPointerCancel: () => setControl(direction, false),
     onPointerLeave: () => setControl(direction, false),
+    onKeyDown: (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        if (!event.repeat) setControl(direction, true);
+      }
+    },
+    onKeyUp: (event) => {
+      if (event.key === 'Enter' || event.key === ' ') setControl(direction, false);
+    },
+    onBlur: () => setControl(direction, false),
   });
 
   return (
@@ -591,6 +622,7 @@ const DreamGame = ({
         ref={mountRef}
         className="dream-game__mount"
         role="application"
+        tabIndex={0}
         aria-label={copy.gameLabel}
       />
 
@@ -606,7 +638,7 @@ const DreamGame = ({
           type="button"
           className="dream-action"
           aria-label={copy.interact}
-          onPointerDown={() => { controlsRef.current.interact = true; }}
+          onClick={() => { controlsRef.current.interact = true; }}
         >
           <span>E</span>
           {copy.interact}

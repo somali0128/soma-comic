@@ -1,3 +1,6 @@
+import { cellToWorld } from './lakesideMap';
+import { REGION_DEFINITIONS } from './dreamRegions';
+
 export const DREAM_TUTORIAL_STEPS = {
   MOVE: 'tutorial-move',
   TALK: 'tutorial-talk',
@@ -8,45 +11,24 @@ export const DREAM_TUTORIAL_STEP_IDS = Object.values(DREAM_TUTORIAL_STEPS);
 
 export const dreamWorldFoundation = {
   id: 'soma-dream-world',
-  version: 4,
+  version: 5,
   startRegion: 'northeast-lake',
   startScene: 'threshold-meadow',
   regions: [
-    {
-      id: 'northeast-lake',
-      sceneIds: ['threshold-meadow'],
-    },
+    { id: 'northeast-lake', sceneIds: ['threshold-meadow'] },
+    { id: 'eastern-streets', sceneIds: ['snack-street'] },
+    { id: 'eastern-mall-district', sceneIds: ['mall-west-road', 'eastern-mall', 'outdoor-stadium', 'mall-south-road'] },
   ],
-  scenes: [
-    {
-      id: 'threshold-meadow',
-      regionId: 'northeast-lake',
-      status: 'durable-vertical-slice',
-      spawn: { id: 'meadow-entry', x: 700, y: 535 },
-      npcIds: ['maomao', 'friend-1', 'friend-2'],
-      fragmentIds: ['lakeside-fishing', 'wife-loves-water', 'maomao-is-wife'],
-      fishingSpotIds: ['moonlit-lake-bank'],
-      obstacles: [
-        [445, 245, 350, 245],
-        [1025, 170, 370, 250],
-        [770, 780, 425, 205],
-        [45, 560, 90, 780],
-        [1495, 560, 82, 780],
-        [765, 28, 1530, 56],
-        [765, 1000, 1530, 48],
-        [135, 365, 170, 190],
-        [1385, 310, 210, 230],
-        [1325, 735, 260, 240],
-        [190, 875, 300, 230],
-      ],
-    },
-  ],
+  scenes: REGION_DEFINITIONS,
   npcs: [
+    {
+      id: 'blue-fox', sceneId: 'snack-street',
+      ...cellToWorld(24, 17), sprite: 'blue-fox',
+    },
     {
       id: 'maomao',
       sceneId: 'threshold-meadow',
-      x: 905,
-      y: 500,
+      ...cellToWorld(27, 14),
       frame: 1,
       tint: 0xf2c0db,
       nameUnlock: { requiresAllFragments: true },
@@ -54,8 +36,7 @@ export const dreamWorldFoundation = {
     {
       id: 'friend-1',
       sceneId: 'threshold-meadow',
-      x: 455,
-      y: 600,
+      ...cellToWorld(8, 13),
       frame: 1,
       tint: 0xb9ddff,
       nameUnlock: { futureClue: 'friend-1-name' },
@@ -63,8 +44,7 @@ export const dreamWorldFoundation = {
     {
       id: 'friend-2',
       sceneId: 'threshold-meadow',
-      x: 1155,
-      y: 650,
+      ...cellToWorld(20, 18),
       frame: 1,
       tint: 0xd9c4ff,
       nameUnlock: { futureClue: 'friend-2-name' },
@@ -74,22 +54,19 @@ export const dreamWorldFoundation = {
     {
       id: 'lakeside-fishing',
       sceneId: 'threshold-meadow',
-      x: 505,
-      y: 690,
+      ...cellToWorld(8, 9),
       color: 0x9ef8ff,
     },
     {
       id: 'wife-loves-water',
       sceneId: 'threshold-meadow',
-      x: 1165,
-      y: 505,
+      ...cellToWorld(25, 18),
       color: 0xffd7a1,
     },
     {
       id: 'maomao-is-wife',
       sceneId: 'threshold-meadow',
-      x: 1080,
-      y: 735,
+      ...cellToWorld(28, 6),
       color: 0xf8a8e6,
     },
   ],
@@ -97,10 +74,9 @@ export const dreamWorldFoundation = {
     {
       id: 'moonlit-lake-bank',
       sceneId: 'threshold-meadow',
-      x: 1020,
-      y: 825,
-      bobberX: 948,
-      bobberY: 812,
+      ...cellToWorld(25, 12),
+      bobberX: cellToWorld(24, 12).x,
+      bobberY: cellToWorld(24, 12).y,
       facing: 'left',
       catchIds: ['moon-on-the-line', 'silver-dream-fish', 'knotted-line'],
       repeatCatchId: 'returning-ripple',

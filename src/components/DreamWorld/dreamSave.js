@@ -1,8 +1,10 @@
 import { dreamWorldFoundation } from './dreamWorldData';
+import { resolveGridPosition, worldToCell } from './lakesideMap';
+import { getRegionMap } from './dreamRegions';
 
 export const DREAM_SAVE_KEY = 'soma.dream-world.save';
-export const DREAM_SAVE_VERSION = 2;
-const SUPPORTED_DREAM_SAVE_VERSIONS = [1, DREAM_SAVE_VERSION];
+export const DREAM_SAVE_VERSION = 3;
+const SUPPORTED_DREAM_SAVE_VERSIONS = [1, 2, DREAM_SAVE_VERSION];
 
 const uniqueStrings = (value) => (
   Array.isArray(value)
@@ -43,10 +45,15 @@ export const normalizeDreamSave = (value) => {
   const spawnId = typeof value.player?.spawnId === 'string'
     ? value.player.spawnId
     : fallback.player.spawnId;
-  const position = Number.isFinite(value.player?.position?.x)
+  let position = Number.isFinite(value.player?.position?.x)
     && Number.isFinite(value.player?.position?.y)
     ? { x: value.player.position.x, y: value.player.position.y }
     : null;
+  const scene = dreamWorldFoundation.scenes.find(({ id }) => id === currentSceneId);
+  if (position && scene?.mapRevision) {
+    const occupied = dreamWorldFoundation.npcs.filter((npc) => npc.sceneId === scene.id).map(worldToCell);
+    position = resolveGridPosition(position, scene.spawn, occupied, getRegionMap(scene.id));
+  }
   const discoveredSceneIds = uniqueStrings(value.world?.discoveredSceneIds);
 
   return {
@@ -157,6 +164,17 @@ export const recordDreamTutorialStep = (save, stepId) => {
       completedStepIds: [...normalized.tutorial.completedStepIds, stepId],
     },
   };
+};
+
+export const travelDreamPortal = (save, portalId) => {
+  const normalized = normalizeDreamSave(save);
+  const source = dreamWorldFoundation.scenes.find(({ id }) => id === normalized.player.currentSceneId);
+  const portal = source?.portals.find(({ id }) => id === portalId);
+  const target = dreamWorldFoundation.scenes.find(({ id }) => id === portal?.to);
+  const position = target?.entrances[portal?.entrance];
+  if (!portal || !target || !position) return normalized;
+  const traveled = recordDreamPosition(normalized, target.id, position);
+  return { ...traveled, player: { ...traveled.player, spawnId: portal.entrance } };
 };
 
 export const resetDreamSave = (storage = getBrowserStorage()) => {
