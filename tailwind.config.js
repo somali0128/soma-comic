@@ -8,17 +8,28 @@ module.exports = {
     extend: {
       colors: {
         primary: {
-          50: '#eff8ff',
-          100: '#dff0ff',
-          200: '#b9e2ff',
-          300: '#78caff',
-          400: '#35adff',
-          500: '#078ff2',
-          600: '#0071ce',
-          700: '#005aa7',
-          800: '#064d86',
-          900: '#0b416f',
+          50: '#eef4ff',
+          100: '#dce8ff',
+          200: '#bbd3ff',
+          300: '#8ab4fe',
+          400: '#4e8cfb',
+          500: '#146af8',
+          600: '#0c56d6',
+          700: '#0b45aa',
+          800: '#0e3a86',
+          900: '#10326a',
         },
+        ink: {
+          DEFAULT: '#14161a',
+          soft: '#4a4f57',
+          mute: '#6b7078',
+        },
+        paper: {
+          DEFAULT: '#fef9ef',
+          deep: '#f6eedd',
+          line: '#e8dcc3',
+        },
+        sun: '#ffc93c',
         secondary: {
           50: '#f0fdff',
           100: '#ccf7ff',
@@ -35,6 +46,10 @@ module.exports = {
       fontFamily: {
         sans: [
           'Nunito',
+          'PingFang SC',
+          'Hiragino Sans GB',
+          'Noto Sans SC',
+          'Microsoft YaHei',
           'Comic Sans MS',
           '-apple-system',
           'BlinkMacSystemFont',
@@ -51,10 +66,18 @@ module.exports = {
         display: [
           'Baloo 2',
           'Nunito',
+          'PingFang SC',
+          'Noto Sans SC',
+          'Microsoft YaHei',
           'Comic Sans MS',
           'Segoe Print',
           'cursive',
         ],
+      },
+      boxShadow: {
+        sketch: '3px 3px 0 #14161a',
+        'sketch-lg': '5px 5px 0 #14161a',
+        'sketch-blue': '3px 3px 0 #146af8',
       },
       backdropBlur: {
         xs: '2px',

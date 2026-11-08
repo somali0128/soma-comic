@@ -1,89 +1,106 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import LanguageSwitch from '../LanguageSwitch/LanguageSwitch';
+import SomaLogo from '../../soma_logo.svg';
 
 const Navbar = ({ currentLanguage, onLanguageChange, t }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { pathname, hash } = useLocation();
 
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
-
-  const closeMenu = () => {
+  useEffect(() => {
     setIsMenuOpen(false);
-  };
+  }, [pathname, hash]);
+
+  useEffect(() => {
+    if (!isMenuOpen) return undefined;
+    const onKeyDown = (event) => {
+      if (event.key === 'Escape') setIsMenuOpen(false);
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [isMenuOpen]);
+
+  const links = [
+    { to: '/', label: t.nav.home, isActive: pathname === '/' },
+    { to: '/tools', label: t.nav.tools, isActive: pathname === '/tools' && hash !== '#projects' },
+    { to: '/tools#projects', label: t.nav.projects, isActive: pathname === '/tools' && hash === '#projects' },
+    { to: '/vocal-practice', label: t.nav.vocal, isActive: pathname === '/vocal-practice' },
+    { to: '/dream-world', label: t.nav.dreamArchive, isActive: pathname === '/dream-world' },
+  ];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 border-b-[3px] border-slate-950 bg-primary-50/95 backdrop-blur-md transition-all duration-300">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="flex items-center justify-between h-16">
-          <Link to="/" className="flex items-center gap-2 sm:gap-3 transition-colors duration-200 hover:opacity-80" onClick={closeMenu}>
-            <span className="font-display text-lg font-black text-primary-700 sm:text-2xl">Stickman Soma</span>
-          </Link>
+    <nav className="fixed inset-x-0 top-0 z-50 border-b-[1.5px] border-ink bg-paper/90 backdrop-blur-md">
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
+        <Link to="/" className="group flex shrink-0 items-center gap-2.5" aria-label={t.brandName}>
+          <img
+            src={SomaLogo}
+            alt=""
+            className="h-9 w-9 transition-transform duration-200 group-hover:-rotate-6"
+          />
+          <span className="font-display text-lg font-extrabold leading-none tracking-tight text-ink sm:text-xl">
+            {t.brandName}
+          </span>
+        </Link>
 
-          <div className="hidden md:flex items-center gap-6 lg:gap-8">
-            <Link to="/" className="relative font-display font-black text-slate-700 transition-colors duration-200 hover:text-primary-700 group">
-              {t.nav.home}
-              <span className="absolute bottom-0 left-0 w-0 h-[3px] rounded-full bg-primary-500 transition-all duration-200 group-hover:w-full"></span>
-            </Link>
-            <Link to="/tools" className="relative font-display font-black text-slate-700 transition-colors duration-200 hover:text-primary-700 group">
-              {t.nav.tools}
-              <span className="absolute bottom-0 left-0 w-0 h-[3px] rounded-full bg-primary-500 transition-all duration-200 group-hover:w-full"></span>
-            </Link>
-            <Link to="/vocal-practice" className="relative font-display font-black text-slate-700 transition-colors duration-200 hover:text-primary-700 group">
-              {currentLanguage === 'zh' ? '声乐练习' : 'Vocal Lab'}
-              <span className="absolute bottom-0 left-0 w-0 h-[3px] rounded-full bg-primary-500 transition-all duration-200 group-hover:w-full"></span>
-            </Link>
-            <Link to="/dream-world" className="relative font-display font-black text-slate-700 transition-colors duration-200 hover:text-primary-700 group">
-              {t.nav.dreamArchive}
-              <span className="absolute bottom-0 left-0 w-0 h-[3px] rounded-full bg-primary-500 transition-all duration-200 group-hover:w-full"></span>
-            </Link>
-            <a href="/tools#projects" className="relative font-display font-black text-slate-700 transition-colors duration-200 hover:text-primary-700 group">
-              {t.nav.projects}
-              <span className="absolute bottom-0 left-0 w-0 h-[3px] rounded-full bg-primary-500 transition-all duration-200 group-hover:w-full"></span>
-            </a>
-          </div>
+        <ul className="hidden items-center gap-1 md:flex">
+          {links.map((link) => (
+            <li key={link.to}>
+              <Link
+                to={link.to}
+                aria-current={link.isActive ? 'page' : undefined}
+                className={`block whitespace-nowrap rounded-full px-3 py-1.5 text-[0.9375rem] font-bold transition-colors duration-150 lg:px-3.5 ${
+                  link.isActive
+                    ? 'bg-ink text-white'
+                    : 'text-ink-soft hover:bg-paper-deep hover:text-ink'
+                }`}
+              >
+                {link.label}
+              </Link>
+            </li>
+          ))}
+        </ul>
 
-          <div className="flex items-center gap-3 sm:gap-4">
-            <LanguageSwitch
-              currentLanguage={currentLanguage}
-              onLanguageChange={onLanguageChange}
-            />
-            <button
-              className="md:hidden flex flex-col p-2 gap-1.5 rounded-md border-2 border-slate-950 bg-white transition-colors duration-200 hover:bg-primary-100"
-              onClick={toggleMenu}
-              aria-label="Toggle menu"
-            >
-              <span className={`w-5 h-0.5 bg-slate-950 rounded transition-all duration-300 ${isMenuOpen ? 'rotate-45 translate-y-2' : ''}`}></span>
-              <span className={`w-5 h-0.5 bg-slate-950 rounded transition-all duration-300 ${isMenuOpen ? 'opacity-0' : ''}`}></span>
-              <span className={`w-5 h-0.5 bg-slate-950 rounded transition-all duration-300 ${isMenuOpen ? '-rotate-45 -translate-y-2' : ''}`}></span>
-            </button>
-          </div>
+        <div className="flex items-center gap-2">
+          <LanguageSwitch currentLanguage={currentLanguage} onLanguageChange={onLanguageChange} />
+          <button
+            type="button"
+            className="flex !min-h-[38px] !min-w-[38px] flex-col items-center justify-center gap-[5px] rounded-full border-[1.5px] border-ink bg-white md:hidden"
+            onClick={() => setIsMenuOpen((open) => !open)}
+            aria-label={isMenuOpen ? t.nav.close : t.nav.menu}
+            aria-expanded={isMenuOpen}
+            aria-controls="mobile-nav"
+          >
+            <span className={`h-[1.5px] w-4 rounded bg-ink transition-transform duration-200 ${isMenuOpen ? 'translate-y-[6.5px] rotate-45' : ''}`} />
+            <span className={`h-[1.5px] w-4 rounded bg-ink transition-opacity duration-200 ${isMenuOpen ? 'opacity-0' : ''}`} />
+            <span className={`h-[1.5px] w-4 rounded bg-ink transition-transform duration-200 ${isMenuOpen ? '-translate-y-[6.5px] -rotate-45' : ''}`} />
+          </button>
         </div>
+      </div>
 
-        <div className={`md:hidden transition-all duration-300 ease-in-out ${isMenuOpen ? 'max-h-80 opacity-100' : 'max-h-0 opacity-0 overflow-hidden'}`}>
-          <div className="py-4 space-y-2 border-t-[3px] border-slate-950">
-            <Link to="/" className="block rounded-md border-2 border-transparent px-4 py-3 font-display font-black text-slate-700 transition-colors duration-200 hover:border-slate-950 hover:bg-white hover:text-primary-700" onClick={closeMenu}>
-              {t.nav.home}
-            </Link>
-            <Link to="/tools" className="block rounded-md border-2 border-transparent px-4 py-3 font-display font-black text-slate-700 transition-colors duration-200 hover:border-slate-950 hover:bg-white hover:text-primary-700" onClick={closeMenu}>
-              {t.nav.tools}
-            </Link>
-            <Link to="/vocal-practice" className="block rounded-md border-2 border-transparent px-4 py-3 font-display font-black text-slate-700 transition-colors duration-200 hover:border-slate-950 hover:bg-white hover:text-primary-700" onClick={closeMenu}>
-              {currentLanguage === 'zh' ? '声乐练习' : 'Vocal Lab'}
-            </Link>
-            <Link to="/dream-world" className="block rounded-md border-2 border-transparent px-4 py-3 font-display font-black text-slate-700 transition-colors duration-200 hover:border-slate-950 hover:bg-white hover:text-primary-700" onClick={closeMenu}>
-              {t.nav.dreamArchive}
-            </Link>
-            <a href="/tools#projects" className="block rounded-md border-2 border-transparent px-4 py-3 font-display font-black text-slate-700 transition-colors duration-200 hover:border-slate-950 hover:bg-white hover:text-primary-700" onClick={closeMenu}>
-              {t.nav.projects}
-            </a>
-          </div>
-        </div>
+      <div
+        id="mobile-nav"
+        hidden={!isMenuOpen}
+        className="border-t-[1.5px] border-ink bg-paper md:hidden"
+      >
+        <ul className="mx-auto grid max-w-6xl gap-1 px-4 py-3">
+          {links.map((link) => (
+            <li key={link.to}>
+              <Link
+                to={link.to}
+                aria-current={link.isActive ? 'page' : undefined}
+                className={`flex items-center justify-between rounded-xl px-4 py-3 font-display text-lg font-bold ${
+                  link.isActive ? 'bg-ink text-white' : 'text-ink hover:bg-paper-deep'
+                }`}
+              >
+                {link.label}
+                <span aria-hidden="true">→</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
       </div>
     </nav>
   );
 };
 
 export default Navbar;
-

@@ -6,6 +6,9 @@ const zh = {
     orderMenu: '我要点菜',
     projects: '作品集',
     dreamArchive: '梦境档案',
+    vocal: '声乐练习',
+    menu: '菜单',
+    close: '关闭菜单',
   },
   placeholder: {
     comingSoon: '页面建设中，敬请期待。',
@@ -44,9 +47,22 @@ const zh = {
       },
       tools: {
         title: '我的工具',
-        description: '直播时钟挂件、微信点单小程序和效率工具。',
+        description: '抽奖转盘、点菜助手和声乐练习，打开就能用。',
+      },
+      vocal: {
+        title: '声乐练习',
+        description: '打开麦克风，实时看自己唱得准不准。',
+      },
+      dream: {
+        title: '梦境档案',
+        description: '一张可以走进去的像素梦境地图。',
       },
     },
+    entriesEyebrow: '从这里开始',
+    entriesTitle: '四个入口，挑一个逛逛',
+    bubble: '今天也在写小工具 ☕',
+    illustrationAlt: '戴眼镜的火柴人樾哥坐在笔记本电脑前，旁边是一杯冒着热气的猫咪马克杯',
+    enter: '进入',
   },
   social: {
     locale: 'zh',
@@ -150,6 +166,7 @@ const zh = {
     madeWith: '用热爱制作',
     quickLinks: '快速链接',
     media: '媒体',
+    tagline: '用一个个小工具，把生活里的小问题解决掉。',
   },
   toolsPage: {
     eyebrow: '作品与实验',

@@ -41,14 +41,20 @@ const getTranslations = (language) => (language === 'zh' ? zh : en);
 
 function AppContent() {
   const location = useLocation();
-  const isHome = location.pathname === '/';
 
   const [currentLanguage, setCurrentLanguage] = useState(getPreferredLanguage);
   const translations = getTranslations(currentLanguage);
 
   useLayoutEffect(() => {
+    if (location.hash) {
+      const target = document.getElementById(location.hash.slice(1));
+      if (target) {
+        target.scrollIntoView();
+        return;
+      }
+    }
     window.scrollTo(0, 0);
-  }, [location.pathname]);
+  }, [location.pathname, location.hash]);
 
   useEffect(() => {
     document.documentElement.lang = currentLanguage === 'zh' ? 'zh-CN' : 'en';
@@ -62,24 +68,21 @@ function AppContent() {
 
   return (
     <div className="App">
-      {!isHome && (
-        <Navbar
-          currentLanguage={currentLanguage}
-          onLanguageChange={handleLanguageChange}
-          t={translations}
-        />
-      )}
+      <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-3 focus:z-[60] focus:rounded-full focus:bg-ink focus:px-4 focus:py-2 focus:text-sm focus:font-bold focus:text-white">
+        {currentLanguage === 'zh' ? '跳到正文' : 'Skip to content'}
+      </a>
+      <Navbar
+        currentLanguage={currentLanguage}
+        onLanguageChange={handleLanguageChange}
+        t={translations}
+      />
 
-      <main className={`main-content${isHome ? ' main-content--no-nav' : ''}`}>
+      <main id="main" className="main-content">
         <Routes>
           <Route
             path="/"
             element={
-              <Hero
-                currentLanguage={currentLanguage}
-                onLanguageChange={handleLanguageChange}
-                t={translations}
-              />
+              <Hero t={translations} />
             }
           />
           <Route path="/tools" element={<Tools t={translations} />} />
@@ -102,7 +105,7 @@ function AppContent() {
           />
           <Route path="/order-menu" element={<OrderMenu />} />
           <Route path="/social" element={<Navigate to="/tools" replace />} />
-          <Route path="*" element={<NotFound />} />
+          <Route path="*" element={<NotFound t={translations} />} />
         </Routes>
       </main>
 

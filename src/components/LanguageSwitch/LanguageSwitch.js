@@ -1,38 +1,44 @@
 import React from 'react';
 
+const OPTIONS = [
+  { id: 'zh', label: '中', ariaLabel: 'Switch to Chinese' },
+  { id: 'en', label: 'EN', ariaLabel: 'Switch to English' },
+];
+
 const LanguageSwitch = ({ currentLanguage, onLanguageChange, variant = 'light' }) => {
   const isDark = variant === 'dark';
-  const inactiveClass = isDark
-    ? 'border-white/30 bg-white/10 text-white hover:bg-white/20 hover:border-white/60'
-    : 'border-gray-300 bg-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-400 hover:text-gray-700';
-  const activeClass = isDark
-    ? 'bg-primary-300 border-primary-300 text-slate-950 hover:bg-primary-200'
-    : 'bg-primary-500 border-primary-500 text-white hover:bg-primary-600';
 
   return (
-    <div className="flex items-center gap-1 sm:gap-2" aria-label="Language switcher">
-      <button
-        className={`px-2 sm:px-3 py-1.5 border rounded-md text-xs sm:text-sm font-medium transition-all duration-200 touch-target ${
-          currentLanguage === 'zh' ? activeClass : inactiveClass
-        }`}
-        onClick={() => onLanguageChange('zh')}
-        aria-pressed={currentLanguage === 'zh'}
-        aria-label="Switch to Chinese"
-      >
-        中文
-      </button>
-      <button
-        className={`px-2 sm:px-3 py-1.5 border rounded-md text-xs sm:text-sm font-medium transition-all duration-200 touch-target ${
-          currentLanguage === 'en' ? activeClass : inactiveClass
-        }`}
-        onClick={() => onLanguageChange('en')}
-        aria-pressed={currentLanguage === 'en'}
-        aria-label="Switch to English"
-      >
-        EN
-      </button>
+    <div
+      role="group"
+      aria-label="Language switcher"
+      className={`inline-flex items-center rounded-full border-[1.5px] p-0.5 ${
+        isDark ? 'border-white/40 bg-white/10' : 'border-ink bg-white'
+      }`}
+    >
+      {OPTIONS.map((option) => {
+        const isActive = currentLanguage === option.id;
+        const activeClass = isDark ? 'bg-white text-ink' : 'bg-ink text-white';
+        const idleClass = isDark
+          ? 'text-white/80 hover:text-white'
+          : 'text-ink-soft hover:text-ink';
+        return (
+          <button
+            key={option.id}
+            type="button"
+            onClick={() => onLanguageChange(option.id)}
+            aria-pressed={isActive}
+            aria-label={option.ariaLabel}
+            className={`!min-h-[32px] !min-w-[40px] rounded-full px-2.5 text-xs font-extrabold transition-colors duration-150 ${
+              isActive ? activeClass : idleClass
+            }`}
+          >
+            {option.label}
+          </button>
+        );
+      })}
     </div>
   );
 };
 
-export default LanguageSwitch; 
+export default LanguageSwitch;
