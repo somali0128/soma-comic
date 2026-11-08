@@ -6,6 +6,9 @@ const en = {
     orderMenu: 'Order Menu',
     projects: 'Projects',
     dreamArchive: 'Dream Archive',
+    vocal: 'Vocal Lab',
+    menu: 'Menu',
+    close: 'Close menu',
   },
   placeholder: {
     comingSoon: 'This page is under construction. Check back soon.',
@@ -18,7 +21,7 @@ const en = {
   },
   home: {
     eyebrow: 'AI / Automation / Creative Tech',
-    title: 'Soma Li',
+    title: 'Stickman Soma',
     subtitle: 'AI Agent Builder in Halifax',
     identity: 'Dongyue Li · Soma Li · 樾哥',
     primaryCta: 'Open Toolbox',
@@ -44,9 +47,22 @@ const en = {
       },
       tools: {
         title: 'My Tools',
-        description: 'Live clock widget, WeChat ordering mini program, and productivity tools.',
+        description: 'A prize wheel, a family menu helper, and a vocal lab — ready to use.',
+      },
+      vocal: {
+        title: 'Vocal Lab',
+        description: 'Turn on the mic and see your pitch in real time.',
+      },
+      dream: {
+        title: 'Dream Archive',
+        description: 'A pixel dream map you can walk around in.',
       },
     },
+    entriesEyebrow: 'Start here',
+    entriesTitle: 'Four doors. Pick one.',
+    bubble: 'Building tiny tools today ☕',
+    illustrationAlt: 'Stickman Soma with square glasses typing on a laptop next to a steaming cat mug',
+    enter: 'Enter',
   },
   social: {
     locale: 'en',
@@ -153,6 +169,7 @@ const en = {
     madeWith: 'Made with care',
     quickLinks: 'Quick Links',
     media: 'Media',
+    tagline: 'Small tools for the small problems in everyday life.',
   },
   toolsPage: {
     eyebrow: 'Projects & Experiments',

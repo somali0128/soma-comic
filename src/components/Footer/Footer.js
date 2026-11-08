@@ -1,38 +1,58 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import SomaLogo from '../../soma_logo.svg';
+
+const linkClass =
+  'inline-flex items-center gap-1 text-sm font-semibold text-ink-soft transition-colors duration-150 hover:text-primary-600';
 
 const Footer = ({ t }) => {
   const currentYear = new Date().getFullYear();
 
+  const siteLinks = [
+    { to: '/', label: t.nav.home },
+    { to: '/tools', label: t.nav.tools },
+    { to: '/tools#projects', label: t.nav.projects },
+    { to: '/vocal-practice', label: t.nav.vocal },
+    { to: '/dream-world', label: t.nav.dreamArchive },
+  ];
+
   return (
-    <footer className="mt-auto border-t-[3px] border-slate-950 bg-primary-700 py-8 text-white sm:py-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mb-6 sm:mb-8">
-          <div className="flex flex-col gap-3 sm:gap-4">
-            <div className="flex items-center gap-2 sm:gap-3">
-              <img src={SomaLogo} alt="" className="w-8 h-8 rounded-full border-2 border-slate-950 bg-primary-50 sm:w-10 sm:h-10" />
-              <span className="font-display text-lg font-black sm:text-xl">
-                {t.brandName}
-              </span>
-            </div>
+    <footer className="mt-auto border-t-[1.5px] border-ink bg-paper-deep text-ink">
+      <div className="mx-auto max-w-6xl px-4 pb-8 pt-12 sm:px-6">
+        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr]">
+          <div>
+            <Link to="/" className="inline-flex items-center gap-2.5">
+              <img src={SomaLogo} alt="" className="h-10 w-10" />
+              <span className="font-display text-xl font-extrabold">{t.brandName}</span>
+            </Link>
+            <p className="mt-4 max-w-xs text-sm leading-relaxed text-ink-soft">{t.footer.tagline}</p>
           </div>
 
-          <div className="flex flex-col gap-3 sm:gap-4">
-            <h4 className="font-display text-base font-black text-primary-100 sm:pl-8 sm:text-lg">{t.footer.quickLinks}</h4>
-            <ul className="flex flex-col gap-1 sm:gap-2">
-              <li><a href="/" className="text-primary-50 font-bold transition-colors duration-200 hover:text-white text-sm sm:text-base">{t.nav.home}</a></li>
-              <li><a href="/tools" className="text-primary-50 font-bold transition-colors duration-200 hover:text-white text-sm sm:text-base">{t.nav.tools}</a></li>
-              <li><a href="/tools#projects" className="text-primary-50 font-bold transition-colors duration-200 hover:text-white text-sm sm:text-base">{t.nav.projects}</a></li>
+          <nav aria-label={t.footer.quickLinks}>
+            <h2 className="text-xs font-extrabold uppercase tracking-[0.14em] text-ink-mute">
+              {t.footer.quickLinks}
+            </h2>
+            <ul className="mt-4 grid grid-cols-2 gap-x-6 gap-y-2.5 sm:grid-cols-1">
+              {siteLinks.map((link) => (
+                <li key={link.to}>
+                  <Link to={link.to} className={linkClass}>
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
-          </div>
+          </nav>
 
-          <div className="flex flex-col gap-3 sm:gap-4 sm:col-span-2 lg:col-span-1">
-            <h4 className="font-display text-base font-black text-primary-100 sm:pl-8 sm:text-lg">{t.footer.media}</h4>
-            <ul className="flex flex-col gap-1 sm:gap-2">
+          <div>
+            <h2 className="text-xs font-extrabold uppercase tracking-[0.14em] text-ink-mute">
+              {t.footer.media}
+            </h2>
+            <ul className="mt-4 grid gap-2.5">
               {t.social.links.map((link) => (
                 <li key={link.label}>
-                  <a href={link.href} target="_blank" rel="noopener noreferrer" className="text-primary-50 font-bold transition-colors duration-200 hover:text-white text-sm sm:text-base">
+                  <a href={link.href} target="_blank" rel="noopener noreferrer" className={linkClass}>
                     {link.label}
+                    <span aria-hidden="true" className="text-xs">↗</span>
                   </a>
                 </li>
               ))}
@@ -40,13 +60,11 @@ const Footer = ({ t }) => {
           </div>
         </div>
 
-        <div className="border-t border-white/20 pt-4 sm:pt-6 flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-4">
-          <p className="text-primary-100 text-xs sm:text-sm text-center sm:text-left font-semibold">
+        <div className="mt-12 flex flex-col gap-2 border-t border-paper-line pt-6 text-xs font-semibold text-ink-mute sm:flex-row sm:items-center sm:justify-between">
+          <p>
             © {currentYear} {t.brandName}. {t.footer.copyright}
           </p>
-          <p className="text-primary-100 text-xs sm:text-sm text-center sm:text-right font-semibold">
-            {t.footer.madeWith}
-          </p>
+          <p>{t.footer.madeWith}</p>
         </div>
       </div>
     </footer>
@@ -54,4 +72,3 @@ const Footer = ({ t }) => {
 };
 
 export default Footer;
-
