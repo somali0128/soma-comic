@@ -5,7 +5,21 @@
       "gh-pages": false
     }
   },
+  "headers": [
+    {
+      "source": "/convert/sw.js",
+      "headers": [{ "key": "Cache-Control", "value": "no-cache" }]
+    }
+  ],
   "rewrites": [
+    {
+      "source": "/convert",
+      "destination": "/convert/index.html"
+    },
+    {
+      "source": "/convert/",
+      "destination": "/convert/index.html"
+    },
     {
       "source": "/(.*)",
       "destination": "/index.html"

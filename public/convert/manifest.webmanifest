@@ -1,0 +1,18 @@
+{
+  "id": "/convert/",
+  "name": "换算 · 樾哥Soma",
+  "short_name": "换算",
+  "description": "单位换算：长度、面积、重量、温度、容量、汇率、尺码等，离线也能用。",
+  "lang": "zh-CN",
+  "start_url": "/convert/",
+  "scope": "/convert/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#fef9ef",
+  "theme_color": "#fef9ef",
+  "icons": [
+    { "src": "/convert/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/convert/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/convert/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

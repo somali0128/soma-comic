@@ -1,6 +1,18 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
+// Tools outside the single-page app (e.g. the standalone 换算 app) need a full page load.
+const ToolLink = ({ tool, className, children }) =>
+  tool.href ? (
+    <a href={tool.href} className={className}>
+      {children}
+    </a>
+  ) : (
+    <Link to={tool.to} className={className}>
+      {children}
+    </Link>
+  );
+
 const Tools = ({ t }) => {
   const { eyebrow, title, subtitle, items } = t.toolsPage;
   const isZh = t.social.locale === 'zh';
@@ -19,6 +31,13 @@ const Tools = ({ t }) => {
       status: isZh ? '站内工具 · 即开即用' : 'On-site tool · ready to use',
       description: isZh ? '转盘、随机名单与硬币三种抽选方式，适合直播、活动和日常决策。' : 'A playful raffle desk with a wheel, random list, and coin flip for streams, events, and everyday decisions.',
       details: isZh ? ['三种抽选模式', '支持权重和名单导入', '动画结果展示'] : ['Three draw modes', 'Weighted entries and imports', 'Animated, clear results'],
+    },
+    {
+      id: 'convert', icon: '📏', accent: 'bg-[#fdf0d9]', href: '/convert/',
+      title: isZh ? '换算' : 'Unit Converter',
+      status: isZh ? '手机小工具 · 可添加到桌面' : 'Phone app · add to home screen',
+      description: isZh ? '长度、重量、温度、容量、汇率、尺码……输一个数，所有单位一次看全。离线也能用。' : 'Length, weight, temperature, volume, currency, sizes — type once, see every unit. Works offline.',
+      details: isZh ? ['一次看全所有单位', '支持 5′11″ 和 1斤2两', '离线可用'] : ['Every unit at once', "Type 5′11″ or 1斤2两", 'Works offline'],
     },
     {
       id: 'sticky-note', icon: '📝', accent: 'bg-[#fdf08a]', to: '/vts-sticky-note',
@@ -74,7 +93,7 @@ const Tools = ({ t }) => {
           <h2 id="tools-heading" className="eyebrow">{isZh ? '站内工具 · 打开就能用' : 'On-site tools · ready to use'}</h2>
           <div className="mt-6 grid gap-5 md:grid-cols-2">
             {tools.map((tool) => (
-              <Link key={tool.id} to={tool.to} className="sketch-card sketch-link group flex flex-col p-6 sm:p-7">
+              <ToolLink key={tool.id} tool={tool} className="sketch-card sketch-link group flex flex-col p-6 sm:p-7">
                 <div className="flex items-start justify-between gap-4">
                   <span className={`flex h-12 w-12 items-center justify-center rounded-full border-[1.5px] border-ink text-xl ${tool.accent}`} aria-hidden="true">{tool.icon}</span>
                   <span className="sketch-chip">{tool.status}</span>
@@ -88,7 +107,7 @@ const Tools = ({ t }) => {
                   {t.toolsPage.useNow}
                   <span aria-hidden="true" className="transition-transform duration-200 group-hover:translate-x-1">→</span>
                 </p>
-              </Link>
+              </ToolLink>
             ))}
           </div>
         </section>

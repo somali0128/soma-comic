@@ -40,6 +40,14 @@ const getPreferredLanguage = () => {
 
 const getTranslations = (language) => (language === 'zh' ? zh : en);
 
+// The 换算 app is a separate page (own manifest/icons); leave the SPA for it.
+function StandaloneRedirect({ to }) {
+  useEffect(() => {
+    window.location.replace(to);
+  }, [to]);
+  return null;
+}
+
 function AppContent() {
   const location = useLocation();
 
@@ -114,6 +122,7 @@ function AppContent() {
           />
           <Route path="/order-menu" element={<OrderMenu />} />
           <Route path="/social" element={<Navigate to="/tools" replace />} />
+          <Route path="/convert" element={<StandaloneRedirect to="/convert/" />} />
           <Route path="*" element={<NotFound t={translations} />} />
         </Routes>
       </main>
