@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#FEF9EF"/>
+  <!-- blue shirt -->
+  <path d="M120 512 Q120 380 256 372 Q392 380 392 512 Z" fill="#146AF8" stroke="#14161A" stroke-width="12"/>
+  <!-- head -->
+  <circle cx="256" cy="226" r="122" fill="#fff" stroke="#14161A" stroke-width="14"/>
+  <rect x="164" y="190" width="78" height="60" rx="6" fill="#fff" stroke="#14161A" stroke-width="13"/>
+  <rect x="270" y="190" width="78" height="60" rx="6" fill="#fff" stroke="#14161A" stroke-width="13"/>
+  <line x1="242" y1="216" x2="270" y2="216" stroke="#14161A" stroke-width="11"/>
+  <!-- ruler raised on the right, held by a stick arm -->
+  <path d="M352 430 Q400 400 404 330" fill="none" stroke="#14161A" stroke-width="12" stroke-linecap="round"/>
+  <g transform="translate(410 250) rotate(12)">
+    <rect x="-30" y="-150" width="60" height="230" rx="10" fill="#FFC93C" stroke="#14161A" stroke-width="11"/>
+    <g stroke="#14161A" stroke-width="8" stroke-linecap="round">
+      <line x1="-30" y1="-112" x2="0" y2="-112"/><line x1="-30" y1="-80" x2="-12" y2="-80"/>
+      <line x1="-30" y1="-48" x2="0" y2="-48"/><line x1="-30" y1="-16" x2="-12" y2="-16"/>
+      <line x1="-30" y1="16" x2="0" y2="16"/><line x1="-30" y1="48" x2="-12" y2="48"/>
+    </g>
+  </g>
+</svg>
