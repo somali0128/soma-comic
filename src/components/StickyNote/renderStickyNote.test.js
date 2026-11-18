@@ -1,6 +1,7 @@
 import {
+  DEFAULT_OPTIONS,
   FONT_SIZE_LIMITS,
-  MAX_ROTATION,
+  createPaperWarp,
   SHAPES,
   buildExportFileName,
   computeLayout,
@@ -104,20 +105,58 @@ describe('fitText', () => {
 describe('computeLayout', () => {
   test.each(Object.keys(SHAPES))('%s: long edge matches the export size', (shape) => {
     [512, 768, 1024].forEach((size) => {
-      const layout = computeLayout({ shape, size });
-      expect(Math.max(layout.canvasWidth, layout.canvasHeight)).toBe(size);
+      [-15, 0, 15].forEach((rotation) => {
+        const layout = computeLayout({ shape, size, rotation });
+        expect(Math.max(layout.canvasWidth, layout.canvasHeight)).toBe(size);
+      });
     });
   });
 
   test('multiplies by the pixel ratio for sharp previews', () => {
-    expect(computeLayout({ shape: 'square', size: 400, pixelRatio: 2 }).canvasWidth).toBe(800);
+    const layout = computeLayout({ shape: 'square', size: 400, pixelRatio: 2 });
+    expect(Math.max(layout.canvasWidth, layout.canvasHeight)).toBe(800);
   });
 
-  test.each(Object.keys(SHAPES))('%s: rotated paper always fits with margin', (shape) => {
-    const { paperWidth: w, paperHeight: h, unitsWidth, unitsHeight } = computeLayout({ shape });
-    const t = (MAX_ROTATION * Math.PI) / 180;
-    expect(w * Math.cos(t) + h * Math.sin(t)).toBeLessThan(unitsWidth - 20);
-    expect(w * Math.sin(t) + h * Math.cos(t)).toBeLessThan(unitsHeight - 20);
+  test.each(Object.keys(SHAPES))('%s: warped, rotated paper stays inside the canvas', (shape) => {
+    [-15, 15].forEach((rotation) => {
+      ['none', 'tape', 'clip'].forEach((decoration) => {
+        [1, 2, 3, 42].forEach((seed) => {
+          const options = { shape, rotation, decoration, seed, warp: 1, shadow: true };
+          const layout = computeLayout(options);
+          const P = createPaperWarp(layout.paperWidth, layout.paperHeight, { warp: 1, seed });
+          const t = (rotation * Math.PI) / 180;
+          [P(0, 0), P(1, 0), P(1, 1), P(0, 1), P(0.5, 1), P(0, 0.5)].forEach((p) => {
+            const x = layout.originX + p.x * Math.cos(t) - p.y * Math.sin(t);
+            const y = layout.originY + p.x * Math.sin(t) + p.y * Math.cos(t);
+            expect(x).toBeGreaterThan(2);
+            expect(y).toBeGreaterThan(2);
+            expect(x).toBeLessThan(layout.unitsWidth - 2);
+            expect(y).toBeLessThan(layout.unitsHeight - 2);
+          });
+        });
+      });
+    });
+  });
+});
+
+describe('createPaperWarp', () => {
+  test('warp 0 is the exact rectangle', () => {
+    const P = createPaperWarp(100, 100, { warp: 0, seed: 5 });
+    expect(P(0, 0)).toEqual({ x: -50, y: -50 });
+    expect(P(1, 1)).toEqual({ x: 50, y: 50 });
+    expect(P(0.5, 0.5).x).toBeCloseTo(0);
+  });
+
+  test('is deterministic for the same seed and differs for another seed', () => {
+    const a = createPaperWarp(100, 100, { warp: 1, seed: 3 });
+    const b = createPaperWarp(100, 100, { warp: 1, seed: 3 });
+    const c = createPaperWarp(100, 100, { warp: 1, seed: 4 });
+    expect(a(0.3, 0.7)).toEqual(b(0.3, 0.7));
+    expect(a(0.3, 0.7)).not.toEqual(c(0.3, 0.7));
+  });
+
+  test('default options keep a visible warp', () => {
+    expect(DEFAULT_OPTIONS.warp).toBeGreaterThan(0.5);
   });
 });
 

@@ -1,10 +1,15 @@
 /**
  * Sticky-note renderer for VTube Studio item images.
  *
+ * Style: hand-drawn cartoon paper — a slightly warped sheet with a wobbly
+ * dark outline, soft inner shading, faint wavy rule lines and cartoon tape /
+ * pin / paperclip. The text is laid out flat, then mapped glyph by glyph onto
+ * the same warp as the paper, so it bends with the sheet.
+ *
  * Framework-free: it only needs a <canvas> (or OffscreenCanvas) and an options
  * object, so it can be reused outside this page (e.g. a future VTS plugin).
- * The same options always produce the same pixels — the paper grain uses a
- * seeded random generator.
+ * The same options always produce the same pixels — every bit of randomness
+ * (paper shape, outline wobble, grain) comes from `seed`.
  *
  * Fonts are NOT loaded here. Load the font for the text first
  * (see stickyNoteFonts.js), then call renderStickyNote.
@@ -14,13 +19,21 @@
  */
 
 export const PAPER_PRESETS = {
-  yellow: { label: '经典黄', color: '#fdf08a' },
-  pink: { label: '粉色', color: '#ffc6dc' },
-  blue: { label: '蓝色', color: '#bfe3ff' },
-  green: { label: '绿色', color: '#c9efb4' },
+  cream: { label: '奶油', color: '#fff0d0' },
+  yellow: { label: '柠檬黄', color: '#fff3a3' },
+  pink: { label: '粉色', color: '#ffd9e2' },
+  blue: { label: '蓝色', color: '#d6ecf8' },
+  green: { label: '绿色', color: '#dcf2c9' },
   notebook: { label: '横线本', color: '#fffdf6' },
-  kraft: { label: '牛皮纸', color: '#cfa673' },
+  kraft: { label: '牛皮纸', color: '#dcb685' },
   custom: { label: '自定义', color: null },
+};
+
+export const TAPE_COLORS = {
+  blue: { label: '雾蓝', fill: [198, 218, 222], line: '#3f5867' },
+  pink: { label: '樱粉', fill: [243, 200, 210], line: '#7b4453' },
+  yellow: { label: '奶黄', fill: [244, 226, 160], line: '#6f5a22' },
+  mint: { label: '薄荷', fill: [200, 232, 212], line: '#3c6450' },
 };
 
 export const SHAPES = {
@@ -45,15 +58,18 @@ export const DEFAULT_OPTIONS = {
   minFontSize: FONT_SIZE_LIMITS.min,
   maxFontSize: FONT_SIZE_LIMITS.max,
   align: 'center',
-  textColor: '#2a2522',
-  paper: 'yellow',
-  customColor: '#ffd8a8',
+  textColor: '#4a3418',
+  paper: 'cream',
+  customColor: '#ffe3c2',
   shape: 'square',
   decoration: 'tape',
+  tapeColor: 'blue',
+  warp: 0.8,
+  lines: true,
   shadow: true,
-  curl: true,
-  noise: true,
-  rotation: -4,
+  curl: false,
+  noise: false,
+  rotation: 0,
   size: 768,
   pixelRatio: 1,
   seed: 7,
@@ -244,51 +260,24 @@ export function fitText(text, box, measureAt, { min, max, lineHeight = LINE_HEIG
 /* Geometry                                                            */
 /* ------------------------------------------------------------------ */
 
-/**
- * Canvas size and paper placement. The margin is sized for the worst case
- * (max rotation, shadow, decorations sticking out), so dragging the rotation
- * slider never rescales the paper and nothing is ever cropped.
- */
-export function computeLayout(options = {}) {
-  const shape = SHAPES[options.shape] || SHAPES.square;
-  const { width, height } = shape;
-  const theta = toRad(MAX_ROTATION);
-  const boundW = width * Math.cos(theta) + height * Math.sin(theta);
-  const boundH = width * Math.sin(theta) + height * Math.cos(theta);
-  const pad = 22; // decorations overhang ≤ 14 units, shadow ≤ 8 units
-  const unitsW = boundW + pad * 2;
-  const unitsH = boundH + pad * 2;
-
-  const longEdge = Math.max(1, Math.round((options.size || DEFAULT_OPTIONS.size) * (options.pixelRatio || 1)));
-  const scale = longEdge / Math.max(unitsW, unitsH);
-  return {
-    paperWidth: width,
-    paperHeight: height,
-    unitsWidth: unitsW,
-    unitsHeight: unitsH,
-    scale,
-    canvasWidth: Math.round(unitsW * scale),
-    canvasHeight: Math.round(unitsH * scale),
-  };
-}
-
-/** Text box inside the paper, in paper-centred units. */
+/** Text box inside the (flat, un-warped) paper, in paper-centred units. */
 export function getTextBox(options, layout) {
   const w = layout.paperWidth;
   const h = layout.paperHeight;
-  const inset = 11;
+  const inset = 13;
   let left = -w / 2 + inset;
   const right = w / 2 - inset;
   let top = -h / 2 + inset;
   const bottom = h / 2 - inset - (options.curl ? 3 : 0);
-  if (options.paper === 'notebook') left = -w / 2 + 20;
-  if (options.decoration === 'tape' || options.decoration === 'clip') top += 6;
+  if (options.paper === 'notebook') left = -w / 2 + 21;
+  if (options.decoration === 'tape') top += 9;
+  if (options.decoration === 'clip') top += 6;
   if (options.decoration === 'pin') top += 8;
   return { x: left, y: top, width: right - left, height: bottom - top };
 }
 
 /* ------------------------------------------------------------------ */
-/* Drawing helpers                                                     */
+/* Colour + randomness helpers                                         */
 /* ------------------------------------------------------------------ */
 
 function mulberry32(seed) {
@@ -302,97 +291,188 @@ function mulberry32(seed) {
   };
 }
 
-function shade(hex, amount) {
+function hexToRgb(hex) {
   const value = /^#?([0-9a-f]{6})$/i.exec(hex || '');
-  if (!value) return hex;
+  if (!value) return [255, 240, 208];
   const n = parseInt(value[1], 16);
-  const mix = (c) => clamp(Math.round(amount < 0 ? c * (1 + amount) : c + (255 - c) * amount), 0, 255);
-  const r = mix(n >> 16);
-  const g = mix((n >> 8) & 255);
-  const b = mix(n & 255);
-  return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, '0')}`;
+  return [n >> 16, (n >> 8) & 255, n & 255];
 }
 
-function paperColor(options) {
-  if (options.paper === 'custom') return options.customColor || DEFAULT_OPTIONS.customColor;
-  return (PAPER_PRESETS[options.paper] || PAPER_PRESETS.yellow).color;
+const mixRgb = (a, b, t) => a.map((c, i) => Math.round(c + (b[i] - c) * t));
+const rgba = ([r, g, b], alpha = 1) => `rgba(${r}, ${g}, ${b}, ${alpha})`;
+
+function paperRgb(options) {
+  if (options.paper === 'custom') return hexToRgb(options.customColor || DEFAULT_OPTIONS.customColor);
+  return hexToRgb((PAPER_PRESETS[options.paper] || PAPER_PRESETS.cream).color);
 }
 
-/** Outline of the paper; with curl the bottom-right corner is cut along a chord. */
-function paperPath(ctx, w, h, curl) {
-  const c = curl ? Math.min(w, h) * 0.16 : 0;
+/** Hand-drawn outline colour: a darkened paper tone pulled toward warm brown. */
+function outlineRgb(base) {
+  return mixRgb(mixRgb(base, [0, 0, 0], 0.58), [92, 66, 30], 0.5);
+}
+
+/* ------------------------------------------------------------------ */
+/* Paper warp                                                          */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Returns P(u, v) -> {x, y}: maps the flat sheet (u, v in 0..1) onto a gently
+ * warped one — skewed corners, bowed edges and a soft wave through the middle.
+ * warp = 0 gives the exact rectangle.
+ */
+export function createPaperWarp(width, height, { warp = 0.7, seed = 7 } = {}) {
+  const k = clamp(Number(warp) || 0, 0, 1);
+  const rand = mulberry32((Number(seed) || 0) * 7919 + 17);
+  const r = () => rand() * 2 - 1;
+  const phase = () => rand() * Math.PI * 2;
+
+  const corners = {
+    // Measured from the reference sketch: the sheet is sheared (top pushed
+    // right, bottom pulled left) and the bottom-left corner is lifted.
+    tl: [-width / 2 + (12 + r() * 2.5) * k, -height / 2 + (-2 + r() * 2) * k],
+    tr: [width / 2 + (8 + r() * 2.5) * k, -height / 2 + (7 + r() * 2.5) * k],
+    br: [width / 2 + (-6 + r() * 2.5) * k, height / 2 + (4 + r() * 2.5) * k],
+    bl: [-width / 2 + (-14 + r() * 2.5) * k, height / 2 + (-9 + r() * 3) * k],
+  };
+  const [p1, p2, p3, p4, p5] = [phase(), phase(), phase(), phase(), phase()];
+  const S = Math.sin;
+  const PI = Math.PI;
+
+  return (u, v) => {
+    const topX = corners.tl[0] + (corners.tr[0] - corners.tl[0]) * u;
+    const topY = corners.tl[1] + (corners.tr[1] - corners.tl[1]) * u;
+    const botX = corners.bl[0] + (corners.br[0] - corners.bl[0]) * u;
+    const botY = corners.bl[1] + (corners.br[1] - corners.bl[1]) * u;
+    let x = topX + (botX - topX) * v;
+    let y = topY + (botY - topY) * v;
+    if (k) {
+      // Harmonics are offset so each edge still ends exactly at its corners.
+      const h2 = (t, ph) => S(2 * PI * t + ph) - S(ph) * (1 - t) - S(2 * PI + ph) * t;
+      const bowTop = k * (-1.5 * S(PI * u) + 0.6 * h2(u, p1));
+      const bowBottom = k * (2.5 * S(PI * u) + 1.2 * h2(u, p2));
+      const bowLeft = k * (-3 * S(PI * v) + 1.2 * h2(v, p3));
+      const bowRight = k * (2.5 * S(PI * v) - 1 * h2(v, p4));
+      const wave = k * 1.2 * S(2 * PI * u * 1.1 + p5 + v * 3) * S(PI * v);
+      x += bowLeft * (1 - u) + bowRight * u;
+      y += bowTop * (1 - v) + bowBottom * v + wave;
+    }
+    return { x, y };
+  };
+}
+
+const CURL_UNITS = 15;
+
+/** Boundary of the warped sheet as a polyline (corner cut along a chord if curled). */
+function paperOutline(P, w, h, curl) {
+  const n = 48;
+  const cu = curl ? CURL_UNITS / w : 0;
+  const cv = curl ? CURL_UNITS / h : 0;
+  const pts = [];
+  for (let i = 0; i <= n; i += 1) pts.push(P(i / n, 0));
+  for (let i = 1; i <= n; i += 1) pts.push(P(1, (i / n) * (1 - cv)));
+  if (curl) {
+    const a = P(1, 1 - cv);
+    const b = P(1 - cu, 1);
+    const c = P(1, 1);
+    const ctrl = { x: (a.x + b.x) / 2 + (c.x - (a.x + b.x) / 2) * 0.35, y: (a.y + b.y) / 2 + (c.y - (a.y + b.y) / 2) * 0.35 };
+    for (let i = 1; i < 10; i += 1) {
+      const t = i / 10;
+      pts.push({
+        x: (1 - t) * (1 - t) * a.x + 2 * (1 - t) * t * ctrl.x + t * t * b.x,
+        y: (1 - t) * (1 - t) * a.y + 2 * (1 - t) * t * ctrl.y + t * t * b.y,
+      });
+    }
+  }
+  for (let i = 0; i <= n; i += 1) pts.push(P((1 - cu) * (1 - i / n), 1));
+  for (let i = 1; i < n; i += 1) pts.push(P(0, 1 - i / n));
+  return pts;
+}
+
+function tracePath(ctx, pts, close = true) {
   ctx.beginPath();
-  ctx.moveTo(-w / 2, -h / 2);
-  ctx.lineTo(w / 2, -h / 2);
-  if (c) {
-    ctx.lineTo(w / 2, h / 2 - c);
-    ctx.quadraticCurveTo(w / 2 - c * 0.42, h / 2 - c * 0.42, w / 2 - c, h / 2);
-  } else {
-    ctx.lineTo(w / 2, h / 2);
-  }
-  ctx.lineTo(-w / 2, h / 2);
-  ctx.closePath();
+  pts.forEach((p, i) => (i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y)));
+  if (close) ctx.closePath();
 }
 
-function drawShadow(ctx, w, h, curl, scale) {
-  ctx.save();
-  paperPath(ctx, w, h, curl);
-  ctx.shadowColor = 'rgba(30, 24, 16, 0.32)';
-  ctx.shadowBlur = 5 * scale;
-  ctx.shadowOffsetX = 0.8 * scale;
-  ctx.shadowOffsetY = 2.6 * scale;
-  ctx.fillStyle = '#000';
-  ctx.fill();
-  ctx.restore();
+/** Slightly shaky copy of a closed polyline, for the hand-drawn stroke. */
+function wobble(pts, seed, amount = 0.45) {
+  const rand = mulberry32(seed * 131 + 5);
+  const o1 = rand() * Math.PI * 2;
+  const o2 = rand() * Math.PI * 2;
+  const n = pts.length;
+  // Only 2–3 slow undulations around the whole sheet, so edges stay smooth.
+  return pts.map((p, i) => {
+    const t = (i / n) * Math.PI * 2;
+    return {
+      x: p.x + amount * Math.sin(t * 2 + o1),
+      y: p.y + amount * Math.sin(t * 3 + o2),
+    };
+  });
 }
 
-function drawPaperSurface(ctx, w, h, options, base) {
-  ctx.fillStyle = base;
+/* ------------------------------------------------------------------ */
+/* Drawing                                                             */
+/* ------------------------------------------------------------------ */
+
+function drawPaperSurface(ctx, P, outline, w, h, options, base, ink) {
+  ctx.fillStyle = rgba(base);
   ctx.fill();
 
-  // Soft light falloff, slightly darker near the glued top edge.
-  const glow = ctx.createLinearGradient(0, -h / 2, 0, h / 2);
-  if (options.paper === 'notebook' || options.paper === 'kraft') {
-    glow.addColorStop(0, 'rgba(255,255,255,0.10)');
-    glow.addColorStop(1, 'rgba(0,0,0,0.05)');
-  } else {
-    glow.addColorStop(0, 'rgba(0,0,0,0.07)');
-    glow.addColorStop(0.16, 'rgba(0,0,0,0)');
-    glow.addColorStop(0.7, 'rgba(255,255,255,0.12)');
-    glow.addColorStop(1, 'rgba(0,0,0,0.03)');
-  }
-  ctx.fillStyle = glow;
-  ctx.fillRect(-w / 2, -h / 2, w, h);
+  // Soft inner shading along the edges (stronger on the left, like the reference).
+  tracePath(ctx, outline);
+  [[11, 0.05], [7, 0.05], [3.5, 0.06]].forEach(([width, alpha]) => {
+    ctx.lineWidth = width;
+    ctx.strokeStyle = rgba(ink, alpha);
+    ctx.stroke();
+  });
+  const left = ctx.createLinearGradient(-w / 2 - 10, 0, -w / 2 + 34, 0);
+  left.addColorStop(0, rgba(ink, 0.12));
+  left.addColorStop(1, rgba(ink, 0));
+  ctx.fillStyle = left;
+  ctx.fillRect(-w / 2 - 20, -h / 2 - 20, w + 40, h + 40);
 
-  if (options.paper === 'notebook') {
-    const gap = 9.5;
-    ctx.lineWidth = 0.45;
-    ctx.strokeStyle = 'rgba(86, 140, 214, 0.5)';
-    for (let y = -h / 2 + 15; y < h / 2 - 2; y += gap) {
-      ctx.beginPath();
-      ctx.moveTo(-w / 2, y);
-      ctx.lineTo(w / 2, y);
+  // A faint diagonal crease, as if the sheet had been bent once.
+  const crease = ctx.createLinearGradient(-w / 2, h / 2, -w / 2 + 30, h / 2 - 40);
+  crease.addColorStop(0, rgba(ink, 0));
+  crease.addColorStop(0.5, rgba(ink, 0.05));
+  crease.addColorStop(0.56, rgba([255, 255, 255], 0.12));
+  crease.addColorStop(1, rgba(ink, 0));
+  ctx.fillStyle = crease;
+  ctx.fillRect(-w / 2 - 20, -h / 2 - 20, w + 40, h + 40);
+
+  const notebook = options.paper === 'notebook';
+  if (options.lines || notebook) {
+    const gap = notebook ? 9.5 : 19;
+    const start = notebook ? 15 : 17;
+    ctx.lineWidth = notebook ? 0.5 : 0.8;
+    ctx.strokeStyle = notebook ? 'rgba(86, 140, 214, 0.5)' : rgba(ink, 0.17);
+    ctx.lineCap = 'round';
+    for (let y = start; y < h - 6; y += gap) {
+      const v = y / h;
+      const pts = [];
+      for (let i = 0; i <= 40; i += 1) pts.push(P(0.02 + (i / 40) * 0.96, v));
+      tracePath(ctx, pts, false);
       ctx.stroke();
     }
-    ctx.strokeStyle = 'rgba(222, 72, 72, 0.7)';
+  }
+  if (notebook) {
+    const pts = [];
+    for (let i = 0; i <= 40; i += 1) pts.push(P(14 / w, i / 40));
+    tracePath(ctx, pts, false);
+    ctx.strokeStyle = 'rgba(222, 72, 72, 0.65)';
     ctx.lineWidth = 0.6;
-    const marginX = -w / 2 + 14;
-    ctx.beginPath();
-    ctx.moveTo(marginX, -h / 2);
-    ctx.lineTo(marginX, h / 2);
     ctx.stroke();
   }
 }
 
 function drawNoise(ctx, w, h, options) {
   const rand = mulberry32(options.seed ?? DEFAULT_OPTIONS.seed);
-  const count = Math.round(w * h * 0.32);
+  const count = Math.round(w * h * 0.28);
   for (let i = 0; i < count; i += 1) {
-    const x = -w / 2 + rand() * w;
-    const y = -h / 2 + rand() * h;
-    const s = 0.25 + rand() * 0.55;
-    const dark = rand() > 0.45;
-    ctx.fillStyle = dark ? `rgba(60,40,20,${0.035 + rand() * 0.06})` : `rgba(255,255,255,${0.05 + rand() * 0.1})`;
+    const x = -w / 2 - 10 + rand() * (w + 20);
+    const y = -h / 2 - 10 + rand() * (h + 20);
+    const s = 0.25 + rand() * 0.5;
+    ctx.fillStyle = rand() > 0.45 ? `rgba(70,45,20,${0.03 + rand() * 0.05})` : `rgba(255,255,255,${0.06 + rand() * 0.1})`;
     ctx.fillRect(x, y, s, s);
   }
   if (options.paper === 'kraft') {
@@ -411,146 +491,187 @@ function drawNoise(ctx, w, h, options) {
   }
 }
 
-function drawCurl(ctx, w, h, base) {
-  const c = Math.min(w, h) * 0.16;
-  const ax = w / 2;
-  const ay = h / 2 - c;
-  const bx = w / 2 - c;
-  const by = h / 2;
-  const tipX = w / 2 - c * 0.86;
-  const tipY = h / 2 - c * 0.86;
+function drawCurl(ctx, P, w, h, base, ink) {
+  const a = P(1, 1 - CURL_UNITS / h);
+  const b = P(1 - CURL_UNITS / w, 1);
+  const c = P(1, 1);
+  const mid = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
+  const tip = { x: a.x + b.x - c.x, y: a.y + b.y - c.y };
+  tip.x += (mid.x - tip.x) * 0.12;
+  tip.y += (mid.y - tip.y) * 0.12;
+  const bulge = (p, q) => ({ x: (p.x + q.x) / 2 + (mid.x - (p.x + q.x) / 2) * -0.25, y: (p.y + q.y) / 2 + (mid.y - (p.y + q.y) / 2) * -0.25 });
 
-  // Shadow cast by the lifted flap onto the paper.
+  // shadow the flap casts on the sheet
   ctx.save();
   ctx.beginPath();
-  ctx.moveTo(ax, ay);
-  ctx.quadraticCurveTo(tipX + c * 0.2, tipY - c * 0.05, tipX - c * 0.06, tipY - c * 0.06);
-  ctx.quadraticCurveTo(tipX - c * 0.05, tipY + c * 0.2, bx, by);
+  ctx.moveTo(a.x, a.y);
+  ctx.lineTo(tip.x - 1.6, tip.y - 1.2);
+  ctx.lineTo(b.x, b.y);
   ctx.closePath();
-  ctx.fillStyle = 'rgba(40, 28, 10, 0.18)';
+  ctx.fillStyle = rgba(ink, 0.16);
   ctx.fill();
   ctx.restore();
 
-  // The flap (back of the paper).
+  const q1 = bulge(a, tip);
+  const q2 = bulge(tip, b);
   ctx.beginPath();
-  ctx.moveTo(ax, ay);
-  ctx.quadraticCurveTo(w / 2 - c * 0.5, h / 2 - c * 0.86, tipX, tipY);
-  ctx.quadraticCurveTo(w / 2 - c * 0.86, h / 2 - c * 0.5, bx, by);
-  ctx.quadraticCurveTo(w / 2 - c * 0.42, h / 2 - c * 0.42, ax, ay);
+  ctx.moveTo(a.x, a.y);
+  ctx.quadraticCurveTo(q1.x, q1.y, tip.x, tip.y);
+  ctx.quadraticCurveTo(q2.x, q2.y, b.x, b.y);
+  ctx.quadraticCurveTo(mid.x + (c.x - mid.x) * 0.35, mid.y + (c.y - mid.y) * 0.35, a.x, a.y);
   ctx.closePath();
-  const flap = ctx.createLinearGradient(tipX, tipY, w / 2 - c * 0.45, h / 2 - c * 0.45);
-  flap.addColorStop(0, shade(base, 0.35));
-  flap.addColorStop(1, shade(base, -0.12));
-  ctx.fillStyle = flap;
+  const grad = ctx.createLinearGradient(tip.x, tip.y, mid.x, mid.y);
+  grad.addColorStop(0, rgba(mixRgb(base, [255, 255, 255], 0.55)));
+  grad.addColorStop(1, rgba(mixRgb(base, ink, 0.12)));
+  ctx.fillStyle = grad;
   ctx.fill();
-  ctx.lineWidth = 0.25;
-  ctx.strokeStyle = 'rgba(60, 40, 20, 0.18)';
+  ctx.lineWidth = 1.5;
+  ctx.lineJoin = 'round';
+  ctx.strokeStyle = rgba(ink);
   ctx.stroke();
 }
 
-function drawTape(ctx, w, h) {
-  const tw = Math.min(w * 0.42, 52);
-  const th = 13;
-  ctx.save();
-  ctx.translate(0, -h / 2 + 1);
-  ctx.rotate(toRad(-3));
-  ctx.beginPath();
-  const teeth = 6;
-  ctx.moveTo(-tw / 2, -th / 2);
-  ctx.lineTo(tw / 2, -th / 2);
-  for (let i = 1; i <= teeth; i += 1) {
-    const y = -th / 2 + (th / teeth) * i;
-    ctx.lineTo(tw / 2 + (i % 2 ? -1.1 : 0), y);
+/** Position + angle of a point on the top edge, for attaching decorations. */
+function topEdgeFrame(P, u) {
+  const p = P(u, 0);
+  const a = P(Math.max(0, u - 0.01), 0);
+  const b = P(Math.min(1, u + 0.01), 0);
+  return { x: p.x, y: p.y, angle: Math.atan2(b.y - a.y, b.x - a.x) };
+}
+
+const TAPE_SIZE = { width: 21, above: 11, below: 17 };
+const TAPE_TILT = 4;
+const CLIP_TILT = -6;
+const tapeAnchor = (w) => (w > 150 ? 0.56 : 0.62);
+const clipAnchor = (w) => (w > 150 ? 0.12 : 0.2);
+
+function tapePolygon(width, above, below) {
+  const teeth = 7;
+  const depth = 1.5;
+  const pts = [];
+  for (let i = 0; i <= teeth * 2; i += 1) {
+    pts.push({ x: -width / 2 + (width * i) / (teeth * 2), y: -above + (i % 2 ? depth : 0) });
   }
-  ctx.lineTo(-tw / 2, th / 2);
-  for (let i = teeth - 1; i >= 0; i -= 1) {
-    const y = -th / 2 + (th / teeth) * i;
-    ctx.lineTo(-tw / 2 + (i % 2 ? 1.1 : 0), y);
+  for (let i = 0; i <= teeth * 2; i += 1) {
+    pts.push({ x: width / 2 - (width * i) / (teeth * 2), y: below - (i % 2 ? depth : 0) });
   }
-  ctx.closePath();
-  ctx.fillStyle = 'rgba(243, 236, 214, 0.78)';
+  return pts;
+}
+
+function drawTape(ctx, P, outline, w, options, base, ink) {
+  const tape = TAPE_COLORS[options.tapeColor] || TAPE_COLORS.blue;
+  const frame = topEdgeFrame(P, tapeAnchor(w));
+  const poly = tapePolygon(TAPE_SIZE.width, TAPE_SIZE.above, TAPE_SIZE.below);
+  const angle = frame.angle + toRad(TAPE_TILT);
+  const place = () => {
+    ctx.translate(frame.x, frame.y);
+    ctx.rotate(angle);
+  };
+
+  // 1. translucent tape everywhere
+  ctx.save();
+  place();
+  tracePath(ctx, poly);
+  ctx.fillStyle = rgba(tape.fill, 0.68);
   ctx.fill();
-  ctx.lineWidth = 0.35;
-  ctx.strokeStyle = 'rgba(120, 100, 70, 0.32)';
+  ctx.restore();
+
+  // 2. where it sits on the paper it looks lighter (paper shows through)
+  ctx.save();
+  tracePath(ctx, outline);
+  ctx.clip();
+  place();
+  tracePath(ctx, poly);
+  ctx.fillStyle = rgba(mixRgb(mixRgb(base, [255, 255, 255], 0.62), tape.fill, 0.12), 0.94);
+  ctx.fill();
+  ctx.restore();
+
+  // 3. paper edge faintly visible through the tape
+  ctx.save();
+  place();
+  tracePath(ctx, poly);
+  ctx.clip();
+  ctx.rotate(-angle);
+  ctx.translate(-frame.x, -frame.y);
+  tracePath(ctx, outline);
+  ctx.lineWidth = 1.4;
+  ctx.strokeStyle = rgba(ink, 0.3);
   ctx.stroke();
-  const sheen = ctx.createLinearGradient(0, -th / 2, 0, th / 2);
-  sheen.addColorStop(0, 'rgba(255,255,255,0.35)');
-  sheen.addColorStop(0.5, 'rgba(255,255,255,0)');
-  sheen.addColorStop(1, 'rgba(255,255,255,0.18)');
-  ctx.fillStyle = sheen;
+  ctx.restore();
+
+  // 4. outline
+  ctx.save();
+  place();
+  tracePath(ctx, poly);
+  ctx.lineWidth = 1.3;
+  ctx.lineJoin = 'round';
+  ctx.strokeStyle = tape.line;
+  ctx.stroke();
+  ctx.restore();
+}
+
+function drawPin(ctx, P, scale) {
+  const p = P(0.5, 0.09);
+  const r = 4.8;
+  ctx.save();
+  ctx.fillStyle = 'rgba(60, 35, 20, 0.22)';
+  ctx.beginPath();
+  ctx.ellipse(p.x + 1.4, p.y + 1.8, r, r * 0.85, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#ef6b5f';
+  ctx.beginPath();
+  ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#d24c43';
+  ctx.beginPath();
+  ctx.arc(p.x + 0.6, p.y + 0.8, r * 0.62, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.lineWidth = 1.3;
+  ctx.strokeStyle = '#5b2c27';
+  ctx.beginPath();
+  ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+  ctx.beginPath();
+  ctx.ellipse(p.x - 1.7, p.y - 1.8, 1.4, 0.9, toRad(-35), 0, Math.PI * 2);
   ctx.fill();
   ctx.restore();
 }
 
-function drawPin(ctx, w, h, scale) {
-  const x = 0;
-  const y = -h / 2 + 9;
-  const r = 5.2;
-  ctx.save();
-  // needle shadow on the paper
-  ctx.strokeStyle = 'rgba(30, 20, 10, 0.25)';
-  ctx.lineWidth = 1;
-  ctx.lineCap = 'round';
+function paperclipPath(ctx) {
+  // Local frame: x across, y down into the paper; top of the clip at y = -11.
   ctx.beginPath();
-  ctx.moveTo(x + 1.2, y + 1.6);
-  ctx.lineTo(x + 4.2, y + 5.4);
-  ctx.stroke();
-  // head
-  ctx.shadowColor = 'rgba(30, 20, 10, 0.35)';
-  ctx.shadowBlur = 2.2 * scale;
-  ctx.shadowOffsetX = 0.6 * scale;
-  ctx.shadowOffsetY = 1.4 * scale;
-  const head = ctx.createRadialGradient(x - r * 0.35, y - r * 0.4, r * 0.1, x, y, r);
-  head.addColorStop(0, '#ff8a8f');
-  head.addColorStop(0.55, '#e5484d');
-  head.addColorStop(1, '#a8262c');
-  ctx.fillStyle = head;
-  ctx.beginPath();
-  ctx.arc(x, y, r, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.shadowColor = 'transparent';
-  ctx.fillStyle = 'rgba(255,255,255,0.75)';
-  ctx.beginPath();
-  ctx.ellipse(x - r * 0.38, y - r * 0.42, r * 0.28, r * 0.18, toRad(-35), 0, Math.PI * 2);
-  ctx.fill();
-  ctx.restore();
+  ctx.moveTo(-2.2, 9);
+  ctx.lineTo(-2.2, -6.8);
+  ctx.arc(0.2, -6.8, 2.4, Math.PI, 0);
+  ctx.lineTo(2.6, 13);
+  ctx.arc(-0.6, 13, 3.2, 0, Math.PI);
+  ctx.lineTo(-3.8, -7);
+  ctx.arc(0.6, -7, 4.4, Math.PI, 0);
+  ctx.lineTo(5, 7);
 }
 
-function clipPath(ctx, x, top, bottom, width) {
-  // A paperclip as three nested U-turns, drawn as one stroke.
-  const r1 = width / 2;
-  const r2 = r1 * 0.72;
-  const r3 = r1 * 0.45;
-  ctx.beginPath();
-  ctx.moveTo(x - r3, bottom - 10);
-  ctx.lineTo(x - r3, top + r3 + 3);
-  ctx.arc(x, top + r3 + 3, r3, Math.PI, 0);
-  ctx.lineTo(x + r3, bottom - r2);
-  ctx.arc(x + r3 - r2, bottom - r2, r2, 0, Math.PI);
-  ctx.lineTo(x + r3 - r2 * 2, top + r1);
-  ctx.arc(x + r3 - r2 * 2 + r1, top + r1, r1, Math.PI, 0);
-  ctx.lineTo(x + r3 - r2 * 2 + r1 * 2, bottom - 16);
-}
-
-function drawClip(ctx, w, h, scale) {
-  const x = -w / 2 + Math.min(w * 0.24, 26);
-  const top = -h / 2 - 11;
-  const bottom = -h / 2 + 24;
+function drawClip(ctx, P, w) {
+  const frame = topEdgeFrame(P, clipAnchor(w));
   ctx.save();
+  ctx.translate(frame.x, frame.y);
+  ctx.rotate(frame.angle + toRad(CLIP_TILT));
   ctx.lineCap = 'round';
   ctx.lineJoin = 'round';
-  ctx.shadowColor = 'rgba(30, 20, 10, 0.3)';
-  ctx.shadowBlur = 1.6 * scale;
-  ctx.shadowOffsetX = 0.6 * scale;
-  ctx.shadowOffsetY = 1.2 * scale;
-  clipPath(ctx, x, top, bottom, 9);
-  ctx.strokeStyle = '#8c96a1';
-  ctx.lineWidth = 1.7;
+  ctx.save();
+  ctx.translate(1, 1.4);
+  paperclipPath(ctx);
+  ctx.strokeStyle = 'rgba(60, 40, 20, 0.2)';
+  ctx.lineWidth = 3;
   ctx.stroke();
-  ctx.shadowColor = 'transparent';
-  clipPath(ctx, x, top, bottom, 9);
-  ctx.strokeStyle = 'rgba(255,255,255,0.65)';
-  ctx.lineWidth = 0.5;
+  ctx.restore();
+  paperclipPath(ctx);
+  ctx.strokeStyle = '#4a5560';
+  ctx.lineWidth = 3.1;
+  ctx.stroke();
+  paperclipPath(ctx);
+  ctx.strokeStyle = '#d9e1e6';
+  ctx.lineWidth = 1.5;
   ctx.stroke();
   ctx.restore();
 }
@@ -558,6 +679,116 @@ function drawClip(ctx, w, h, scale) {
 function fontString(options, size) {
   const family = options.fontFamily ? `"${options.fontFamily}", ${FALLBACK_FONTS}` : FALLBACK_FONTS;
   return `${options.fontWeight || 400} ${size}px ${family}`;
+}
+
+/** Draw laid-out lines glyph by glyph, following the paper warp. */
+function drawWarpedText(ctx, P, w, h, lines, size, box, align, measureChar) {
+  const lineStep = size * LINE_HEIGHT;
+  const blockHeight = lines.length * lineStep;
+  const startY = box.y + Math.max(0, (box.height - blockHeight) / 2) + lineStep / 2;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  lines.forEach((line, index) => {
+    const chars = Array.from(line);
+    const widths = chars.map(measureChar);
+    const lineWidth = widths.reduce((sum, cw) => sum + cw, 0);
+    let x = align === 'left' ? box.x : align === 'right' ? box.x + box.width - lineWidth : box.x + (box.width - lineWidth) / 2;
+    const y = startY + index * lineStep;
+    chars.forEach((ch, i) => {
+      const cx = x + widths[i] / 2;
+      x += widths[i];
+      if (ch === ' ') return;
+      const u = (cx + w / 2) / w;
+      const v = (y + h / 2) / h;
+      const p = P(u, v);
+      const a = P(u - 0.004, v);
+      const b = P(u + 0.004, v);
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(Math.atan2(b.y - a.y, b.x - a.x));
+      ctx.fillText(ch, 0, 0);
+      ctx.restore();
+    });
+  });
+}
+
+/* ------------------------------------------------------------------ */
+/* Layout                                                              */
+/* ------------------------------------------------------------------ */
+
+const OUTLINE_MARGIN = 2.5;
+const SHADOW_MARGIN = 5;
+
+/** Paper warp, outline and the outermost points of every decoration. */
+function buildGeometry(options) {
+  const shape = SHAPES[options.shape] || SHAPES.square;
+  const w = shape.width;
+  const h = shape.height;
+  const seed = Number(options.seed) || 0;
+  const P = createPaperWarp(w, h, { warp: options.warp ?? DEFAULT_OPTIONS.warp, seed });
+  const outline = paperOutline(P, w, h, options.curl);
+  const extents = [...outline];
+
+  const addLocal = (frame, angle, pts) => {
+    const c = Math.cos(angle);
+    const s = Math.sin(angle);
+    pts.forEach((p) => extents.push({ x: frame.x + p.x * c - p.y * s, y: frame.y + p.x * s + p.y * c }));
+  };
+  if (options.decoration === 'tape') {
+    const frame = topEdgeFrame(P, tapeAnchor(w));
+    addLocal(frame, frame.angle + toRad(TAPE_TILT), tapePolygon(TAPE_SIZE.width, TAPE_SIZE.above, TAPE_SIZE.below));
+  } else if (options.decoration === 'clip') {
+    const frame = topEdgeFrame(P, clipAnchor(w));
+    addLocal(frame, frame.angle + toRad(CLIP_TILT), [
+      { x: -6.5, y: -13 },
+      { x: 7.5, y: -13 },
+      { x: 7.5, y: 18.5 },
+      { x: -6.5, y: 18.5 },
+    ]);
+  }
+  return { w, h, P, outline, extents };
+}
+
+/**
+ * Canvas size and paper placement. The canvas is fitted tightly around the
+ * rotated paper and its decorations (plus room for the outline and shadow),
+ * so nothing is ever cropped and the note uses as much of the image as possible.
+ */
+export function computeLayout(inputOptions = {}, geometry = null) {
+  const options = { ...DEFAULT_OPTIONS, ...inputOptions };
+  const geo = geometry || buildGeometry(options);
+  const rotation = toRad(clamp(Number(options.rotation) || 0, -MAX_ROTATION, MAX_ROTATION));
+  const c = Math.cos(rotation);
+  const s = Math.sin(rotation);
+  let minX = Infinity;
+  let minY = Infinity;
+  let maxX = -Infinity;
+  let maxY = -Infinity;
+  geo.extents.forEach((p) => {
+    const x = p.x * c - p.y * s;
+    const y = p.x * s + p.y * c;
+    minX = Math.min(minX, x);
+    maxX = Math.max(maxX, x);
+    minY = Math.min(minY, y);
+    maxY = Math.max(maxY, y);
+  });
+  const margin = OUTLINE_MARGIN + (options.shadow ? SHADOW_MARGIN : 0);
+  const unitsWidth = maxX - minX + margin * 2;
+  const unitsHeight = maxY - minY + margin * 2;
+  const longEdge = Math.max(1, Math.round((options.size || DEFAULT_OPTIONS.size) * (options.pixelRatio || 1)));
+  const scale = longEdge / Math.max(unitsWidth, unitsHeight);
+  return {
+    paperWidth: geo.w,
+    paperHeight: geo.h,
+    unitsWidth,
+    unitsHeight,
+    originX: margin - minX,
+    originY: margin - minY,
+    bounds: { minX, minY, maxX, maxY },
+    scale,
+    canvasWidth: Math.round(unitsWidth * scale),
+    canvasHeight: Math.round(unitsHeight * scale),
+  };
 }
 
 /* ------------------------------------------------------------------ */
@@ -570,7 +801,8 @@ function fontString(options, size) {
  */
 export function renderStickyNote(canvas, inputOptions = {}) {
   const options = { ...DEFAULT_OPTIONS, ...inputOptions };
-  const layout = computeLayout(options);
+  const geometry = buildGeometry(options);
+  const layout = computeLayout(options, geometry);
   canvas.width = layout.canvasWidth;
   canvas.height = layout.canvasHeight;
 
@@ -578,30 +810,49 @@ export function renderStickyNote(canvas, inputOptions = {}) {
   if (!ctx) throw new Error('renderStickyNote: 2D canvas context is not available');
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  const w = layout.paperWidth;
-  const h = layout.paperHeight;
-  const base = paperColor(options);
+  const { w, h, P, outline } = geometry;
+  const seed = Number(options.seed) || 0;
+  const base = paperRgb(options);
+  const ink = outlineRgb(base);
   const rotation = clamp(Number(options.rotation) || 0, -MAX_ROTATION, MAX_ROTATION);
 
   ctx.save();
   ctx.scale(layout.scale, layout.scale);
-  ctx.translate(layout.unitsWidth / 2, layout.unitsHeight / 2);
+  ctx.translate(layout.originX, layout.originY);
   ctx.rotate(toRad(rotation));
 
-  if (options.shadow) drawShadow(ctx, w, h, options.curl, layout.scale);
+  if (options.shadow) {
+    ctx.save();
+    tracePath(ctx, outline);
+    ctx.shadowColor = 'rgba(60, 40, 20, 0.24)';
+    ctx.shadowBlur = 4 * layout.scale;
+    ctx.shadowOffsetX = 1 * layout.scale;
+    ctx.shadowOffsetY = 2.6 * layout.scale;
+    ctx.fillStyle = rgba(base);
+    ctx.fill();
+    ctx.restore();
+  }
 
+  // Paper body, clipped to the warped outline.
   ctx.save();
-  paperPath(ctx, w, h, options.curl);
+  tracePath(ctx, outline);
   ctx.clip();
-  paperPath(ctx, w, h, options.curl);
-  drawPaperSurface(ctx, w, h, options, base);
+  tracePath(ctx, outline);
+  drawPaperSurface(ctx, P, outline, w, h, options, base, ink);
   if (options.noise) drawNoise(ctx, w, h, options);
 
-  // Text
+  // Text: lay out flat, then follow the warp.
   const box = getTextBox(options, layout);
+  const charCache = new Map();
   const measureAt = (size) => {
     ctx.font = fontString(options, size);
-    return (str) => ctx.measureText(str).width;
+    const cache = new Map();
+    const charWidth = (ch) => {
+      if (!cache.has(ch)) cache.set(ch, ctx.measureText(ch).width);
+      return cache.get(ch);
+    };
+    charCache.set(size, charWidth);
+    return (str) => Array.from(str).reduce((sum, ch) => sum + charWidth(ch), 0);
   };
   const min = Math.max(1, Number(options.minFontSize) || FONT_SIZE_LIMITS.min);
   const max = Math.max(min, Number(options.maxFontSize) || FONT_SIZE_LIMITS.max);
@@ -613,26 +864,26 @@ export function renderStickyNote(canvas, inputOptions = {}) {
   } else {
     fitted = fitText(options.text, box, measureAt, { min, max });
   }
-
+  measureAt(fitted.size);
   ctx.font = fontString(options, fitted.size);
   ctx.fillStyle = options.textColor || DEFAULT_OPTIONS.textColor;
-  ctx.textBaseline = 'middle';
   const align = ALIGNMENTS.includes(options.align) ? options.align : 'center';
-  ctx.textAlign = align;
-  const lineStep = fitted.size * LINE_HEIGHT;
-  const blockHeight = fitted.lines.length * lineStep;
-  const startY = box.y + Math.max(0, (box.height - blockHeight) / 2) + lineStep / 2;
-  const x = align === 'left' ? box.x : align === 'right' ? box.x + box.width : box.x + box.width / 2;
-  fitted.lines.forEach((line, index) => {
-    ctx.fillText(line, x, startY + index * lineStep);
-  });
+  drawWarpedText(ctx, P, w, h, fitted.lines, fitted.size, box, align, charCache.get(fitted.size));
   ctx.restore(); // end paper clip
 
-  if (options.curl) drawCurl(ctx, w, h, base);
+  // Hand-drawn outline.
+  tracePath(ctx, wobble(outline, seed));
+  ctx.lineWidth = 1.4;
+  ctx.lineJoin = 'round';
+  ctx.lineCap = 'round';
+  ctx.strokeStyle = rgba(ink);
+  ctx.stroke();
 
-  if (options.decoration === 'tape') drawTape(ctx, w, h);
-  else if (options.decoration === 'pin') drawPin(ctx, w, h, layout.scale);
-  else if (options.decoration === 'clip') drawClip(ctx, w, h, layout.scale);
+  if (options.curl) drawCurl(ctx, P, w, h, base, ink);
+
+  if (options.decoration === 'tape') drawTape(ctx, P, outline, w, options, base, ink);
+  else if (options.decoration === 'pin') drawPin(ctx, P, layout.scale);
+  else if (options.decoration === 'clip') drawClip(ctx, P, w);
 
   ctx.restore();
 

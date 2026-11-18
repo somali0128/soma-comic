@@ -3,6 +3,7 @@ import {
   DEFAULT_OPTIONS,
   PAPER_PRESETS,
   SHAPES,
+  TAPE_COLORS,
   buildExportFileName,
   computeLayout,
   renderStickyNote,
@@ -20,21 +21,25 @@ const DEFAULT_STATE = {
   fontSize: 24,
   align: 'center',
   textColor: DEFAULT_OPTIONS.textColor,
-  paper: 'yellow',
+  paper: DEFAULT_OPTIONS.paper,
   customColor: DEFAULT_OPTIONS.customColor,
   shape: 'square',
   decoration: 'tape',
-  shadow: true,
-  curl: true,
-  noise: true,
-  rotation: -4,
+  tapeColor: DEFAULT_OPTIONS.tapeColor,
+  warp: DEFAULT_OPTIONS.warp,
+  seed: DEFAULT_OPTIONS.seed,
+  lines: DEFAULT_OPTIONS.lines,
+  shadow: DEFAULT_OPTIONS.shadow,
+  curl: DEFAULT_OPTIONS.curl,
+  noise: DEFAULT_OPTIONS.noise,
+  rotation: DEFAULT_OPTIONS.rotation,
 };
 
 const TEXT_COLORS = [
+  { value: '#4a3418', label: '深棕' },
   { value: '#2a2522', label: '墨黑' },
   { value: '#1f4fbf', label: '钢笔蓝' },
   { value: '#c0392b', label: '红笔' },
-  { value: '#6b4a2b', label: '咖啡' },
 ];
 
 const DECORATION_LABELS = { none: '无', tape: '胶带', pin: '图钉', clip: '回形针' };
@@ -165,7 +170,7 @@ export default function StickyNoteGenerator() {
     };
   }, [renderOptions, previewLongEdge]);
 
-  const exportLayout = computeLayout({ shape: opts.shape, size: exportSize, pixelRatio: 1 });
+  const exportLayout = computeLayout({ ...renderOptions, size: exportSize, pixelRatio: 1 });
 
   const handleDownload = async () => {
     setIsExporting(true);
@@ -205,6 +210,7 @@ export default function StickyNoteGenerator() {
     if (!STICKY_NOTE_FONTS.some((font) => font.id === merged.fontId)) merged.fontId = DEFAULT_FONT_ID;
     if (!PAPER_PRESETS[merged.paper]) merged.paper = DEFAULT_STATE.paper;
     if (!SHAPES[merged.shape]) merged.shape = DEFAULT_STATE.shape;
+    if (!TAPE_COLORS[merged.tapeColor]) merged.tapeColor = DEFAULT_STATE.tapeColor;
     setOpts(merged);
     setPresetMessage(`已切换到「${preset.name}」`);
   };
@@ -390,10 +396,61 @@ export default function StickyNoteGenerator() {
                 onChange={(decoration) => update({ decoration })}
                 options={Object.entries(DECORATION_LABELS).map(([value, label]) => ({ value, label }))}
               />
+              {opts.decoration === 'tape' && (
+                <div>
+                  <p className="mb-1.5 text-sm font-bold">胶带颜色</p>
+                  <div className="flex flex-wrap gap-2">
+                    {Object.entries(TAPE_COLORS).map(([id, tape]) => {
+                      const active = opts.tapeColor === id;
+                      return (
+                        <button
+                          key={id}
+                          type="button"
+                          onClick={() => update({ tapeColor: id })}
+                          aria-pressed={active}
+                          className={`flex !min-h-[34px] items-center gap-1.5 rounded-full border-[1.5px] px-3 text-sm font-bold ${
+                            active ? 'border-ink bg-paper' : 'border-paper-line bg-white hover:border-ink'
+                          }`}
+                        >
+                          <span
+                            aria-hidden="true"
+                            className="h-3.5 w-5 rounded-sm border-[1.5px]"
+                            style={{ background: `rgb(${tape.fill.join(',')})`, borderColor: tape.line }}
+                          />
+                          {tape.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
             </Section>
 
             <Section title="细节">
-              <div className="grid gap-2 sm:grid-cols-3 lg:grid-cols-1">
+              <div>
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="sticky-warp">纸张弧度：{Math.round(opts.warp * 100)}%</Label>
+                  <button
+                    type="button"
+                    onClick={() => update({ seed: Math.floor(Math.random() * 100000) })}
+                    className="!min-h-0 text-xs font-bold text-primary-600 hover:underline"
+                  >
+                    换个形状
+                  </button>
+                </div>
+                <input
+                  id="sticky-warp"
+                  type="range"
+                  min="0"
+                  max="100"
+                  value={Math.round(opts.warp * 100)}
+                  onChange={(e) => update({ warp: Number(e.target.value) / 100 })}
+                  className="w-full accent-primary-500"
+                />
+                <p className="mt-1 text-xs text-ink-mute">弧度越大，纸越像被弯过、贴在头上；「换个形状」会随机换一种弯法。</p>
+              </div>
+              <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-1">
+                <Toggle label="横线" checked={opts.lines} onChange={(lines) => update({ lines })} />
                 <Toggle label="轻微阴影" checked={opts.shadow} onChange={(shadow) => update({ shadow })} />
                 <Toggle label="右下角卷边" checked={opts.curl} onChange={(curl) => update({ curl })} />
                 <Toggle label="纸张纹理" checked={opts.noise} onChange={(noise) => update({ noise })} />
