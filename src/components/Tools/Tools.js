@@ -21,6 +21,13 @@ const Tools = ({ t }) => {
       details: isZh ? ['三种抽选模式', '支持权重和名单导入', '动画结果展示'] : ['Three draw modes', 'Weighted entries and imports', 'Animated, clear results'],
     },
     {
+      id: 'sticky-note', icon: '📝', accent: 'bg-[#fdf08a]', to: '/vts-sticky-note',
+      title: isZh ? 'VTS 便利贴生成器' : 'VTS Sticky Note Maker',
+      status: isZh ? '站内工具 · VTS 道具' : 'On-site tool · VTS item',
+      description: isZh ? '写几句话，导出透明背景的便利贴 PNG，放进 VTube Studio 钉在头上。' : 'Write a short note and export a transparent sticky-note PNG to pin on your VTube Studio model.',
+      details: isZh ? ['多种纸张与装饰', '中文自动换行', '透明 PNG 导出'] : ['Papers and decorations', 'Smart CJK line breaks', 'Transparent PNG export'],
+    },
+    {
       id: 'menu', icon: '🍜', accent: 'bg-[#dcf5e8]', to: '/order-menu',
       title: isZh ? '今天吃什么' : 'What Should We Eat?',
       status: isZh ? '站内工具 · 家庭菜单' : 'On-site tool · family menu',
