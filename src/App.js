@@ -20,6 +20,7 @@ import './App.css';
 
 const supportedLanguages = ['zh', 'en'];
 const DreamWorld = React.lazy(() => import('./components/DreamWorld/DreamWorld'));
+const StickyNoteGenerator = React.lazy(() => import('./components/StickyNote/StickyNoteGenerator'));
 
 const getPreferredLanguage = () => {
   const savedLanguage = localStorage.getItem('language');
@@ -100,6 +101,14 @@ function AppContent() {
                 }
               >
                 <DreamWorld language={currentLanguage} />
+              </React.Suspense>
+            }
+          />
+          <Route
+            path="/vts-sticky-note"
+            element={
+              <React.Suspense fallback={<div className="min-h-[70vh] bg-paper" role="status" aria-label="Loading" />}>
+                <StickyNoteGenerator />
               </React.Suspense>
             }
           />
